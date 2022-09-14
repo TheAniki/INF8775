@@ -19,11 +19,4 @@ def execute_brute_force(points):
     min_brute_force = brute_force(points)
     end = time.time()
     # print("BF: ", min_brute_force)
-    return end-start
-
-def execute_brute_force_all_data(points):
-    start = time.time()
-    min_brute_force = brute_force(points)
-    end = time.time()
-    # print("BF: ", min_brute_force)
-    return end-start , min_brute_force
+    return end-start, min_brute_force

@@ -5,7 +5,7 @@ import sys
 import time
 import csv
 import argparse
-from brute_force import execute_brute_force_all_data
+from brute_force import execute_brute_force
 from DpR import execute_DpR   
 from utils import GRID_SIZE
 
@@ -49,11 +49,13 @@ def main():
     if args.algo == "brute":
         # Exécuter l'algorithme force brute
         print("Brute")   
-        data = execute_brute_force_all_data(points)
+        data = execute_brute_force(points)
     elif args.algo == "recursif":
         # Exécuter l'algorithme Diviser pour régner
         print("Recursif")
-        data = execute_DpR(points)
+        sorted_x = sorted(points, key=lambda x:x[0])
+        sorted_y = sorted(points, key=lambda x:x[1])
+        data = execute_DpR(sorted_x,sorted_y,2)
      
     elif args.algo == "seuil":
         print("Seuil")
