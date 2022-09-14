@@ -5,6 +5,7 @@ import sys
 import time
 import csv
 import argparse
+from TP1.Code.DpR import DpR
 from brute_force import execute_brute_force, brute_force
 from DpR import execute_DpR   
 from utils import GRID_SIZE
@@ -54,6 +55,8 @@ def main():
     elif args.algo == "recursif":
         # Exécuter l'algorithme Diviser pour régner
         print("Recursif")
+        data = execute_DpR(points)
+     
     elif args.algo == "seuil":
         print("Seuil")
     else :
