@@ -5,7 +5,7 @@ import sys
 import time
 import csv
 import argparse
-from brute_force import execute_brute_force, brute_force
+from brute_force import execute_brute_force_all_data
 from DpR import execute_DpR   
 from utils import GRID_SIZE
 
@@ -49,8 +49,7 @@ def main():
     if args.algo == "brute":
         # Exécuter l'algorithme force brute
         print("Brute")   
-        dist = brute_force(points)
-        print("Distance: " + str(dist))
+        data = execute_brute_force_all_data(points)
     elif args.algo == "recursif":
         # Exécuter l'algorithme Diviser pour régner
         print("Recursif")
@@ -59,4 +58,9 @@ def main():
     else :
         print("Invalid")
 
+    if(args.p):
+        print("Distance: " + str(data[1]))
+    if(args.t):
+        print("Temps exec: " + str(data[0]))
+            
 main()
