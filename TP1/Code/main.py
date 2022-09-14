@@ -1,24 +1,13 @@
+from errno import ESTALE
 import random
 import math
 import sys
 import time
 import csv
-
-from brute_force import execute_brute_force
-from DpR import execute_DpR
+import argparse
+from brute_force import execute_brute_force, brute_force
+from DpR import execute_DpR   
 from utils import GRID_SIZE
-
-ALGO = sys.argv[1] # Algo à utiliser DPR ou BF
-NB_POINTS = int(sys.argv[2]) # Nombre de points à générer
-
-
-'''
-Un point est représenté par un tuple (position_x, position_y)
-La fonction generate_points génère une liste de N points.
-'''
-def generate_points(N):
-    points = [(random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)) for i in range(N)]
-    return points
 
 '''
 --------------------------------------------------------------------
@@ -28,22 +17,46 @@ les points depuis les fichiers générés.
 De plus, vous devez faire en sorte que l'interface du tp.sh soit
 compatible avec ce code (par exemple l'utilisation de flag -e, -a, (p et -t)).
 --------------------------------------------------------------------
- '''
+'''
 
-def main(algo, nb_points):
-    POINTS = generate_points(nb_points)
-    sorted_points_x = sorted(POINTS, key=lambda x: x[0])
-    sorted_points_y = sorted(POINTS, key=lambda x: x[1])
+def main():
+
+    # Parse arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument( "-a","--algo", type=str)
+    parser.add_argument("-e","--execPath",type=str)
+    parser.add_argument('-p',action="store_const", const=1,required=False)
+    parser.add_argument('-t',action="store_const", const=1,required=False)
+    args = parser.parse_args()    
     
-    if algo == "BF":
+    points = [] 
+    # Read files
+    with open(args.execPath, 'r') as f:
+        n=int(f.readline())
+        for i in range(n):
+            line = f.readline().split(" ")
+            points.append((int(line[0]),int(line[1])))
+    f.close()
+
+    # Convert to csv In case we need it!
+    # with open("../Data.csv", 'w') as f:
+    #     writer = csv.writer(f)
+    #     for point in points:
+    #         writer.writerow([point[0], point[1]])
+    # f.close()
+
+    # Execute algorithm    
+    if args.algo == "brute":
         # Exécuter l'algorithme force brute
-        time_BF = execute_brute_force(sorted_points_x)
-        print("Temps : ", time_BF)
-    
-    elif algo == "DPR":
+        print("Brute")   
+        dist = brute_force(points)
+        print("Distance: " + str(dist))
+    elif args.algo == "recursif":
         # Exécuter l'algorithme Diviser pour régner
-        SEUIL_DPR = 3
-        time_DPR = execute_DpR(sorted_points_x, sorted_points_y, SEUIL_DPR)
-        print("Temps : ", time_DPR)
+        print("Recursif")
+    elif args.algo == "seuil":
+        print("Seuil")
+    else :
+        print("Invalid")
 
-main(ALGO, NB_POINTS)
+main()
