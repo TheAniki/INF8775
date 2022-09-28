@@ -18,5 +18,4 @@ def execute_brute_force(points):
     start = time.time()
     min_brute_force = brute_force(points)
     end = time.time()
-    # print("BF: ", min_brute_force)
     return end-start, min_brute_force

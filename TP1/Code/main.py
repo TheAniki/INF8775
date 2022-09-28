@@ -60,11 +60,12 @@ def main():
     elif args.algo == "seuil":
         print("Seuil")
     else :
+        #print help.
         print("Invalid")
 
     if(args.p):
         print("Distance: " + str(data[1]))
     if(args.t):
-        print("Temps exec: " + str(data[0]))
+        print("Temps d'execution: " + str(data[0]))
             
 main()
