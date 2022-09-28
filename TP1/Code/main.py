@@ -55,10 +55,13 @@ def main():
         print("Recursif")
         sorted_x = sorted(points, key=lambda x:x[0])
         sorted_y = sorted(points, key=lambda x:x[1])
-        data = execute_DpR(sorted_x,sorted_y,2)
+        data = execute_DpR(sorted_x,sorted_y,3)
      
     elif args.algo == "seuil":
         print("Seuil")
+        sorted_x = sorted(points, key=lambda x:x[0])
+        sorted_y = sorted(points, key=lambda x:x[1])
+        data = execute_DpR(sorted_x,sorted_y,15)
     else :
         #print help.
         print("Invalid")
