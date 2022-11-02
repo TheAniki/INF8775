@@ -1,9 +1,12 @@
 #include <iostream>
+#include "AlgoDyn.h"
+#include "AlgoGloutonProba.h"
+#include "AmeliorationLocale.h"
 
 using namespace std;
 
 int main() {
 
-	cout << "te" << endl;
+	
 	return 0;
 }

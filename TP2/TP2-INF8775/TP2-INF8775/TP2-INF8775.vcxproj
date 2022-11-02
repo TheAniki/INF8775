@@ -139,7 +139,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlgoDyn.cpp" />
+    <ClCompile Include="AlgoGloutonProba.cpp" />
+    <ClCompile Include="AmeliorationLocale.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AlgoDyn.h" />
+    <ClInclude Include="AlgoGloutonProba.h" />
+    <ClInclude Include="AmeliorationLocale.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
