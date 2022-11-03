@@ -11,6 +11,8 @@ using namespace std;
 typedef int r;
 typedef int q;
 
+// Split method used to split a string containing numbers
+// and returns a vector of ints
 vector<int> split(const string& s, char delim) {
 	vector<int> result;
 	stringstream ss(s);
@@ -23,12 +25,18 @@ vector<int> split(const string& s, char delim) {
 	return result;
 }
 
+// Restaurant Struct
+// Contains ID and r and q values
+struct Restaurant {
+	int ID;
+	pair<r, q> rq_values;
+
+	// Restaurant Ctor
+	Restaurant(int id, pair<r, q> rq_val)
+		: ID(id), rq_values(rq_val){}
+};
 
 int main() {
-
-
-	// data
-	//vector<pair<int, int>> data;
 
 	// Read files
 	ifstream file;
@@ -39,21 +47,20 @@ int main() {
 	}
 	
 	string line;
-	int nbElem = 0;
-	bool first = true;
-	int last = 0;
-	vector<pair<r, q>> data;
-	while (getline(file, line)) { //read data from file object and put it into string.
-		cout << line << endl;
-		vector<int> v = split(line,' ');		
-		if (first) {
-			nbElem = stoi(line);
-			first = false;		
-		}
-		if (v.size() == 3)
-			data.push_back(pair<r, q>(v[1], v[2]));
+	vector<Restaurant*> data; // All restaurants data.
+	while (getline(file, line)) {	//read data from file object and put it into the string line.
+		vector<int> v = split(line,' ');	// Split the string	
+		if (v.size() == 3) {
+			data.push_back(
+				new Restaurant(v[0],make_pair(v[1],v[2]))
+			);
+		}			
 	}
-	
-	
+
+	// Print data
+	for (auto v : data) {
+		cout << v->ID<<" "<< v->rq_values.first <<" " << v->rq_values.second << endl;
+	}
+		
 	return 0;
 }
