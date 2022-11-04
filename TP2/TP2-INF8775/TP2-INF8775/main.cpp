@@ -3,6 +3,7 @@
 #include <vector>
 #include <filesystem>
 #include <sstream>
+#include <map>
 #include "AlgoDyn.h"
 #include "AlgoGloutonProba.h"
 #include "AmeliorationLocale.h"
@@ -28,12 +29,12 @@ vector<int> split(const string& s, char delim) {
 // Restaurant Struct
 // Contains ID and r and q values
 struct Restaurant {
-	int ID;
-	pair<r, q> rq_values;
+	int revenue;
+	int quantity;
 
 	// Restaurant Ctor
-	Restaurant(int id, pair<r, q> rq_val)
-		: ID(id), rq_values(rq_val){}
+	Restaurant(int r,int q)
+		: revenue(r), quantity(q){}
 };
 
 int main() {
@@ -42,24 +43,35 @@ int main() {
 	ifstream file;
 	file.open(".\\exemplaires\\WC-100-10-01.txt",ios::in);
 	if (!file.is_open()) {
-		cout << "fopen failed\n";
+		cout << "open file failed\n";
 		return 0;
 	}
 	
+	
+	// Restaurant datas
+	map<int, Restaurant> Restaurants;
+	int nbRestaurants = 0;
+	int capacite = 0;
+
 	string line;
-	vector<Restaurant*> data; // All restaurants data.
 	while (getline(file, line)) {	//read data from file object and put it into the string line.
 		vector<int> v = split(line,' ');	// Split the string	
 		if (v.size() == 3) {
-			data.push_back(
-				new Restaurant(v[0],make_pair(v[1],v[2]))
-			);
-		}			
+			Restaurants.insert(make_pair(v[0], Restaurant(v[1],v[2])));
+		}
+		if (v.size() == 1) {
+			if (nbRestaurants == 0)
+				nbRestaurants = v[0];
+			else 
+				capacite = v[0];
+		}
 	}
-
-	// Print data
-	for (auto v : data) {
-		cout << v->ID<<" "<< v->rq_values.first <<" " << v->rq_values.second << endl;
+	
+	// Print restaurants data
+	for (auto &restaurant : Restaurants) {
+		cout << restaurant.first << " "
+			<< restaurant.second.revenue <<" "
+			<< restaurant.second.quantity << endl;
 	}
 		
 	return 0;
