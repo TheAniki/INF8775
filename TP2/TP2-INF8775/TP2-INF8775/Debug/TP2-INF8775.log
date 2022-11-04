@@ -1,3 +1,10 @@
-﻿  main.cpp
+﻿  AlgoDyn.cpp
+  AlgoGloutonProba.cpp
+C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\TP2-INF8775\AlgoGloutonProba.cpp(16,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\TP2-INF8775\AlgoGloutonProba.cpp(18,57): error C2059: syntax error: ','
+C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\TP2-INF8775\AlgoGloutonProba.cpp(44,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\TP2-INF8775\AlgoGloutonProba.cpp(73,48): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  AmeliorationLocale.cpp
+  main.cpp
   The contents of <filesystem> are available only with C++17 or later.
-  TP2-INF8775.vcxproj -> C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\Debug\TP2-INF8775.exe
+  Generating Code...

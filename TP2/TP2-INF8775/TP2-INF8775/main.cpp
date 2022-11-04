@@ -7,10 +7,9 @@
 #include "AlgoDyn.h"
 #include "AlgoGloutonProba.h"
 #include "AmeliorationLocale.h"
+#include "Structs.h"
 
 using namespace std;
-typedef int r;
-typedef int q;
 
 // Split method used to split a string containing numbers
 // and returns a vector of ints
@@ -26,16 +25,6 @@ vector<int> split(const string& s, char delim) {
 	return result;
 }
 
-// Restaurant Struct
-// Contains ID and r and q values
-struct Restaurant {
-	int revenue;
-	int quantity;
-
-	// Restaurant Ctor
-	Restaurant(int r,int q)
-		: revenue(r), quantity(q){}
-};
 
 int main() {
 
