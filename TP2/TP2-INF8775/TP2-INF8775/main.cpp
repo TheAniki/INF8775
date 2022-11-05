@@ -1,4 +1,5 @@
 #include "Includes.h"
+#include "AlgoGloutonProba.h"
 
 
 // Split method used to split a string containing numbers
@@ -14,6 +15,7 @@ vector<int> split(const string& s, char delim) {
 
 	return result;
 }
+
 
 
 int main() {
@@ -46,5 +48,13 @@ int main() {
 		}
 	}	
 		
+	vector<Restaurant> chosenRestaurants;
+	double totalRevenue = alggoGloutonProba(restaurants, capacite, chosenRestaurants);
+	cout << "GLOUTON PROBA - TOTAL REVENUE  : " << totalRevenue << endl;
+	cout << "Chosen restaurants : " << endl;
+	for (const Restaurant restaurant : chosenRestaurants) {
+		cout << "restaurant " << "number..." << " - revenue : " << restaurant.revenue << " - quantity :  " << restaurant.quantity <<endl;
+	}
+	
 	return 0;
 }

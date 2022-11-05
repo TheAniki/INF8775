@@ -7,156 +7,88 @@
 #include <iterator>
 #include <map>
 
-//returns the total rentability and fills the rentabilities vector
-double computeRestaurantsRentability(map<int, Restaurant>& restaurants, map<int, double>& rentabilities) {
+using namespace std;
+
+//returns the total rentability and fills the rentability map
+double computeRestaurantsRentability(const map<int, Restaurant>& restaurantMap, map<int, double> & rentabilityMap) {
 	double totalRentability = 0.0;
-	for (int i = 0; i < restaurants.size(); i++) {
-		double rentability = double(restaurants[i].revenue / restaurants[i].quantity);
-		//rentabilities.insert(pair<int, double>(restaurants[i]., rentability)); //TODO : get key
-		totalRentability += rentability;
-	}
+	for (pair<int, Restaurant> restaurantPair : restaurantMap) {
+		double restaurantRentability = double(restaurantPair.second.revenue)/ restaurantPair.second.quantity;
+		rentabilityMap.insert(pair<int, double>(restaurantPair.first, restaurantRentability));
+		totalRentability += restaurantRentability;
 
+	}
 	return totalRentability;
+
 }
 
-//returns the index of the restaurant
-int choseARestaurant(map<int, double>& rentabilities, const double totalRentability) {
-	double randomNumber = double((rand() % 10000) / 10000); // number between 0.0000 and 1.0000
+//returns the index of the restaurant chosen with a probability proportional to the rentability
+int choseARestaurant(const map<int, double>& rentabilityMap, const double totalRentability) {
+	srand((unsigned int)time(NULL));
+	double randomNumber =double(rand() % 10000)/10000; // number between 0.0000 and 1.0000
 	double previousTreshhold = 0.0;
-	for (pair<int, double> rentability : rentabilities) {
-		double currentProba = rentability.second / totalRentability;
-		double currentTreshhold = previousTreshhold + currentProba;
+	for (const pair<int, double> & rentability : rentabilityMap) {
+			double restaurantProba = rentability.second/ totalRentability;
+			double currentTreshhold = previousTreshhold + restaurantProba; 
 
-		if (randomNumber < currentProba)
-			return rentability.first;
-	}
+			if( randomNumber >= previousTreshhold && randomNumber < currentTreshhold) {
+				return rentability.first;
+			}
+			previousTreshhold = currentTreshhold;
+		}
+	return rentabilityMap.size() -1 ; // last restaurant chosen with randomNumber = 1 -> 1 chance /10000 for this scenario
 }
 
-map<int, Restaurant> generateRestaurantMap(const vector<int[2]>& data) {
+
+map<int, Restaurant> generateRestaurantMap(vector<Restaurant> data){
 	map<int, Restaurant> dataRestaurantMap;
 
-	for (int i = 0; i < data.size(); i++) {
-		Restaurant restaurant = { *data[0], *data[1] };
-		auto myPair = make_pair(i, restaurant);
-		dataRestaurantMap.insert(myPair);
+	for(unsigned i = 0; i < data.size() ; i++ ){
+		//pair<int, Restaurant> restaurantPair = make_pair(i+1, data[i]); //Restaurant ids start at 1
+		dataRestaurantMap.emplace(i+1, data[i]);
 	}
 
 	return dataRestaurantMap;
 }
 
-void removeTooBigCapacities(map<int, Restaurant>& restaurants, int currentQuantity, int maxCapcity) {
-	int maxRemainingCapacity = maxCapcity - currentQuantity;
-	for (pair<int, Restaurant> restaurant : restaurants) {
-		if (restaurant.second.quantity > maxRemainingCapacity) {
-			restaurants.erase(restaurant.first);
-		}
-	}
-}
-
-//returns the totalRevenue and fills the chosenRestaurants vector
-double generateProbaGloutonRestaurants(vector<int[2]>& data, int maxCapacity, vector<int>& chosenRestaurants) {
-	map<int, Restaurant> remainingRestaurants = generateRestaurantMap(data);
-
-	double totalRevenue = 0.0;
-	double currentQuantity = 0.0;
-
-	while (remainingRestaurants.size() > 0) {
-		removeTooBigCapacities(remainingRestaurants, currentQuantity, maxCapacity);
-
-		map<int, double> rentabilities;
-		double totalRentability = computeRestaurantsRentability(remainingRestaurants, rentabilities);
-
-		int restaurentIndex = choseARestaurant(rentabilities, totalRentability);
-
-		totalRevenue += remainingRestaurants[restaurentIndex].revenue;
-		currentQuantity += remainingRestaurants[restaurentIndex].quantity;
-		remainingRestaurants.erase(restaurentIndex);
-	}
-
-	return totalRevenue;
-}
-
-
-
-
-struct Restaurant {
-	int revenue;
-	int quantity;
-};
-
-
-using namespace std;
-
-//returns the total rentability and fills the rentabilities vector
-double computeRestaurantsRentability(map<int, Restaurant>& restaurants, map<int, double> &rentabilities) {
-	double totalRentability = 0.0;
-	for (int i = 0; i < restaurants.size(); i++) {
-		double rentability = double(restaurants[i].revenue/ restaurants[i].quantity);
-		rentabilities.insert(pair<int, double>(i, rentability));
-		totalRentability += rentability;
-
-	}
-	return totalRentability;
-
-}
-
-//returns the index of the restaurant
-int choseARestaurant( map<int, double>& rentabilities, const double totalRentability) {
-	double randomNumber = double((rand() % 10000)/10000); // number between 0.0000 and 1.0000
-	double previousTreshhold = 0.0;
-	for (pair<int, double> rentability : rentabilities) {
-			double currentProba = rentability.second/ totalRentability;
-			double currentTreshhold = previousTreshhold + currentProba;
-
-			if (randomNumber < currentProba) {
-				return rentability.first;
-			}
-		}
-}
-
-
-map<int, Restaurant> generateRestaurantMap(const vector<int[2]>& data){
-	map<int, Restaurant> dataRestaurantMap;
-
-	for(int i = 0; i < data.size() ; i++ ){
-		Restaurant restaurant = { *data[0], *data[1] };
-		auto myPair = make_pair(i, restaurant);
-		dataRestaurantMap.insert(myPair);
-	}
-}
-
 
 void removeTooBigCapacities (map<int, Restaurant>& restaurants, int currentQuantity, int maxCapcity) {
+	vector<int> idsToRemove;
 	int maxRemainingCapacity = maxCapcity - currentQuantity;
-	for (pair<int, Restaurant> restaurant : restaurants) {
-		if (restaurant.second.quantity > maxRemainingCapacity) {
-			restaurants.erase(restaurant.first);
+	for (const pair<int, Restaurant> & restaurantPair : restaurants) {
+		if (restaurantPair.second.quantity > maxRemainingCapacity) { // having the same capcity as the remaining one is ok
+			idsToRemove.push_back(restaurantPair.first);
 		}
+	}
+
+	for(const int id : idsToRemove){
+		restaurants.erase(id);
 	}
 
 
 }
 
 //returns the totalRevenue and fills the chosenRestaurants vector
-double generateProbaGloutonRestaurants(vector<int[2]>& data, int maxCapacity, vector<int>& chosenRestaurants) {
+double alggoGloutonProba(vector<Restaurant>& data, int maxCapacity, vector<Restaurant>& chosenRestaurants) {
 	map<int, Restaurant> remainingRestaurants = generateRestaurantMap(data);
 
-	double totalRevenue = 0.0;
-	double currentQuantity = 0.0;
+	int totalRevenue = 0.0;
+	int currentQuantity = 0.0;
 
 
 
 	while(remainingRestaurants.size() > 0){
 		removeTooBigCapacities(remainingRestaurants, currentQuantity, maxCapacity);
 
-		map<int, double> rentabilities;
-		double totalRentability = computeRestaurantsRentability(remainingRestaurants, rentabilities);
+		map<int, double> rentabilityMap;
+		double totalRentability = computeRestaurantsRentability(remainingRestaurants, rentabilityMap);
 
-		int restaurentIndex = choseARestaurant(rentabilities, totalRentability);
+		int restaurentId= choseARestaurant(rentabilityMap, totalRentability);
 
-		totalRevenue += remainingRestaurants[restaurentIndex].revenue;
-		currentQuantity += remainingRestaurants[restaurentIndex].quantity;
-		remainingRestaurants.erase(restaurentIndex);
+		totalRevenue += remainingRestaurants[restaurentId].revenue;
+		currentQuantity += remainingRestaurants[restaurentId].quantity;
+		chosenRestaurants.push_back(remainingRestaurants[restaurentId]);
+		remainingRestaurants.erase(restaurentId);
 	}
 
 	return totalRevenue;
