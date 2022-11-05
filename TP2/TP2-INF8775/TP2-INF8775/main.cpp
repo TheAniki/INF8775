@@ -17,6 +17,16 @@ vector<int> split(const string& s, char delim) {
 	return result;
 }
 
+void displayChosenRestaurants(vector<Restaurant> restaurant, int revenue, int capacity){
+	cout << "============================================" << endl;
+	cout << "TOTAL REVENUE  : " << revenue << " - MAX CAPACITY : " << capacity << endl;
+	cout << "Chosen restaurants : " << endl;
+	for (const Restaurant restaurant : restaurant) {
+		cout << "restaurant " << restaurant.iD << " - revenue : " << restaurant.revenue << " - quantity :  " << restaurant.quantity << endl;
+	}
+	cout << "============================================" << endl;
+
+}
 
 
 int main() {
@@ -24,7 +34,9 @@ int main() {
 	// Read files.
 	ifstream file;
 
-	string fileName = ".\\exemplaires\\WC-100-100-01.txt";
+	string fileName = ".\\exemplaires\\WC-100-10-01.txt";
+
+
 	file.open(fileName, ios::in);
 	if (!file.is_open()) {
 		cout << "open file failed\n";
@@ -50,22 +62,20 @@ int main() {
 				capacite = v[0];
 		}
 	}	
-		
-	vector<Restaurant> chosenRestaurants;
-	double totalRevenue = alggoGloutonProba(restaurants, capacite, chosenRestaurants);
-	cout << "GLOUTON PROBA - TOTAL REVENUE  : " << totalRevenue << endl;
-	cout << "Chosen restaurants : " << endl;
-	for (const Restaurant restaurant : chosenRestaurants) {
-		cout << "restaurant " << "number..." << " - revenue : " << restaurant.revenue << " - quantity :  " << restaurant.quantity <<endl;
-	}
 	
+	// Algo glouton proba
+	cout << endl << "ALGO GLOUTON PROBA" << endl;
+	vector<Restaurant> restaurantsGloutonProba;
+	int totalRevenue = alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
+	displayChosenRestaurants(restaurantsGloutonProba, totalRevenue, capacite);
 	
+
 	
 	// Algo Dynamique
-	vector<Restaurant> sol = AlgoDyn(restaurants, capacite, nbRestaurants);
+	cout << endl<< "ALGO DYNAMIQUE" << endl;
 
-	for (auto s : sol) {
-		cout << s.iD << " " << s.revenue<<" " << s.quantity << endl;
-	}
+	vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants);
+	displayChosenRestaurants(restaurantsDyn, -1, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
+
 	return 0;
 }
