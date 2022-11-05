@@ -11,22 +11,33 @@
 #include <fstream>
 #include <filesystem>
 #include <sstream>
+#include <chrono>
 
 using namespace std;
 
 // Restaurant Struct
 struct Restaurant {
+	int iD;
 	int revenue;
 	int quantity;
 
 	// Default Ctor
 	Restaurant():
-		revenue(0),quantity(0){}
+		iD(0),revenue(0),quantity(0){}
 
 	// Restaurant Ctor
-	Restaurant(int r, int q)
-		: revenue(r), quantity(q) {}
+	Restaurant(int id, int r, int q)
+		:iD(id), revenue(r), quantity(q) {}
 };
 
+//struct Solution {
+//	vector<int> listeDeRestos;
+//	chrono::duration<double> dureeExec;
+//
+//	Solution():
+//		dureeExec(null){}
+//
+//	Solution(vector<int> listeDeRestos, chrono::duration<double> dureeExec):
+//};
 
 #endif  // !STRUCTS_H

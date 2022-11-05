@@ -43,9 +43,16 @@ int choseARestaurant(const map<int, double>& rentabilityMap, const double totalR
 map<int, Restaurant> generateRestaurantMap(vector<Restaurant> data){
 	map<int, Restaurant> dataRestaurantMap;
 
+<<<<<<< HEAD
 	for(unsigned i = 0; i < data.size() ; i++ ){
 		//pair<int, Restaurant> restaurantPair = make_pair(i+1, data[i]); //Restaurant ids start at 1
 		dataRestaurantMap.emplace(i+1, data[i]);
+=======
+	for (int i = 0; i < data.size(); i++) {
+		Restaurant restaurant = {i+1, *data[0], *data[1] };
+		auto myPair = make_pair(restaurant.iD, restaurant);
+		dataRestaurantMap.insert(myPair);
+>>>>>>> 8a80719c1e60dca36dbbc0d6533e72a7ee5f9359
 	}
 
 	return dataRestaurantMap;
