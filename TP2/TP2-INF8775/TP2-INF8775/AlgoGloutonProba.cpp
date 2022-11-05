@@ -1,26 +1,16 @@
+#include "Includes.h"
 #include "AlgoGloutonProba.h"
-#include "Structs.h"
-#include <vector> 
-#include <utility>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
-#include <iterator>
-#include <map>
-
-
-using namespace std;
 
 //returns the total rentability and fills the rentabilities vector
 double computeRestaurantsRentability(map<int, Restaurant>& restaurants, map<int, double>& rentabilities) {
 	double totalRentability = 0.0;
 	for (int i = 0; i < restaurants.size(); i++) {
 		double rentability = double(restaurants[i].revenue / restaurants[i].quantity);
-		rentabilities.insert(pair<int, double>(restaurants[i]., rentability));//TODO : get key
+		//rentabilities.insert(pair<int, double>(restaurants[i]., rentability)); //TODO : get key
 		totalRentability += rentability;
-
 	}
-	return totalRentability;
 
+	return totalRentability;
 }
 
 //returns the index of the restaurant
@@ -31,12 +21,10 @@ int choseARestaurant(map<int, double>& rentabilities, const double totalRentabil
 		double currentProba = rentability.second / totalRentability;
 		double currentTreshhold = previousTreshhold + currentProba;
 
-		if (randomNumber < currentProba) {
+		if (randomNumber < currentProba)
 			return rentability.first;
-		}
 	}
 }
-
 
 map<int, Restaurant> generateRestaurantMap(const vector<int[2]>& data) {
 	map<int, Restaurant> dataRestaurantMap;
@@ -46,8 +34,9 @@ map<int, Restaurant> generateRestaurantMap(const vector<int[2]>& data) {
 		auto myPair = make_pair(i, restaurant);
 		dataRestaurantMap.insert(myPair);
 	}
-}
 
+	return dataRestaurantMap;
+}
 
 void removeTooBigCapacities(map<int, Restaurant>& restaurants, int currentQuantity, int maxCapcity) {
 	int maxRemainingCapacity = maxCapcity - currentQuantity;
@@ -56,8 +45,6 @@ void removeTooBigCapacities(map<int, Restaurant>& restaurants, int currentQuanti
 			restaurants.erase(restaurant.first);
 		}
 	}
-
-
 }
 
 //returns the totalRevenue and fills the chosenRestaurants vector
@@ -66,8 +53,6 @@ double generateProbaGloutonRestaurants(vector<int[2]>& data, int maxCapacity, ve
 
 	double totalRevenue = 0.0;
 	double currentQuantity = 0.0;
-
-
 
 	while (remainingRestaurants.size() > 0) {
 		removeTooBigCapacities(remainingRestaurants, currentQuantity, maxCapacity);
@@ -83,7 +68,6 @@ double generateProbaGloutonRestaurants(vector<int[2]>& data, int maxCapacity, ve
 	}
 
 	return totalRevenue;
-
 }
 
 

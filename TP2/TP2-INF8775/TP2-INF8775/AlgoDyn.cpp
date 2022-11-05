@@ -1,2 +1,7 @@
+#include "Includes.h"
 #include "AlgoDyn.h"
-#include "Structs.h"
+
+
+void AlgoDyn(map<int,Restaurant> restaurants) {
+
+}
