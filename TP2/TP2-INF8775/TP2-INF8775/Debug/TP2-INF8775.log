@@ -1,3 +1,10 @@
-﻿  main.cpp
+﻿  AlgoGloutonProba.cpp
   The contents of <filesystem> are available only with C++17 or later.
+C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\TP2-INF8775\AlgoGloutonProba.cpp(7,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\TP2-INF8775\AlgoGloutonProba.cpp(33,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\TP2-INF8775\AlgoGloutonProba.cpp(60,48): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  main.cpp
+  The contents of <filesystem> are available only with C++17 or later.
+  Generating Code...
+C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\TP2-INF8775\AlgoGloutonProba.cpp(27): warning C4715: 'choseARestaurant': not all control paths return a value
   TP2-INF8775.vcxproj -> C:\Users\ouass\Desktop\INF8775-A22\INF8775\TP2\TP2-INF8775\Debug\TP2-INF8775.exe
