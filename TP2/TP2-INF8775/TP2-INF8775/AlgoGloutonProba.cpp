@@ -30,8 +30,8 @@ map<int, Restaurant> generateRestaurantMap(const vector<int[2]>& data) {
 	map<int, Restaurant> dataRestaurantMap;
 
 	for (int i = 0; i < data.size(); i++) {
-		Restaurant restaurant = { *data[0], *data[1] };
-		auto myPair = make_pair(i, restaurant);
+		Restaurant restaurant = {i+1, *data[0], *data[1] };
+		auto myPair = make_pair(restaurant.iD, restaurant);
 		dataRestaurantMap.insert(myPair);
 	}
 
