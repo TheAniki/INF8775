@@ -4,23 +4,36 @@
 
 vector<Restaurant> AlgoDyn(vector<Restaurant> restaurants, int capacite , int nbRestaurants) {
 
-	// TODO: start time
-	vector<vector<int>> D = InitializeTable(restaurants, capacite);
 	vector<Restaurant> solution;
+	// TODO: start time
+	vector<vector<int>> D = InitializeTable(restaurants, capacite);	
 	
 	// On veux maximiser en partant du dernier element.
 	for (int i = nbRestaurants - 1; i >= 0; i--)
-	{		
-		if (capacite - restaurants[i].quantity >= 0) {
-			solution.push_back(restaurants[i]);
-			capacite -= restaurants[i].quantity;
-		}		
+	{	
 		if (capacite <= 0)
 			break;
+		if (i == 0 && capacite - restaurants[i].quantity >= 0) {
+			Ajouter(solution, capacite, restaurants[i]);
+
+			return solution;
+		}
+
+		if (D[i][capacite] != D[i - 1][capacite]) {
+			if (capacite - restaurants[i].quantity >= 0) {
+				Ajouter(solution, capacite, restaurants[i]);
+			}			
+		}
 	}
 	// cout << "capacite restante: " << capacite << endl;
-	// TODO: end time
+	// TODO: end time.
 	return solution;
+}
+
+// Ajoute un restaurant a la solution.
+void Ajouter(vector<Restaurant>& solution, int& capacite, Restaurant resto) {
+	solution.push_back(resto);
+	capacite -= resto.quantity;
 }
 
 vector<vector<int>> InitializeTable(vector<Restaurant> restaurants, int capacite) {

@@ -21,7 +21,7 @@ int main() {
 	// Read files.
 	ifstream file;
 
-	string fileName = ".\\exemplaires\\WC-100-100-01.txt";
+	string fileName = ".\\exemplaires\\WC-100-10-01.txt";
 	file.open(fileName, ios::in);
 	if (!file.is_open()) {
 		cout << "open file failed\n";
