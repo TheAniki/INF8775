@@ -2,7 +2,7 @@
 #include "AlgoDyn.h"
 
 
-vector<Restaurant> AlgoDyn(vector<Restaurant> restaurants, int capacite , int nbRestaurants) {
+vector<Restaurant> AlgoDyn(vector<Restaurant> restaurants, int capacite , int nbRestaurants, int& revenue) {
 
 	vector<Restaurant> solution;
 	// TODO: start time
@@ -14,14 +14,14 @@ vector<Restaurant> AlgoDyn(vector<Restaurant> restaurants, int capacite , int nb
 		if (capacite <= 0)
 			break;
 		if (i == 0 && capacite - restaurants[i].quantity >= 0) {
-			Ajouter(solution, capacite, restaurants[i]);
+			Ajouter(solution, capacite, restaurants[i],revenue);
 
 			return solution;
 		}
 
 		if (D[i][capacite] != D[i - 1][capacite]) {
 			if (capacite - restaurants[i].quantity >= 0) {
-				Ajouter(solution, capacite, restaurants[i]);
+				Ajouter(solution, capacite, restaurants[i], revenue);
 			}			
 		}
 	}
@@ -31,9 +31,10 @@ vector<Restaurant> AlgoDyn(vector<Restaurant> restaurants, int capacite , int nb
 }
 
 // Ajoute un restaurant a la solution.
-void Ajouter(vector<Restaurant>& solution, int& capacite, Restaurant resto) {
+void Ajouter(vector<Restaurant>& solution, int& capacite, Restaurant resto, int& revenue) {
 	solution.push_back(resto);
 	capacite -= resto.quantity;
+	revenue += resto.revenue;
 }
 
 vector<vector<int>> InitializeTable(vector<Restaurant> restaurants, int capacite) {

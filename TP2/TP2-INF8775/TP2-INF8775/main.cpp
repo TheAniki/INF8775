@@ -71,9 +71,9 @@ int main() {
 	
 	// Algo Dynamique
 	cout << endl<< "ALGO DYNAMIQUE" << endl;
-
-	vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants);
-	displayChosenRestaurants(restaurantsDyn, -1, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
+	int totalRevenueDyn = 0;
+	vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants, totalRevenueDyn);
+	displayChosenRestaurants(restaurantsDyn, totalRevenueDyn, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
 
 	return 0;
 }

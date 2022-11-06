@@ -30,14 +30,4 @@ struct Restaurant {
 		:iD(id), revenue(r), quantity(q) {}
 };
 
-//struct Solution {
-//	vector<int> listeDeRestos;
-//	chrono::duration<double> dureeExec;
-//
-//	Solution():
-//		dureeExec(null){}
-//
-//	Solution(vector<int> listeDeRestos, chrono::duration<double> dureeExec):
-//};
-
-#endif  // !STRUCTS_H
+#endif  // !INCLUDES_H
