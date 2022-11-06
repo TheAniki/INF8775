@@ -1,4 +1,6 @@
 #include "Includes.h"
+#include "AlgoGloutonProba.h"
+
 #include "AlgoDyn.h"
 
 // Split method used to split a string containing numbers
@@ -13,6 +15,17 @@ vector<int> split(const string& s, char delim) {
 	}
 
 	return result;
+}
+
+void displayChosenRestaurants(vector<Restaurant> restaurant, int revenue, int capacity){
+	cout << "============================================" << endl;
+	cout << "TOTAL REVENUE  : " << revenue << " - MAX CAPACITY : " << capacity << endl;
+	cout << "Chosen restaurants : " << endl;
+	for (const Restaurant restaurant : restaurant) {
+		cout << "restaurant " << restaurant.iD << " - revenue : " << restaurant.revenue << " - quantity :  " << restaurant.quantity << endl;
+	}
+	cout << "============================================" << endl;
+
 }
 
 
@@ -46,13 +59,21 @@ int main() {
 			else
 				capacite = v[0];
 		}
-	}
+	}	
+	
+	// Algo glouton proba
+	cout << endl << "ALGO GLOUTON PROBA" << endl;
+	vector<Restaurant> restaurantsGloutonProba;
+	int totalRevenue = alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
+	displayChosenRestaurants(restaurantsGloutonProba, totalRevenue, capacite);
+	
+
 	
 	// Algo Dynamique
-	vector<Restaurant> sol = AlgoDyn(restaurants, capacite, nbRestaurants);
+	cout << endl<< "ALGO DYNAMIQUE" << endl;
 
-	for (auto s : sol) {
-		cout << s.iD << " " << s.revenue<<" " << s.quantity << endl;
-	}
+	vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants);
+	displayChosenRestaurants(restaurantsDyn, -1, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
+
 	return 0;
 }

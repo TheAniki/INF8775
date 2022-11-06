@@ -1,10 +1,14 @@
 #ifndef ALGOGLOUTONPROBA_H
 #define ALGOGLOUTONPROBA_H
 
-double computeRestaurantsRentability(map<int, Restaurant>& restaurants, map<int, double>& rentabilities);
-int choseARestaurant(map<int, double>& rentabilities, const double totalRentability);
+
+double computeRestaurantsRentability(const map<int, Restaurant>& restaurantMap, map<int, double>& rentabilityMap);
+int choseARestaurant(const map<int, double>& rentabilityMap, const double totalRentability);
+map<int, Restaurant> generateRestaurantMap(vector<Restaurant> data);
 void removeTooBigCapacities(map<int, Restaurant>& restaurants, int currentQuantity, int maxCapcity);
-double generateProbaGloutonRestaurants(vector<int[2]>& data, int maxCapacity, vector<int>& chosenRestaurants);
-map<int, Restaurant> generateRestaurantMap(const vector<int[2]>& data);
+int alggoGloutonProba(vector<Restaurant>& data, int maxCapacity, vector<Restaurant>& chosenRestaurants);
+
+
+
 
 #endif  // !ALGOGLOUTONPROBA_H
