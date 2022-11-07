@@ -29,18 +29,34 @@ void displayChosenRestaurants(vector<Restaurant> restaurant, int revenue, int ca
 }
 
 
-int main() {
+int main(int argc, const char *argv[]) {
+
+	// Arguments parsing.
+	string fileName;
+    bool print = false;
+	bool time = false;
+	string algo;
+    for (int i = 1; i < argc-1; i++)
+    {
+        if (!strcmp(argv[i], "-e"))
+            fileName = argv[i + 1];
+        if (!strcmp(argv[i+1], "-p"))
+            print = true;
+		if (!strcmp(argv[i+1],"-t"))
+			time = true;
+		if (!(strcmp(argv[i],"-a")))
+			algo = argv[i+1];		
+    }
 
 	// Read files.
 	ifstream file;
 
-	string fileName = "./exemplaires/WC-100-10-01.txt";
 	file.open(fileName, ios::in);
 	if (!file.is_open()) {
 		cout << "open file failed\n";
 		return 0;
 	}
-	cout << "From exemplaire " + fileName << endl;
+	//cout << "From exemplaire " + fileName << endl;
 
 	// Restaurants data.
 	vector<Restaurant> restaurants;
@@ -60,20 +76,40 @@ int main() {
 				capacite = v[0];
 		}
 	}	
-	
-	// Algo glouton proba
-	cout << endl << "ALGO GLOUTON PROBA" << endl;
-	vector<Restaurant> restaurantsGloutonProba;
-	int totalRevenue = alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
-	displayChosenRestaurants(restaurantsGloutonProba, totalRevenue, capacite);
-	
 
-	
-	// Algo Dynamique
-	cout << endl<< "ALGO DYNAMIQUE" << endl;
-	int totalRevenueDyn = 0;
-	vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants, totalRevenueDyn);
-	displayChosenRestaurants(restaurantsDyn, totalRevenueDyn, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
+	// Algo glouton proba
+	if(algo == "glouton"){
+		
+		cout << endl << "ALGO GLOUTON PROBA" << endl;
+		vector<Restaurant> restaurantsGloutonProba;
+		int totalRevenue = alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
+		if(print)
+			displayChosenRestaurants(restaurantsGloutonProba, totalRevenue, capacite);
+		if(time)
+			cout << time << endl; // TODO : Add exec time;
+		return 0;
+	}
+
+	// Algo glouton proba
+	if(algo == "progdyn"){
+		// Algo Dynamique
+		cout << endl<< "ALGO DYNAMIQUE" << endl;
+		int totalRevenueDyn = 0;
+		vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants, totalRevenueDyn);
+		if(print)
+			displayChosenRestaurants(restaurantsDyn, totalRevenueDyn, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
+		if(time)
+			cout << time << endl; // TODO : Add exec time;
+		return 0;
+	}
+
+	if(algo == "local"){
+		cout << endl<< "Amelioration Locale" << endl;
+		if(print)
+			cout<<"print local"<<endl; //TODO : mettre l algo ici! ? 
+		if(time)
+			cout << time << endl; // TODO : Add exec time;
+	}
 
 	return 0;
 }

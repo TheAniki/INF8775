@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <sstream>
 #include <chrono>
+#include <cstring>
 
 using namespace std;
 
