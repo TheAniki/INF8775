@@ -28,7 +28,6 @@ void displayChosenRestaurants(vector<Restaurant> restaurant, int revenue, int ca
 
 }
 
-
 int main(int argc, const char *argv[]) {
 
 	// Arguments parsing.
