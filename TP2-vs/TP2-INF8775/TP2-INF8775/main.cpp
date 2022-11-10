@@ -2,7 +2,7 @@
 #include "AlgoGloutonProba.h"
 
 #include "AlgoDyn.h"
-
+#include <filesystem>
 // Split method used to split a string containing numbers
 // and returns a vector of ints.
 vector<int> split(const string& s, char delim) {

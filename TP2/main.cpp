@@ -47,6 +47,7 @@ int main(int argc, const char *argv[]) {
 			algo = argv[i+1];		
     }
 
+	
 	// Read files.
 	ifstream file;
 
@@ -55,8 +56,7 @@ int main(int argc, const char *argv[]) {
 		cout << "open file failed\n";
 		return 0;
 	}
-	//cout << "From exemplaire " + fileName << endl;
-
+	
 	// Restaurants data.
 	vector<Restaurant> restaurants;
 	int nbRestaurants = 0;
@@ -76,16 +76,22 @@ int main(int argc, const char *argv[]) {
 		}
 	}	
 
+
 	// Algo glouton proba
 	if(algo == "glouton"){
 		
 		cout << endl << "ALGO GLOUTON PROBA" << endl;
 		vector<Restaurant> restaurantsGloutonProba;
+		// start time
+		auto start = chrono::high_resolution_clock::now();
 		int totalRevenue = alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
+		auto stop = chrono::high_resolution_clock::now();
+		auto duration = stop-start;
+		// end time
 		if(print)
 			displayChosenRestaurants(restaurantsGloutonProba, totalRevenue, capacite);
 		if(time)
-			cout << time << endl; // TODO : Add exec time;
+			cout << duration.count() << " ns"<< endl;
 		return 0;
 	}
 
@@ -94,11 +100,15 @@ int main(int argc, const char *argv[]) {
 		// Algo Dynamique
 		cout << endl<< "ALGO DYNAMIQUE" << endl;
 		int totalRevenueDyn = 0;
+		// start time
+		auto start = chrono::high_resolution_clock::now();
 		vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants, totalRevenueDyn);
+		auto stop = chrono::high_resolution_clock::now();
+		auto duration = stop-start;
 		if(print)
 			displayChosenRestaurants(restaurantsDyn, totalRevenueDyn, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
 		if(time)
-			cout << time << endl; // TODO : Add exec time;
+			cout << duration.count() << " ns"<< endl;
 		return 0;
 	}
 
@@ -107,7 +117,7 @@ int main(int argc, const char *argv[]) {
 		if(print)
 			cout<<"print local"<<endl; //TODO : mettre l algo ici! ? 
 		if(time)
-			cout << time << endl; // TODO : Add exec time;
+			cout << time << " ns"<< endl;
 	}
 
 	return 0;
