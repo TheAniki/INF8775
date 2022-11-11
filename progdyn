@@ -1,0 +1,453 @@
+./exemplaires/WC-100-10-01.txt
+
+ALGO DYNAMIQUE
+0.012018 ns
+===================
+./exemplaires/WC-100-10-02.txt
+
+ALGO DYNAMIQUE
+0.012203 ns
+===================
+./exemplaires/WC-100-10-03.txt
+
+ALGO DYNAMIQUE
+0.014097 ns
+===================
+./exemplaires/WC-100-10-04.txt
+
+ALGO DYNAMIQUE
+0.017033 ns
+===================
+./exemplaires/WC-100-10-05.txt
+
+ALGO DYNAMIQUE
+0.019526 ns
+===================
+./exemplaires/WC-100-10-06.txt
+
+ALGO DYNAMIQUE
+0.030194 ns
+===================
+./exemplaires/WC-100-10-07.txt
+
+ALGO DYNAMIQUE
+0.031381 ns
+===================
+./exemplaires/WC-100-10-08.txt
+
+ALGO DYNAMIQUE
+0.033493 ns
+===================
+./exemplaires/WC-100-10-09.txt
+
+ALGO DYNAMIQUE
+0.044959 ns
+===================
+./exemplaires/WC-100-10-10.txt
+
+ALGO DYNAMIQUE
+0.065607 ns
+===================
+./exemplaires/WC-100-100-01.txt
+
+ALGO DYNAMIQUE
+0.055274 ns
+===================
+./exemplaires/WC-100-100-02.txt
+
+ALGO DYNAMIQUE
+0.061459 ns
+===================
+./exemplaires/WC-100-100-03.txt
+
+ALGO DYNAMIQUE
+0.088356 ns
+===================
+./exemplaires/WC-100-100-04.txt
+
+ALGO DYNAMIQUE
+0.083252 ns
+===================
+./exemplaires/WC-100-100-05.txt
+
+ALGO DYNAMIQUE
+0.105536 ns
+===================
+./exemplaires/WC-100-100-06.txt
+
+ALGO DYNAMIQUE
+0.115638 ns
+===================
+./exemplaires/WC-100-100-07.txt
+
+ALGO DYNAMIQUE
+0.123094 ns
+===================
+./exemplaires/WC-100-100-08.txt
+
+ALGO DYNAMIQUE
+0.160511 ns
+===================
+./exemplaires/WC-100-100-09.txt
+
+ALGO DYNAMIQUE
+0.16496 ns
+===================
+./exemplaires/WC-100-100-10.txt
+
+ALGO DYNAMIQUE
+0.184048 ns
+===================
+./exemplaires/WC-100-1000-01.txt
+
+ALGO DYNAMIQUE
+0.294323 ns
+===================
+./exemplaires/WC-100-1000-02.txt
+
+ALGO DYNAMIQUE
+0.354353 ns
+===================
+./exemplaires/WC-100-1000-03.txt
+
+ALGO DYNAMIQUE
+0.483542 ns
+===================
+./exemplaires/WC-100-1000-04.txt
+
+ALGO DYNAMIQUE
+0.633311 ns
+===================
+./exemplaires/WC-100-1000-05.txt
+
+ALGO DYNAMIQUE
+0.781284 ns
+===================
+./exemplaires/WC-100-1000-06.txt
+
+ALGO DYNAMIQUE
+0.949458 ns
+===================
+./exemplaires/WC-100-1000-07.txt
+
+ALGO DYNAMIQUE
+1.02065 ns
+===================
+./exemplaires/WC-100-1000-08.txt
+
+ALGO DYNAMIQUE
+1.20536 ns
+===================
+./exemplaires/WC-100-1000-09.txt
+
+ALGO DYNAMIQUE
+1.54218 ns
+===================
+./exemplaires/WC-100-1000-10.txt
+
+ALGO DYNAMIQUE
+1.70738 ns
+===================
+1000:
+./exemplaires/WC-1000-10-01.txt
+
+ALGO DYNAMIQUE
+0.307101 ns
+===================
+./exemplaires/WC-1000-10-02.txt
+
+ALGO DYNAMIQUE
+0.474314 ns
+===================
+./exemplaires/WC-1000-10-03.txt
+
+ALGO DYNAMIQUE
+0.601768 ns
+===================
+./exemplaires/WC-1000-10-04.txt
+
+ALGO DYNAMIQUE
+0.753305 ns
+===================
+./exemplaires/WC-1000-10-05.txt
+
+ALGO DYNAMIQUE
+0.990788 ns
+===================
+./exemplaires/WC-1000-10-06.txt
+
+ALGO DYNAMIQUE
+1.06552 ns
+===================
+./exemplaires/WC-1000-10-07.txt
+
+ALGO DYNAMIQUE
+1.22075 ns
+===================
+./exemplaires/WC-1000-10-08.txt
+
+ALGO DYNAMIQUE
+1.39148 ns
+===================
+./exemplaires/WC-1000-10-09.txt
+
+ALGO DYNAMIQUE
+1.58024 ns
+===================
+./exemplaires/WC-1000-10-10.txt
+
+ALGO DYNAMIQUE
+1.9133 ns
+===================
+./exemplaires/WC-1000-100-01.txt
+
+ALGO DYNAMIQUE
+1.51861 ns
+===================
+./exemplaires/WC-1000-100-02.txt
+
+ALGO DYNAMIQUE
+3.56264 ns
+===================
+./exemplaires/WC-1000-100-03.txt
+
+ALGO DYNAMIQUE
+4.74577 ns
+===================
+./exemplaires/WC-1000-100-04.txt
+
+ALGO DYNAMIQUE
+6.25677 ns
+===================
+./exemplaires/WC-1000-100-05.txt
+
+ALGO DYNAMIQUE
+8.76514 ns
+===================
+./exemplaires/WC-1000-100-06.txt
+
+ALGO DYNAMIQUE
+9.99906 ns
+===================
+./exemplaires/WC-1000-100-07.txt
+
+ALGO DYNAMIQUE
+11.55 ns
+===================
+./exemplaires/WC-1000-100-08.txt
+
+ALGO DYNAMIQUE
+13.6577 ns
+===================
+./exemplaires/WC-1000-100-09.txt
+
+ALGO DYNAMIQUE
+15.7142 ns
+===================
+./exemplaires/WC-1000-100-10.txt
+
+ALGO DYNAMIQUE
+17.9226 ns
+===================
+./exemplaires/WC-1000-1000-01.txt
+
+ALGO DYNAMIQUE
+16.9756 ns
+===================
+./exemplaires/WC-1000-1000-02.txt
+
+ALGO DYNAMIQUE
+33.5153 ns
+===================
+./exemplaires/WC-1000-1000-03.txt
+
+ALGO DYNAMIQUE
+46.5204 ns
+===================
+./exemplaires/WC-1000-1000-04.txt
+
+ALGO DYNAMIQUE
+64.6313 ns
+===================
+./exemplaires/WC-1000-1000-05.txt
+
+ALGO DYNAMIQUE
+77.5643 ns
+===================
+./exemplaires/WC-1000-1000-06.txt
+
+ALGO DYNAMIQUE
+93.8205 ns
+===================
+./exemplaires/WC-1000-1000-07.txt
+
+ALGO DYNAMIQUE
+116.358 ns
+===================
+./exemplaires/WC-1000-1000-08.txt
+
+ALGO DYNAMIQUE
+122.289 ns
+===================
+./exemplaires/WC-1000-1000-09.txt
+
+ALGO DYNAMIQUE
+144.124 ns
+===================
+./exemplaires/WC-1000-1000-10.txt
+
+ALGO DYNAMIQUE
+152.742 ns
+===================
+10000:
+./exemplaires/WC-10000-10-01.txt
+
+ALGO DYNAMIQUE
+19.1759 ns
+===================
+./exemplaires/WC-10000-10-02.txt
+
+ALGO DYNAMIQUE
+37.3768 ns
+===================
+./exemplaires/WC-10000-10-03.txt
+
+ALGO DYNAMIQUE
+67.0294 ns
+===================
+./exemplaires/WC-10000-10-04.txt
+
+ALGO DYNAMIQUE
+69.7839 ns
+===================
+./exemplaires/WC-10000-10-05.txt
+
+ALGO DYNAMIQUE
+88.4889 ns
+===================
+./exemplaires/WC-10000-10-06.txt
+
+ALGO DYNAMIQUE
+107.622 ns
+===================
+./exemplaires/WC-10000-10-07.txt
+
+ALGO DYNAMIQUE
+124.416 ns
+===================
+./exemplaires/WC-10000-10-08.txt
+
+ALGO DYNAMIQUE
+138.722 ns
+===================
+./exemplaires/WC-10000-10-09.txt
+
+ALGO DYNAMIQUE
+156.152 ns
+===================
+./exemplaires/WC-10000-10-10.txt
+
+ALGO DYNAMIQUE
+170.795 ns
+===================
+./exemplaires/WC-10000-100-01.txt
+
+ALGO DYNAMIQUE
+158.415 ns
+===================
+./exemplaires/WC-10000-100-02.txt
+
+ALGO DYNAMIQUE
+305.859 ns
+===================
+./exemplaires/WC-10000-100-03.txt
+
+ALGO DYNAMIQUE
+459.79 ns
+===================
+./exemplaires/WC-10000-100-04.txt
+
+ALGO DYNAMIQUE
+618.872 ns
+===================
+./exemplaires/WC-10000-100-05.txt
+
+ALGO DYNAMIQUE
+762.147 ns
+===================
+./exemplaires/WC-10000-100-06.txt
+
+ALGO DYNAMIQUE
+924.596 ns
+===================
+./exemplaires/WC-10000-100-07.txt
+
+ALGO DYNAMIQUE
+1101.56 ns
+===================
+./exemplaires/WC-10000-100-08.txt
+
+ALGO DYNAMIQUE
+1248.92 ns
+===================
+./exemplaires/WC-10000-100-09.txt
+
+ALGO DYNAMIQUE
+1421.82 ns
+===================
+./exemplaires/WC-10000-100-10.txt
+
+ALGO DYNAMIQUE
+1579.99 ns
+===================
+./exemplaires/WC-10000-1000-01.txt
+
+ALGO DYNAMIQUE
+1566.02 ns
+===================
+./exemplaires/WC-10000-1000-02.txt
+
+ALGO DYNAMIQUE
+3053.22 ns
+===================
+./exemplaires/WC-10000-1000-03.txt
+
+ALGO DYNAMIQUE
+4467.24 ns
+===================
+./exemplaires/WC-10000-1000-04.txt
+
+ALGO DYNAMIQUE
+5969.54 ns
+===================
+./exemplaires/WC-10000-1000-05.txt
+
+ALGO DYNAMIQUE
+7460.64 ns
+===================
+./exemplaires/WC-10000-1000-06.txt
+
+ALGO DYNAMIQUE
+9469.03 ns
+===================
+./exemplaires/WC-10000-1000-07.txt
+
+ALGO DYNAMIQUE
+11009.8 ns
+===================
+./exemplaires/WC-10000-1000-08.txt
+
+ALGO DYNAMIQUE
+28342.6 ns
+===================
+./exemplaires/WC-10000-1000-09.txt
+
+ALGO DYNAMIQUE
+69663.7 ns
+===================
+./exemplaires/WC-10000-1000-09.txt
+
+ALGO DYNAMIQUE
+132392 ns
+
+

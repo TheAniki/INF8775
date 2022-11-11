@@ -1,0 +1,452 @@
+./exemplaires/WC-100-10-01.txt
+
+ALGO GLOUTON PROBA
+0.061772 ns
+===================
+./exemplaires/WC-100-10-02.txt
+
+ALGO GLOUTON PROBA
+0.057319 ns
+===================
+./exemplaires/WC-100-10-03.txt
+
+ALGO GLOUTON PROBA
+0.093033 ns
+===================
+./exemplaires/WC-100-10-04.txt
+
+ALGO GLOUTON PROBA
+0.08503 ns
+===================
+./exemplaires/WC-100-10-05.txt
+
+ALGO GLOUTON PROBA
+0.135452 ns
+===================
+./exemplaires/WC-100-10-06.txt
+
+ALGO GLOUTON PROBA
+0.179156 ns
+===================
+./exemplaires/WC-100-10-07.txt
+
+ALGO GLOUTON PROBA
+0.10564 ns
+===================
+./exemplaires/WC-100-10-08.txt
+
+ALGO GLOUTON PROBA
+0.095252 ns
+===================
+./exemplaires/WC-100-10-09.txt
+
+ALGO GLOUTON PROBA
+0.104701 ns
+===================
+./exemplaires/WC-100-10-10.txt
+
+ALGO GLOUTON PROBA
+0.10361 ns
+===================
+./exemplaires/WC-100-100-01.txt
+
+ALGO GLOUTON PROBA
+0.044838 ns
+===================
+./exemplaires/WC-100-100-02.txt
+
+ALGO GLOUTON PROBA
+0.059844 ns
+===================
+./exemplaires/WC-100-100-03.txt
+
+ALGO GLOUTON PROBA
+0.109847 ns
+===================
+./exemplaires/WC-100-100-04.txt
+
+ALGO GLOUTON PROBA
+0.093683 ns
+===================
+./exemplaires/WC-100-100-05.txt
+
+ALGO GLOUTON PROBA
+0.084736 ns
+===================
+./exemplaires/WC-100-100-06.txt
+
+ALGO GLOUTON PROBA
+0.098441 ns
+===================
+./exemplaires/WC-100-100-07.txt
+
+ALGO GLOUTON PROBA
+0.116939 ns
+===================
+./exemplaires/WC-100-100-08.txt
+
+ALGO GLOUTON PROBA
+0.10185 ns
+===================
+./exemplaires/WC-100-100-09.txt
+
+ALGO GLOUTON PROBA
+0.108098 ns
+===================
+./exemplaires/WC-100-100-10.txt
+
+ALGO GLOUTON PROBA
+0.136474 ns
+===================
+./exemplaires/WC-100-1000-01.txt
+
+ALGO GLOUTON PROBA
+0.065701 ns
+===================
+./exemplaires/WC-100-1000-02.txt
+
+ALGO GLOUTON PROBA
+0.066073 ns
+===================
+./exemplaires/WC-100-1000-03.txt
+
+ALGO GLOUTON PROBA
+0.088644 ns
+===================
+./exemplaires/WC-100-1000-04.txt
+
+ALGO GLOUTON PROBA
+0.092027 ns
+===================
+./exemplaires/WC-100-1000-05.txt
+
+ALGO GLOUTON PROBA
+0.092296 ns
+===================
+./exemplaires/WC-100-1000-06.txt
+
+ALGO GLOUTON PROBA
+0.097305 ns
+===================
+./exemplaires/WC-100-1000-07.txt
+
+ALGO GLOUTON PROBA
+0.104602 ns
+===================
+./exemplaires/WC-100-1000-08.txt
+
+ALGO GLOUTON PROBA
+0.089763 ns
+===================
+./exemplaires/WC-100-1000-09.txt
+
+ALGO GLOUTON PROBA
+0.117687 ns
+===================
+./exemplaires/WC-100-1000-10.txt
+
+ALGO GLOUTON PROBA
+0.139604 ns
+===================
+1000:
+./exemplaires/WC-1000-10-01.txt
+
+ALGO GLOUTON PROBA
+0.862333 ns
+===================
+./exemplaires/WC-1000-10-02.txt
+
+ALGO GLOUTON PROBA
+1.72958 ns
+===================
+./exemplaires/WC-1000-10-03.txt
+
+ALGO GLOUTON PROBA
+2.34674 ns
+===================
+./exemplaires/WC-1000-10-04.txt
+
+ALGO GLOUTON PROBA
+2.64804 ns
+===================
+./exemplaires/WC-1000-10-05.txt
+
+ALGO GLOUTON PROBA
+3.52438 ns
+===================
+./exemplaires/WC-1000-10-06.txt
+
+ALGO GLOUTON PROBA
+3.94031 ns
+===================
+./exemplaires/WC-1000-10-07.txt
+
+ALGO GLOUTON PROBA
+6.16277 ns
+===================
+./exemplaires/WC-1000-10-08.txt
+
+ALGO GLOUTON PROBA
+6.10476 ns
+===================
+./exemplaires/WC-1000-10-09.txt
+
+ALGO GLOUTON PROBA
+7.72262 ns
+===================
+./exemplaires/WC-1000-10-10.txt
+
+ALGO GLOUTON PROBA
+6.76669 ns
+===================
+./exemplaires/WC-1000-100-01.txt
+
+ALGO GLOUTON PROBA
+1.17364 ns
+===================
+./exemplaires/WC-1000-100-02.txt
+
+ALGO GLOUTON PROBA
+1.85222 ns
+===================
+./exemplaires/WC-1000-100-03.txt
+
+ALGO GLOUTON PROBA
+2.4542 ns
+===================
+./exemplaires/WC-1000-100-04.txt
+
+ALGO GLOUTON PROBA
+2.83835 ns
+===================
+./exemplaires/WC-1000-100-05.txt
+
+ALGO GLOUTON PROBA
+4.13 ns
+===================
+./exemplaires/WC-1000-100-06.txt
+
+ALGO GLOUTON PROBA
+4.59214 ns
+===================
+./exemplaires/WC-1000-100-07.txt
+
+ALGO GLOUTON PROBA
+5.57573 ns
+===================
+./exemplaires/WC-1000-100-08.txt
+
+ALGO GLOUTON PROBA
+6.83951 ns
+===================
+./exemplaires/WC-1000-100-09.txt
+
+ALGO GLOUTON PROBA
+6.25547 ns
+===================
+./exemplaires/WC-1000-100-10.txt
+
+ALGO GLOUTON PROBA
+8.97497 ns
+===================
+./exemplaires/WC-1000-1000-01.txt
+
+ALGO GLOUTON PROBA
+0.848885 ns
+===================
+./exemplaires/WC-1000-1000-02.txt
+
+ALGO GLOUTON PROBA
+1.45562 ns
+===================
+./exemplaires/WC-1000-1000-03.txt
+
+ALGO GLOUTON PROBA
+2.19182 ns
+===================
+./exemplaires/WC-1000-1000-04.txt
+
+ALGO GLOUTON PROBA
+3.16672 ns
+===================
+./exemplaires/WC-1000-1000-05.txt
+
+ALGO GLOUTON PROBA
+4.22832 ns
+===================
+./exemplaires/WC-1000-1000-06.txt
+
+ALGO GLOUTON PROBA
+4.56511 ns
+===================
+./exemplaires/WC-1000-1000-07.txt
+
+ALGO GLOUTON PROBA
+4.67841 ns
+===================
+./exemplaires/WC-1000-1000-08.txt
+
+ALGO GLOUTON PROBA
+5.93327 ns
+===================
+./exemplaires/WC-1000-1000-09.txt
+
+ALGO GLOUTON PROBA
+6.64414 ns
+===================
+./exemplaires/WC-1000-1000-10.txt
+
+ALGO GLOUTON PROBA
+6.96681 ns
+===================
+10000:
+./exemplaires/WC-10000-10-01.txt
+
+ALGO GLOUTON PROBA
+113.598 ns
+===================
+./exemplaires/WC-10000-10-02.txt
+
+ALGO GLOUTON PROBA
+212.384 ns
+===================
+./exemplaires/WC-10000-10-03.txt
+
+ALGO GLOUTON PROBA
+330.373 ns
+===================
+./exemplaires/WC-10000-10-04.txt
+
+ALGO GLOUTON PROBA
+420.832 ns
+===================
+./exemplaires/WC-10000-10-05.txt
+
+ALGO GLOUTON PROBA
+520.994 ns
+===================
+./exemplaires/WC-10000-10-06.txt
+
+ALGO GLOUTON PROBA
+606.635 ns
+===================
+./exemplaires/WC-10000-10-07.txt
+
+ALGO GLOUTON PROBA
+704.334 ns
+===================
+./exemplaires/WC-10000-10-08.txt
+
+ALGO GLOUTON PROBA
+778.623 ns
+===================
+./exemplaires/WC-10000-10-09.txt
+
+ALGO GLOUTON PROBA
+864.312 ns
+===================
+./exemplaires/WC-10000-10-10.txt
+
+ALGO GLOUTON PROBA
+988.999 ns
+===================
+./exemplaires/WC-10000-100-01.txt
+
+ALGO GLOUTON PROBA
+123.362 ns
+===================
+./exemplaires/WC-10000-100-02.txt
+
+ALGO GLOUTON PROBA
+218.404 ns
+===================
+./exemplaires/WC-10000-100-03.txt
+
+ALGO GLOUTON PROBA
+327.835 ns
+===================
+./exemplaires/WC-10000-100-04.txt
+
+ALGO GLOUTON PROBA
+435.909 ns
+===================
+./exemplaires/WC-10000-100-05.txt
+
+ALGO GLOUTON PROBA
+528.189 ns
+===================
+./exemplaires/WC-10000-100-06.txt
+
+ALGO GLOUTON PROBA
+598.952 ns
+===================
+./exemplaires/WC-10000-100-07.txt
+
+ALGO GLOUTON PROBA
+712.968 ns
+===================
+./exemplaires/WC-10000-100-08.txt
+
+ALGO GLOUTON PROBA
+803.776 ns
+===================
+./exemplaires/WC-10000-100-09.txt
+
+ALGO GLOUTON PROBA
+923.415 ns
+===================
+./exemplaires/WC-10000-100-10.txt
+
+ALGO GLOUTON PROBA
+965.928 ns
+===================
+./exemplaires/WC-10000-1000-01.txt
+
+ALGO GLOUTON PROBA
+112.44 ns
+===================
+./exemplaires/WC-10000-1000-02.txt
+
+ALGO GLOUTON PROBA
+219.562 ns
+===================
+./exemplaires/WC-10000-1000-03.txt
+
+ALGO GLOUTON PROBA
+311.47 ns
+===================
+./exemplaires/WC-10000-1000-04.txt
+
+ALGO GLOUTON PROBA
+430.623 ns
+===================
+./exemplaires/WC-10000-1000-05.txt
+
+ALGO GLOUTON PROBA
+531.024 ns
+===================
+./exemplaires/WC-10000-1000-06.txt
+
+ALGO GLOUTON PROBA
+619.278 ns
+===================
+./exemplaires/WC-10000-1000-07.txt
+
+ALGO GLOUTON PROBA
+691.731 ns
+===================
+./exemplaires/WC-10000-1000-08.txt
+
+ALGO GLOUTON PROBA
+785.627 ns
+===================
+./exemplaires/WC-10000-1000-09.txt
+
+ALGO GLOUTON PROBA
+865.946 ns
+===================
+./exemplaires/WC-10000-1000-10.txt
+
+ALGO GLOUTON PROBA
+946.331 ns
+===================
