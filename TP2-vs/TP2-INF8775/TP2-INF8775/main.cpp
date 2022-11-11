@@ -1,6 +1,6 @@
 #include "Includes.h"
 #include "AlgoGloutonProba.h"
-
+#include "AmeliorationLocale.h"
 #include "AlgoDyn.h"
 #include <filesystem>
 // Split method used to split a string containing numbers
@@ -34,7 +34,7 @@ int main() {
 	// Read files.
 	ifstream file;
 
-	string fileName = ".\\exemplaires\\WC-100-10-01.txt";
+	string fileName = ".\\exemplaires\\WC-1000-1000-01.txt";
 	file.open(fileName, ios::in);
 	if (!file.is_open()) {
 		cout << "open file failed\n";
@@ -64,16 +64,23 @@ int main() {
 	// Algo glouton proba
 	cout << endl << "ALGO GLOUTON PROBA" << endl;
 	vector<Restaurant> restaurantsGloutonProba;
-	int totalRevenue = alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
-	displayChosenRestaurants(restaurantsGloutonProba, totalRevenue, capacite);
+	pair<int ,int> revenueQuantityPair= alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
+	displayChosenRestaurants(restaurantsGloutonProba, revenueQuantityPair.first, revenueQuantityPair.second);
 	
 
 	
-	// Algo Dynamique
-	cout << endl<< "ALGO DYNAMIQUE" << endl;
-	int totalRevenueDyn = 0;
-	vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants, totalRevenueDyn);
-	displayChosenRestaurants(restaurantsDyn, totalRevenueDyn, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
+	//// Algo Dynamique
+	//cout << endl<< "ALGO DYNAMIQUE" << endl;
+	//int totalRevenueDyn = 0;
+	//vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants, totalRevenueDyn);
+	//displayChosenRestaurants(restaurantsDyn, totalRevenueDyn, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
 
+
+	// AlgoLocal
+	cout << endl << "ALGO LOCAL" << endl;
+	vector<Restaurant> restaurantsLocalSearch;
+	pair<int, int> heurRevenueQuantityPair = algoLocalHeuristic(restaurants, capacite, restaurantsLocalSearch);
+	displayChosenRestaurants(restaurantsLocalSearch, heurRevenueQuantityPair.first, heurRevenueQuantityPair.second);
 	return 0;
+
 }

@@ -7,6 +7,8 @@
 #include <iterator>
 #include <map>
 
+#include <functional>
+
 using namespace std;
 
 //returns the total rentability and fills the rentability map
@@ -45,7 +47,7 @@ map<int, Restaurant> generateRestaurantMap(vector<Restaurant> data){
 	map<int, Restaurant> dataRestaurantMap;
 
 	for(unsigned i = 0; i < data.size() ; i++ ){
-		dataRestaurantMap.emplace(i+1, data[i]);
+		dataRestaurantMap.emplace(data[i].iD, data[i]);
 	}
 
 	return dataRestaurantMap;
@@ -69,11 +71,11 @@ void removeTooBigCapacities (map<int, Restaurant>& restaurants, int currentQuant
 }
 
 //returns the totalRevenue and fills the chosenRestaurants vector
-int alggoGloutonProba(vector<Restaurant>& data, int maxCapacity, vector<Restaurant>& chosenRestaurants) {
+pair<int, int> alggoGloutonProba(vector<Restaurant>& data, int maxCapacity, vector<Restaurant>& chosenRestaurants) {
 	map<int, Restaurant> remainingRestaurants = generateRestaurantMap(data);
 
-	int totalRevenue = 0.0;
-	int currentQuantity = 0.0;
+	int totalRevenue = 0;
+	int currentQuantity = 0;
 
 
 	removeTooBigCapacities(remainingRestaurants, currentQuantity, maxCapacity);
@@ -91,7 +93,7 @@ int alggoGloutonProba(vector<Restaurant>& data, int maxCapacity, vector<Restaura
 		remainingRestaurants.erase(restaurentId);
 		removeTooBigCapacities(remainingRestaurants, currentQuantity, maxCapacity);
 	}
-
-	return totalRevenue;
+	pair<int, int> myPair = make_pair<int, int>(int(totalRevenue), int(currentQuantity)); // TODO : why need conversion ?...
+	return myPair;
 
 }
