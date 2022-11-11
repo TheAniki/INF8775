@@ -86,7 +86,7 @@ int main(int argc, const char *argv[]) {
 		auto start = chrono::high_resolution_clock::now();
 		int totalRevenue = alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
 		auto stop = chrono::high_resolution_clock::now();
-		auto duration = stop-start;
+		chrono::duration<double,milli> duration = stop-start;
 		// end time
 		if(print)
 			displayChosenRestaurants(restaurantsGloutonProba, totalRevenue, capacite);
@@ -104,7 +104,7 @@ int main(int argc, const char *argv[]) {
 		auto start = chrono::high_resolution_clock::now();
 		vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants, totalRevenueDyn);
 		auto stop = chrono::high_resolution_clock::now();
-		auto duration = stop-start;
+		chrono::duration<double,milli> duration = stop-start;
 		if(print)
 			displayChosenRestaurants(restaurantsDyn, totalRevenueDyn, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
 		if(time)
