@@ -67,7 +67,6 @@ int main() {
 	pair<int ,int> revenueQuantityPair= alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
 	displayChosenRestaurants(restaurantsGloutonProba, revenueQuantityPair.first, revenueQuantityPair.second);
 	
-
 	
 	// Algo Dynamique
 	cout << endl<< "ALGO DYNAMIQUE" << endl;
@@ -81,6 +80,6 @@ int main() {
 	vector<Restaurant> restaurantsLocalSearch;
 	pair<int, int> heurRevenueQuantityPair = algoLocalHeuristic(restaurants, capacite, restaurantsLocalSearch);
 	displayChosenRestaurants(restaurantsLocalSearch, heurRevenueQuantityPair.first, heurRevenueQuantityPair.second);
+	
 	return 0;
-
 }

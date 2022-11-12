@@ -1,11 +1,9 @@
 #include "Includes.h"
 #include "AmeliorationLocale.h"
-#include  "AlgoGloutonProba.h"
+#include "AlgoGloutonProba.h"
 
 
-
-
-//returns the totalRevenue and fills the chosenRestaurants vector
+// Returns the totalRevenue and fills the chosenRestaurants vector.
 pair<int, int> algoLocalHeuristic(vector<Restaurant>& data, int maxCapacity, vector<Restaurant>& chosenRestaurants) {
 	pair<int ,int> revenueQuantityPair= alggoGloutonProba(data, maxCapacity, chosenRestaurants); //For initial solution
 
@@ -15,7 +13,7 @@ pair<int, int> algoLocalHeuristic(vector<Restaurant>& data, int maxCapacity, vec
 	int currentRevenue = revenueQuantityPair.first;
 	int currentQuantity = revenueQuantityPair.second;
 
-	// Variables that will be updated at each iterations
+	// Variables that will be updated at each iterations.
 	int newRevenue = 0;
 	int newQuantity = 0;
 	map<int, Restaurant> newSolution = deepCopyMap(currentSolution);
@@ -32,13 +30,11 @@ pair<int, int> algoLocalHeuristic(vector<Restaurant>& data, int maxCapacity, vec
 		}
 		else{
 			break;
-		}
-	
+		}	
 	}
 
 	chosenRestaurants = convertMapToVector(currentSolution);
 	return make_pair<int, int>(int(currentRevenue), int(currentQuantity));
-
 }
 
 vector<Restaurant> convertMapToVector(map<int, Restaurant> solution) {
@@ -51,7 +47,7 @@ vector<Restaurant> convertMapToVector(map<int, Restaurant> solution) {
 }
 
 
-// combinations of 1 or 2 elements present in te solution
+// Combinations of 1 or 2 elements present in te solution.
 vector<vector<Restaurant>> generateInsideSolCombinations(const map<int, Restaurant>& solution) {
 	vector<vector<Restaurant>> insideSolCombinations;
 	addSoloCombinations(solution, insideSolCombinations);
@@ -59,11 +55,11 @@ vector<vector<Restaurant>> generateInsideSolCombinations(const map<int, Restaura
 	return insideSolCombinations;
 }
 
-// Combinations of 1 or 2 elements that or NOT in te solution
+// Combinations of 1 or 2 elements that or NOT in te solution.
 vector<vector<Restaurant>> generateOutsideSolCombinations(const map<int, Restaurant>& solution, const map<int, Restaurant> & dataMap) {
 	map<int, Restaurant> outsideSolution;
 	for(pair<int, Restaurant> restaurant : dataMap){
-		if (solution.count(restaurant.first) ==  0) {//restaurant not in solution
+		if (solution.count(restaurant.first) ==  0) {// restaurant not in solution.
 			outsideSolution.emplace(restaurant);
 		}
 	}
@@ -75,7 +71,7 @@ vector<vector<Restaurant>> generateOutsideSolCombinations(const map<int, Restaur
 }
 
 
-// Generate duo combinations (cardinality = 2 in elements.size() )
+// Generate duo combinations (cardinality = 2 in elements.size() ).
  void addDuoCombinations(map<int, Restaurant> elements, vector<vector<Restaurant>>& combinations) {
 	map<int, Restaurant>::iterator startOfSecondLoop = elements.begin();
 	for (const pair<int, Restaurant> & element : elements) {
@@ -85,11 +81,10 @@ vector<vector<Restaurant>> generateOutsideSolCombinations(const map<int, Restaur
 			combinations.push_back(combination);
 		}
 	}
-
 }
 
 
-// Generate solo combinaitions (cardinality = elements.size() )
+// Generate solo combinaitions (cardinality = elements.size() ).
 void addSoloCombinations(map<int, Restaurant> elements, vector<vector<Restaurant>>& combinations) {
 	for(map<int, Restaurant>::iterator iter = elements.begin(); iter != elements.end();++iter ){
 		vector<Restaurant> combination = {iter->second };
@@ -98,40 +93,39 @@ void addSoloCombinations(map<int, Restaurant> elements, vector<vector<Restaurant
 }
 
 
-
 pair<int,int> findBestSolutionInNeighborhood(map<int, Restaurant>& currentSolution, map<int, Restaurant> dataMap, int currentQuantity, int currentRevenue , int maxQuantity) {
 
-	// Generate combinations to iterate over
+	// Generate combinations to iterate over.
 	vector<vector<Restaurant>> outsideSolutionCombinations =generateOutsideSolCombinations(currentSolution, dataMap );
 	vector<vector<Restaurant>> insideSolutionCombinations = generateInsideSolCombinations(currentSolution);
 
-	// Best values
+	// Best values.
 	int bestRevenue = currentRevenue;
 	int bestCapacity = currentQuantity;
 	map<int, Restaurant> bestSolution = deepCopyMap(currentSolution);
 
 
-	// Outer-loop is the combination of restaurants we can remove from the solution
+	// Outer-loop is the combination of restaurants we can remove from the solution.
 	for (vector<Restaurant> removeableCombination : insideSolutionCombinations) {
 		int revenueDiff = 0;
 		int quantityDiff = 0;
-		//This loop has at most two restaurants to remove
+		// This loop has at most two restaurants to remove.
 		for (const Restaurant& toRemoveElement : removeableCombination) {
 			revenueDiff -= toRemoveElement.revenue;
 			quantityDiff -= toRemoveElement.quantity;
 		}
 		
-		// Best values for the inner-loop
+		// Best values for the inner-loop.
 		int bestInnerLoopRevenue = currentRevenue;
 		int bestInnerLoopQuantity = currentQuantity;
 		vector<Restaurant> bestCombinationToAdd;
-
-		// Inner-loop is for the combination of restaurants we can add to the solution
+		int i = 0;
+		// Inner-loop is for the combination of restaurants we can add to the solution.
 		for (vector<Restaurant> addableCombination : outsideSolutionCombinations) {
 			int innerLoopRevenueDiff = revenueDiff;
 			int innerLoopQuantityDiff = quantityDiff;
-
-			// At most two resturants to add
+			i++;
+			// At most two resturants to add.
 			for (const Restaurant & toAddElement : addableCombination) {
 				innerLoopRevenueDiff += toAddElement.revenue;
 				innerLoopQuantityDiff += toAddElement.quantity;
@@ -139,8 +133,8 @@ pair<int,int> findBestSolutionInNeighborhood(map<int, Restaurant>& currentSoluti
 
 			int newRevenue = currentRevenue + innerLoopRevenueDiff;
 			int newQuantity = currentQuantity + innerLoopQuantityDiff;
-
-			// Update bestInnerLoop solution variables. This is a combination to add considering the same combination to remove for all the inner-loop
+			
+			// Update bestInnerLoop solution variables. This is a combination to add considering the same combination to remove for all the inner-loop.
 			if (newQuantity <= maxQuantity && newRevenue > bestInnerLoopRevenue) {
 				bestCombinationToAdd = deepCopyVector(addableCombination);
 				bestInnerLoopRevenue = newRevenue; 
@@ -148,20 +142,17 @@ pair<int,int> findBestSolutionInNeighborhood(map<int, Restaurant>& currentSoluti
 			}
 		}
 
-		// Update best solution variables after havin considered all the solution with a single combination to remove
+		// Update best solution variables after havin considered all the solution with a single combination to remove.
 		if (bestInnerLoopRevenue > bestRevenue) {
 			bestRevenue = bestInnerLoopRevenue;
-			bestCapacity = bestInnerLoopQuantity;
 			bestSolution = deepCopyMap(currentSolution);
+			bestSolution = currentSolution;
 			updateSolution(bestSolution, removeableCombination, bestCombinationToAdd);	
 		}
 	}
 
-
 	currentSolution = deepCopyMap(bestSolution);
 	return make_pair(int(bestRevenue), int(bestCapacity));
-
-
 }
 
 vector<Restaurant> deepCopyVector(vector<Restaurant> toCopy) {
