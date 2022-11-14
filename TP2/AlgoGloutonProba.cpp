@@ -69,7 +69,7 @@ void removeTooBigCapacities (map<int, Restaurant>& restaurants, int currentQuant
 }
 
 //returns the totalRevenue and fills the chosenRestaurants vector
-int alggoGloutonProba(vector<Restaurant>& data, int maxCapacity, vector<Restaurant>& chosenRestaurants) {
+pair<int ,int>  alggoGloutonProba(vector<Restaurant>& data, int maxCapacity, vector<Restaurant>& chosenRestaurants) {
 	map<int, Restaurant> remainingRestaurants = generateRestaurantMap(data);
 
 	int totalRevenue = 0.0;
@@ -92,6 +92,8 @@ int alggoGloutonProba(vector<Restaurant>& data, int maxCapacity, vector<Restaura
 		removeTooBigCapacities(remainingRestaurants, currentQuantity, maxCapacity);
 	}
 
-	return totalRevenue;
+	pair<int, int> myPair = make_pair<int, int>(int(totalRevenue), int(currentQuantity)); // TODO : why need conversion ?...
+	return myPair;
+
 
 }

@@ -1,7 +1,7 @@
 #include "./headers/Includes.h"
 #include "./headers/AlgoGloutonProba.h"
-
 #include "./headers/AlgoDyn.h"
+#include "./headers/AmeliorationLocale.h"
 
 // Split method used to split a string containing numbers
 // and returns a vector of ints.
@@ -17,16 +17,16 @@ vector<int> split(const string& s, char delim) {
 	return result;
 }
 
-void displayChosenRestaurants(vector<Restaurant> restaurant, int revenue, int capacity){
-	cout << "============================================" << endl;
-	cout << "TOTAL REVENUE  : " << revenue << " - MAX CAPACITY : " << capacity << endl;
-	cout << "Chosen restaurants : " << endl;
+void displayChosenRestaurants(vector<Restaurant> restaurant){	
+	int rev = 0;
 	for (const Restaurant restaurant : restaurant) {
-		cout << "restaurant " << restaurant.iD << " - revenue : " << restaurant.revenue << " - quantity :  " << restaurant.quantity << endl;
-	}
-	cout << "============================================" << endl;
-
+		//cout << restaurant.iD <<" ";
+		rev+=restaurant.revenue;
+	}	
+	//cout << endl;
+	cout << "rev : " << rev << endl;
 }
+
 
 int main(int argc, const char *argv[]) {
 
@@ -56,14 +56,14 @@ int main(int argc, const char *argv[]) {
 		cout << "open file failed\n";
 		return 0;
 	}
-	
+
 	// Restaurants data.
 	vector<Restaurant> restaurants;
 	int nbRestaurants = 0;
 	int capacite = 0;
 
 	string line;
-	while (getline(file, line)) {	//read data from file object and put it into the string line.
+	while (getline(file, line)) {	// Read data from file object and put it into the string line.
 		vector<int> v = split(line, ' ');	// Split the string.
 		if (v.size() == 3) {
 			restaurants.push_back(Restaurant(v[0], v[1], v[2]));
@@ -76,49 +76,46 @@ int main(int argc, const char *argv[]) {
 		}
 	}	
 
+	chrono::duration<double,milli> duration;
 
-	// Algo glouton proba
+	// Algo glouton proba.
 	if(algo == "glouton"){
-		
-		cout << endl << "ALGO GLOUTON PROBA" << endl;
 		vector<Restaurant> restaurantsGloutonProba;
-		// start time
-		auto start = chrono::high_resolution_clock::now();
-		int totalRevenue = alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
-		auto stop = chrono::high_resolution_clock::now();
-		chrono::duration<double,milli> duration = stop-start;
-		// end time
+		auto start = chrono::high_resolution_clock::now(); // Start timer.
+		pair<int ,int> revenueQuantityPair= alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
+		auto stop = chrono::high_resolution_clock::now();  // Stop timer.
+		duration = stop-start;
+
 		if(print)
-			displayChosenRestaurants(restaurantsGloutonProba, totalRevenue, capacite);
-		if(time)
-			cout << duration.count() << " ns"<< endl;
-		return 0;
+			displayChosenRestaurants(restaurantsGloutonProba);		
 	}
 
-	// Algo glouton proba
-	if(algo == "progdyn"){
-		// Algo Dynamique
-		cout << endl<< "ALGO DYNAMIQUE" << endl;
+	// Algo Dynamique.
+	if(algo == "progdyn"){		
 		int totalRevenueDyn = 0;
-		// start time
-		auto start = chrono::high_resolution_clock::now();
+		auto start = chrono::high_resolution_clock::now(); // Start timer.
 		vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants, totalRevenueDyn);
-		auto stop = chrono::high_resolution_clock::now();
-		chrono::duration<double,milli> duration = stop-start;
+		auto stop = chrono::high_resolution_clock::now();  // Stop timer.
+		duration = stop-start;
+		
 		if(print)
-			displayChosenRestaurants(restaurantsDyn, totalRevenueDyn, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
-		if(time)
-			cout << duration.count() << " ns"<< endl;
-		return 0;
+			displayChosenRestaurants(restaurantsDyn); 		
 	}
 
+	// Algo Local.
 	if(algo == "local"){
-		cout << endl<< "Amelioration Locale" << endl;
+		vector<Restaurant> restaurantsLocalSearch;
+		auto start = chrono::high_resolution_clock::now(); // Start timer.
+		pair<int, int> heurRevenueQuantityPair = algoLocalHeuristic(restaurants, capacite, restaurantsLocalSearch);		
+		auto stop = chrono::high_resolution_clock::now(); // Stop timer.
+		duration = stop-start;
+
 		if(print)
-			cout<<"print local"<<endl; //TODO : mettre l algo ici! ? 
-		if(time)
-			cout << time << " ns"<< endl;
+			displayChosenRestaurants(restaurantsLocalSearch);		
 	}
+
+	if(time)
+			cout << duration.count() << endl;
 
 	return 0;
 }
