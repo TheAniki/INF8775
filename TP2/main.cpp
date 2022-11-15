@@ -17,14 +17,12 @@ vector<int> split(const string& s, char delim) {
 	return result;
 }
 
+// Display the chosen restaurants's iDs.
 void displayChosenRestaurants(vector<Restaurant> restaurant){	
-	int rev = 0;
 	for (const Restaurant restaurant : restaurant) {
-		//cout << restaurant.iD <<" ";
-		rev+=restaurant.revenue;
+		cout << restaurant.iD <<" ";
 	}	
-	//cout << endl;
-	cout << "rev : " << rev << endl;
+	cout << endl;
 }
 
 
@@ -92,9 +90,8 @@ int main(int argc, const char *argv[]) {
 
 	// Algo Dynamique.
 	if(algo == "progdyn"){		
-		int totalRevenueDyn = 0;
 		auto start = chrono::high_resolution_clock::now(); // Start timer.
-		vector<Restaurant> restaurantsDyn = AlgoDyn(restaurants, capacite, nbRestaurants, totalRevenueDyn);
+		vector<Restaurant> restaurantsDyn = dynamicAlgorithm(restaurants, capacite, nbRestaurants);
 		auto stop = chrono::high_resolution_clock::now();  // Stop timer.
 		duration = stop-start;
 		

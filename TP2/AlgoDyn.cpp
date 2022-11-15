@@ -1,43 +1,44 @@
 #include "./headers/Includes.h"
 #include "./headers/AlgoDyn.h"
 
-
-vector<Restaurant> AlgoDyn(vector<Restaurant> restaurants, int capacite, int nbRestaurants, int& revenue) {
+// The main function of this algorithm.
+// It Return's the final solution.
+vector<Restaurant> dynamicAlgorithm(vector<Restaurant> restaurants, int capacite, int nbRestaurants) {
 
 	vector<Restaurant> solution;
-	vector<vector<int>> D = InitializeTable(restaurants, capacite);
+	vector<vector<int>> D = initializeTable(restaurants, capacite);
 	int j = capacite;
-	// On veux maximiser en partant du dernier element.
+	// We want to maximize so we start from the last element.
 	for (int i = D.size() - 1; i > 0; i--)
 	{
 		if (D[i][j] != D[i - 1][j]) {
 			if (j - restaurants[i - 1].quantity >= 0) {
-				Ajouter(solution, j, restaurants[i - 1], revenue);
+				addToSolution(solution, j, restaurants[i - 1]);
 			}
 		}
 	}
 	return solution;
 }
 
-// Ajoute un restaurant a la solution.
-void Ajouter(vector<Restaurant>& solution, int& capacite, Restaurant resto, int& revenue) {
+// Add a restaurant to the solution and update the total capacity.
+void addToSolution(vector<Restaurant>& solution, int& capacite, Restaurant resto) {
 	solution.push_back(resto);
 	capacite -= resto.quantity;
-	revenue += resto.revenue;
 }
 
-vector<vector<int>> InitializeTable(vector<Restaurant> restaurants, int capacite) {
+// Initialize the D array.
+vector<vector<int>> initializeTable(vector<Restaurant> restaurants, int capacite) {
 
-	// Intialisation du tableau D de taille restaurants.size() X capacite remplis de 0.
+	// Initialization of the D array of size restaurants.size() X capacity.
 	vector<vector<int>> D(restaurants.size() + 1, vector<int>(capacite + 1));
 
-	// Initialise la premiere ligne du tableau.	
+	// Initializing the array's first row.	
 	for (int j = 0; j < capacite + 1; j++)
 	{
 		D[0][j] = 0;
 	}
-	// Remplisage du tableau.
-	for (long unsigned int i = 0; i < restaurants.size(); i++) {
+	// Filling the array.
+	for (int i = 0; i < restaurants.size(); i++) {
 		for (int j = 0; j < capacite + 1; j++)
 		{
 			int first = 0;
