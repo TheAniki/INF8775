@@ -2,7 +2,6 @@
 #include "./headers/AmeliorationLocale.h"
 #include "./headers/AlgoGloutonProba.h"
 
-
 // Returns the totalRevenue and fills the chosenRestaurants vector.
 pair<int, int> algoLocalHeuristic(vector<Restaurant>& data, int maxCapacity, vector<Restaurant>& chosenRestaurants) {
 	pair<int ,int> revenueQuantityPair= alggoGloutonProba(data, maxCapacity, chosenRestaurants); //For initial solution
@@ -45,7 +44,6 @@ vector<Restaurant> convertMapToVector(map<int, Restaurant> solution) {
 	return restaurants;
 
 }
-
 
 // Combinations of 1 or 2 elements present in te solution.
 vector<vector<Restaurant>> generateInsideSolCombinations(const map<int, Restaurant>& solution) {
