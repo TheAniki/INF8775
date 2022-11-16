@@ -6,7 +6,6 @@
 // Returns the totalRevenue and fills the chosenRestaurants vector.
 pair<int, int> algoLocalHeuristic(vector<Restaurant>& data, int maxCapacity, vector<Restaurant>& chosenRestaurants) {
 	pair<int ,int> revenueQuantityPair= alggoGloutonProba(data, maxCapacity, chosenRestaurants); //For initial solution
-
 	map<int, Restaurant> dataMap = generateRestaurantMap(data);
 	map<int, Restaurant> currentSolution = generateRestaurantMap(chosenRestaurants);
 

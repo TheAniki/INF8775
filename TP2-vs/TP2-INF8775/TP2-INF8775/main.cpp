@@ -21,10 +21,13 @@ void displayChosenRestaurants(vector<Restaurant> restaurant, int revenue, int ca
 	cout << "============================================" << endl;
 	cout << "TOTAL REVENUE  : " << revenue << " - MAX CAPACITY : " << capacity << endl;
 	cout << "Chosen restaurants : " << endl;
+	int rev = 0;
 	for (const Restaurant restaurant : restaurant) {
 		cout << "restaurant " << restaurant.iD << " - revenue : " << restaurant.revenue << " - quantity :  " << restaurant.quantity << endl;
+		rev += restaurant.revenue;
 	}
 	cout << "============================================" << endl;
+	cout << "rev: " << rev << endl;
 
 }
 
@@ -34,7 +37,7 @@ int main() {
 	// Read files.
 	ifstream file;
 
-	string fileName = ".\\exemplaires\\WC-1000-1000-01.txt";
+	string fileName = ".\\exemplaires\\WC-100-10-01.txt";
 	file.open(fileName, ios::in);
 	if (!file.is_open()) {
 		cout << "open file failed\n";
@@ -62,11 +65,11 @@ int main() {
 	}	
 	
 	// Algo glouton proba
-	cout << endl << "ALGO GLOUTON PROBA" << endl;
+	/*cout << endl << "ALGO GLOUTON PROBA" << endl;
 	vector<Restaurant> restaurantsGloutonProba;
 	pair<int ,int> revenueQuantityPair= alggoGloutonProba(restaurants, capacite, restaurantsGloutonProba);
 	displayChosenRestaurants(restaurantsGloutonProba, revenueQuantityPair.first, revenueQuantityPair.second);
-	
+	*/
 	
 	// Algo Dynamique
 	cout << endl<< "ALGO DYNAMIQUE" << endl;
@@ -75,11 +78,11 @@ int main() {
 	displayChosenRestaurants(restaurantsDyn, totalRevenueDyn, capacite); //TODO : faudrait qu'algoDyn ressorte le totalRevenue ? 
 
 
-	// AlgoLocal
-	cout << endl << "ALGO LOCAL" << endl;
-	vector<Restaurant> restaurantsLocalSearch;
-	pair<int, int> heurRevenueQuantityPair = algoLocalHeuristic(restaurants, capacite, restaurantsLocalSearch);
-	displayChosenRestaurants(restaurantsLocalSearch, heurRevenueQuantityPair.first, heurRevenueQuantityPair.second);
+	 // AlgoLocal
+	cout << endl << "algo local" << endl;
+	vector<Restaurant> restaurantslocalsearch;
+	pair<int, int> heurrevenuequantitypair = algoLocalHeuristic(restaurants, capacite, restaurantslocalsearch);
+	displayChosenRestaurants(restaurantslocalsearch, heurrevenuequantitypair.first, heurrevenuequantitypair.second);
 	
 	return 0;
 }

@@ -1,5 +1,5 @@
-#include "./headers/Includes.h"
-#include "./headers/AlgoDyn.h"
+#include "Includes.h"
+#include "AlgoDyn.h"
 
 
 vector<Restaurant> AlgoDyn(vector<Restaurant> restaurants, int capacite, int nbRestaurants, int& revenue) {
