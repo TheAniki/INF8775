@@ -26,7 +26,9 @@ int main(int argc, const char*argv[]){
 
     // Display each municipality's coordinates and number of green voters.
     for(Municipality municipality : municipalities){
-        cout<<"x: "<<municipality.coordinates.x<<" | y: "<< municipality.coordinates.y << " | votes for green party : "<<municipality.nbVotes<<endl;
+        cout<<"x: "<<municipality.coordinates.x
+            <<" | y: "<< municipality.coordinates.y 
+            << " | votes for green party : "<<municipality.nbVotes<<endl;
     }
 
     return 0;
