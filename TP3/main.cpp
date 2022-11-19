@@ -1,36 +1,33 @@
 #include "./headers/Includes.h"
-
-// This method is used to parse the arguments.
-void argumentsParsing(int argc, const char* argv[], 
-string& filename,unsigned int& nbCirconscription, bool& print){
-
-    for (int i = 1; i < argc-1; i++)
-    {
-        if (!strcmp(argv[i], "-e"))
-            filename = argv[i + 1];
-        if (!strcmp(argv[i+1], "-p"))
-            print = true;
-		if (!(strcmp(argv[i],"-c"))){
-            stringstream strValue;
-            strValue << argv[i+1];
-            strValue>>nbCirconscription;
-        }	
-    }
-}
+#include "./headers/utils.h" 
 
 int main(int argc, const char*argv[]){
 
     // Arguments parsing.
-	string fileName;
+	string filename;
     bool print = false;
     unsigned int nbCirconscription;
-    argumentsParsing(argc, argv, fileName, nbCirconscription, print);
+    argumentsParsing(argc, argv, filename, nbCirconscription, print);
 
-    // Initial print of the arguments
-    cout<<nbCirconscription<<endl;
-    cout<<fileName<<endl;
-    cout<<print<<endl;
+    // file reading
+   
+	ifstream file;  // file initialization.
+    file.open(filename, ios::in); // Opening of the file.
+	if (!file.is_open()) { // Verify if the file is openned.
+		cout << "open file failed\n";
+		return 0;
+	}
 
-    
+    int x_num; // x number of municipalities.
+    int y_num; // y number of minicipalities.
+
+    // List of municipalities
+    vector<Municipality> municipalities = getMunicipalities(file, x_num, y_num);
+
+    // Display each municipality's coordinates and number of green voters.
+    for(Municipality municipality : municipalities){
+        cout<<"x: "<<municipality.coordinates.x<<" | y: "<< municipality.coordinates.y << " | votes for green party : "<<municipality.nbVotes<<endl;
+    }
+
     return 0;
 }
