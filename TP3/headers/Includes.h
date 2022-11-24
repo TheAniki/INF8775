@@ -6,6 +6,7 @@
 #include <sstream>
 #include <vector>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -25,7 +26,8 @@ struct Coord{
 struct Municipality {
     Coord coordinates;
     int nbVotes; // Number of votes for the green party.
-
+	float score; // score of the municipality.
+	int nbVoisins = 0; // number of neighbors in eucli distance of 1.
     // Default Ctor.
 	Municipality():
 		coordinates(Coord()),nbVotes(-1){}

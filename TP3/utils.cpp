@@ -8,8 +8,10 @@ vector<int> split(const string& s, char delim) {
 	stringstream ss(s);
 	string item;
 	while (getline(ss, item, delim)) {		
-		if(!item.empty())
+		if(!item.empty()){
 			result.push_back(stoi(item));
+        }
+        
 	}
 
 	return result;
@@ -43,6 +45,7 @@ string& filename,unsigned int& nbCirconscription, bool& print){
 vector<Municipality> getMunicipalities(ifstream& file, int& x_mun, int& y_mun){    
     // List of municipalities
 	vector<Municipality> municipalities;  
+    vector<vector<int>> voteMatrix;    
 	string line;
     int x = 0;
     int y = 0;
@@ -58,13 +61,59 @@ vector<Municipality> getMunicipalities(ifstream& file, int& x_mun, int& y_mun){
             for(auto vote : v){
                 municipalities.push_back(Municipality(x,y,vote));
                 y++;
-            }              
+            }
+            voteMatrix.push_back(v);              
             y=0;
             x++;          
         }        
 	}	
 
+    CalculateScore(municipalities, voteMatrix,x_mun,y_mun);
+
     return municipalities;
+}
+
+// Calculate the Score for each municipality.
+void CalculateScore(vector<Municipality>& municipalities, vector<vector<int>> voteMatrix, int x_mun, int y_mun){
+    
+    for(int i =0 ; i<municipalities.size(); i++){
+        int nbNeighbor = 0;
+        municipalities[i].score = (float) scoreFromNeighbors(municipalities[i].coordinates,voteMatrix, nbNeighbor, x_mun, y_mun);
+        municipalities[i].nbVoisins = nbNeighbor;
+    }
+}
+
+// Calculate the score using the neighbors.
+float scoreFromNeighbors(Coord coord,vector<vector<int>> voteMatrix,int& nbNeighbor, int x_mun, int y_mun){
+    
+    // list of all possible neighbors offsets. 
+    Coord possibleNeighbors[8] = { Coord(-1,-1), Coord(-1,0), Coord(-1,1),
+                                   Coord(0,-1),               Coord(0,1),
+                                   Coord(1,-1),  Coord(1,0),  Coord(1,1)};
+    int sum = 0;
+    int counter =0;
+    for(int i =0; i<8;i++){
+        int x = coord.x + possibleNeighbors[i].x;
+        int y = coord.y + possibleNeighbors[i].y;
+
+        if(CoordinateIsValid(x,y, x_mun, y_mun)){
+            sum += voteMatrix[x][y];
+            counter++;
+        }
+    }
+    float score = (float)sum /(float)counter;
+    nbNeighbor = counter;
+
+    return score;
+}
+
+// Verify if the coordinate is valid.
+bool CoordinateIsValid(int x_coord, int y_coord ,int x_mun, int y_mun){
+    bool isValid = !(
+    x_coord < 0 || y_coord < 0 ||
+    x_coord >= y_mun || y_coord >= x_mun );
+
+    return isValid;
 }
 
 /*  Pour une même solution, il faut afficher les différentes municipalités qui se trouvent dans une 

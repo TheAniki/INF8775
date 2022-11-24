@@ -24,11 +24,14 @@ int main(int argc, const char*argv[]){
     // List of municipalities
     vector<Municipality> municipalities = getMunicipalities(file, x_num, y_num);
 
-    // Display each municipality's coordinates and number of green voters.
+    // Display each municipality's data.
     for(Municipality municipality : municipalities){
         cout<<"x: "<<municipality.coordinates.x
             <<" | y: "<< municipality.coordinates.y 
-            << " | votes for green party : "<<municipality.nbVotes<<endl;
+            << " | votes for green party : "<<municipality.nbVotes
+            << " | score : "<<municipality.score
+            << " | nbVoisin: "<<municipality.nbVoisins
+            <<endl;
     }
 
     return 0;
