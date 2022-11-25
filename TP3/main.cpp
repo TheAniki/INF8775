@@ -18,7 +18,7 @@ int main(int argc, const char*argv[]){
 	}
 
     int nColumn; // column number of municipalities.
-    int nLine; // y number of minicipalities.
+    int nLine; // row number of minicipalities.
 
     // List of municipalities
     vector<vector<shared_ptr<Municipality>>> municipalities = createMunicipalityMatrix(file, nColumn, nLine);
@@ -30,10 +30,10 @@ int main(int argc, const char*argv[]){
     int nbVotesTotal = 0;
     // Display each municipality's data.
     for(int i = 0 ; i < nLine ; i++){
-        vector<shared_ptr<Municipality>> line = municipalities[i];
-        for(auto&& municipality : line){
+        vector<shared_ptr<Municipality>> readLine = municipalities[i];
+        for(auto&& municipality : readLine){
             cout<<"column: "<< municipality->coordinates.column
-                <<" | y: "<< municipality->coordinates.y 
+                <<" | row: "<< municipality->coordinates.row 
                 << " | votes for green party : "<< municipality->nbVotes
                 << " | score : "<< municipality->score
                 << " | nbVoisin: "<< municipality->nbNeighbors

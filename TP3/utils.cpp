@@ -41,14 +41,14 @@ string& filename,unsigned int& nbCircumscription, bool& print){
 //
 // Also :
 //  nColumn = column number of municipalities.
-//  nLine = y number of municipalities.
+//  nLine = row number of municipalities.
 vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file, int& nColumn, int& nLine){    
     // List of municipalities
 	vector<vector<shared_ptr<Municipality>>> municipalities;  
     vector<vector<int>> voteMatrix;    
 	string line;
     int column = 0;
-    int y = 0;
+    int row = 0;
     bool once = true;
 
 	while (getline(file, line)) {	// Read data from file object and put it into the string line.
@@ -62,14 +62,14 @@ vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file
             municipalities.push_back(vector<shared_ptr<Municipality>>() );
 
             for(auto vote : txtVote){
-                municipalities[y].push_back(make_unique<Municipality>(column,y,vote));
-                cout << municipalities[y][column] ->nbVotes << " ";
+                municipalities[row].push_back(make_unique<Municipality>(column,row,vote));
+                cout << municipalities[row][column] ->nbVotes << " ";
                 column++;
             }
             cout << endl;
             // voteMatrix.push_back(txtVote);              
             column=0;
-            y++;          
+            row++;          
         }        
 	}	
     cout << "ENDED READ" << endl;
@@ -106,10 +106,10 @@ float scoreFromNeighbors(Coord coord,vector<vector<shared_ptr<Municipality>>> mu
     int counter =0;
     for(int i =0; i<9;i++){
         int column = coord.column + possibleNeighbors[i].column;
-        int y = coord.y + possibleNeighbors[i].y;
+        int row = coord.row + possibleNeighbors[i].row;
 
-        if(CoordinateIsValid(column,y, nColumn, nLine)){
-            sum += municipalities[y][column]->nbVotes;
+        if(CoordinateIsValid(column,row, nColumn, nLine)){
+            sum += municipalities[row][column]->nbVotes;
             counter++;
         }
     }
@@ -120,10 +120,10 @@ float scoreFromNeighbors(Coord coord,vector<vector<shared_ptr<Municipality>>> mu
 }
 
 // Verify if the coordinate is valid.
-bool CoordinateIsValid(int x_coord, int y_coord ,int nColumn, int nLine){
+bool CoordinateIsValid(int column_coord, int row_coord ,int nColumn, int nLine){
     bool isValid = !(
-    x_coord < 0 || y_coord < 0 ||
-    x_coord >= nColumn || y_coord >= nLine );
+    column_coord < 0 || row_coord < 0 ||
+    column_coord >= nColumn || row_coord >= nLine );
 
     return isValid;
 }

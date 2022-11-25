@@ -12,16 +12,16 @@
 using namespace std;
 
 struct Coord{
+    int row;
     int column;
-    int y;
 
     // Default Ctor.
 	Coord():
-		column(-1),y(-1){}
+		row(-1), column(-1){}
 
 	// Coord Ctor.
-	Coord(int x_coord, int y_coord)
-		:column(x_coord), y(y_coord) {}
+	Coord(int row_coord, int column_coord, )
+		:row(row_coord), column(column_coord) {}
 };
 
 struct Municipality {
@@ -34,8 +34,8 @@ struct Municipality {
 		coordinates(Coord()),nbVotes(-1){}
 
 	// Municipality Ctor.
-	Municipality(int x_coord, int y_coord, int votes)
-		:coordinates(Coord(x_coord,y_coord)),
+	Municipality(int column_coord, int row_coord, int votes)
+		:coordinates(Coord(column_coord,row_coord)),
          nbVotes(votes) {}
 };
 

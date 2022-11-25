@@ -7,5 +7,5 @@ vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file
 void displaySolution();
 void calculateScores(vector<vector<shared_ptr<Municipality>>> municipalities, int nColumn, int nLine);
 float scoreFromNeighbors(Coord coord,vector<vector<shared_ptr<Municipality>>> municipalities ,int& nbNeighbors, int nColumn, int nLine);
-bool CoordinateIsValid(int x_coord, int y_coord ,int nColumn, int nLine);
+bool CoordinateIsValid(int column_coord, int row_coord ,int nColumn, int nLine);
 #endif // !UTILS_H
