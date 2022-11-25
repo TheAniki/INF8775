@@ -3,6 +3,11 @@
         "istream": "cpp",
         "string": "cpp",
         "iostream": "cpp",
-        "vector": "cpp"
-    }
+        "vector": "cpp",
+        "memory": "cpp",
+        "map": "cpp",
+        "xstring": "cpp",
+        "xstddef": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
