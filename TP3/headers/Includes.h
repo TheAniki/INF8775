@@ -60,7 +60,7 @@ struct Solution{
 
 	Solution(int nbCircWon,vector<shared_ptr<Circumscription>> circumscriptions) : nbCircWon(nbCircWon) {
 		for(auto&& circ : circumscriptions){
-			circumscriptions.emplace_backcirc);
+			circumscriptions.emplace_back(circ);
 		}
 	}
 

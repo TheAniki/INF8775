@@ -1,5 +1,6 @@
 #include "./headers/Includes.h"
 #include "./headers/utils.h" 
+#include "./headers/algo.h"
 
 int main(int argc, const char*argv[]){
 
@@ -50,6 +51,8 @@ int main(int argc, const char*argv[]){
     cout<<"Nb circonscription gagante possible: "<< nbVotesTotal/c;
     cout<<" sur "<< nbCircumscription<<endl;
     
+
+    quickSolution(municipalities);
 
     return 0;
 }
