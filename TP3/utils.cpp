@@ -67,7 +67,7 @@ vector<Municipality> getMunicipalities(ifstream& file, int& x_mun, int& y_mun){
             x++;          
         }        
 	}	
-
+    
     CalculateScore(municipalities, voteMatrix,x_mun,y_mun);
 
     return municipalities;
