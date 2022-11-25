@@ -39,35 +39,33 @@ struct Municipality {
          nbVotes(votes) {}
 };
 
-// struct Circumscription{
-// 	bool isWon;
-// 	vector<shared_ptr<Municipality>> municipalities;
+struct Circumscription{
+	bool isWon;
+	vector<shared_ptr<Municipality>> municipalities;
 
-// 	Circumscription(){}
+	Circumscription(){}
 
-// 	Circumscription(bool isWon, const vector<shared_ptr<Municipality>> municipalities):isWon(isWon) {
-// 		for(auto mun : municipalities){
-// 			municipalities.push_back(mun);
-// 		}
-// 	}
+	Circumscription(bool isWon,  vector<shared_ptr<Municipality>> municipalities):isWon(isWon) {
+		for(auto&& mun : municipalities){
+			municipalities.emplace_back(mun);
+		}
+	}
+};
 
-// 	~Circumscription(){}
-// };
+struct Solution{
+	int nbCircWon; 
+	vector<shared_ptr<Circumscription>> circumscriptions;
 
-// struct Solution{
-// 	int nbCircWon; 
-// 	vector<shared_ptr<Circumscription>> circumscriptions;
+	Solution(){}
 
-// 	Solution(){}
+	Solution(int nbCircWon,vector<shared_ptr<Circumscription>> circumscriptions) : nbCircWon(nbCircWon) {
+		for(auto&& circ : circumscriptions){
+			circumscriptions.emplace_backcirc);
+		}
+	}
 
-// 	Solution(int nbCircWon,vector<shared_ptr<Circumscription>> circumscriptions) : nbCircWon(nbCircWon) {
-// 		for(auto circ : circumscriptions){
-// 			circumscriptions.push_back(circ);
-// 		}
-// 	}
+	~Solution(){}
 
-// 	~Solution(){}
-
-// };
+};
 
 # endif // !INCLUDES_H
