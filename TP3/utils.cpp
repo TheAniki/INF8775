@@ -63,16 +63,13 @@ vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file
 
             for(auto vote : txtVote){
                 municipalities[row].push_back(make_unique<Municipality>(column,row,vote));
-                cout << municipalities[row][column] ->nbVotes << " ";
                 column++;
             }
-            cout << endl;
             // voteMatrix.push_back(txtVote);              
             column=0;
             row++;          
         }        
 	}	
-    cout << "ENDED READ" << endl;
     calculateScores(municipalities, nColumn,nRows);
 
     return municipalities;
@@ -80,18 +77,12 @@ vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file
 
 // Calculate the Score for each municipality.
 void calculateScores(vector<vector<shared_ptr<Municipality>>> municipalities, int nColumn, int nRows){
-    cout << "x_num : " << nColumn << endl;
-    cout << "y_num : " << nRows << endl;
-
     for(int i =0 ; i<nRows; i++){
         for(int j = 0 ; j < nColumn ; j++ ){
-            cout << "COMPUTING ... i=" << i << ", j ="<< j << endl;
             int nbNeighbors = 0;
             municipalities[i][j]->score = (float) scoreFromNeighbors(Coord(i, j), municipalities,nbNeighbors, nColumn, nRows);
-            cout << "SCORE OF " << municipalities[i][j]->coordinates.column << ", " <<municipalities[i][j]->coordinates.column << " : "  << municipalities[i][j]->score << endl;
             municipalities[i][j]->nbNeighbors = nbNeighbors - 1;
         }
-    cout << endl;
     }
 
 }
