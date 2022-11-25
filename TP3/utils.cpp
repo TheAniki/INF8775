@@ -41,8 +41,8 @@ string& filename,unsigned int& nbCircumscription, bool& print){
 //
 // Also :
 //  nColumn = column number of municipalities.
-//  nLine = row number of municipalities.
-vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file, int& nColumn, int& nLine){    
+//  nRows = row number of municipalities.
+vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file, int& nColumn, int& nRows){    
     // List of municipalities
 	vector<vector<shared_ptr<Municipality>>> municipalities;  
     vector<vector<int>> voteMatrix;    
@@ -55,7 +55,7 @@ vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file
 		vector<int> txtVote = split(line, ' ');	// Split the string.
 		if (once) { //For first line
 			nColumn = txtVote[0];
-            nLine = txtVote[1];
+            nRows = txtVote[1];
             once = false;
 		}
         else{ //Every other line
@@ -73,21 +73,21 @@ vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file
         }        
 	}	
     cout << "ENDED READ" << endl;
-    calculateScores(municipalities, nColumn,nLine);
+    calculateScores(municipalities, nColumn,nRows);
 
     return municipalities;
 }
 
 // Calculate the Score for each municipality.
-void calculateScores(vector<vector<shared_ptr<Municipality>>> municipalities, int nColumn, int nLine){
+void calculateScores(vector<vector<shared_ptr<Municipality>>> municipalities, int nColumn, int nRows){
     cout << "x_num : " << nColumn << endl;
-    cout << "y_num : " << nLine << endl;
+    cout << "y_num : " << nRows << endl;
 
-    for(int i =0 ; i<nLine; i++){
+    for(int i =0 ; i<nRows; i++){
         for(int j = 0 ; j < nColumn ; j++ ){
             cout << "COMPUTING ... i=" << i << ", j ="<< j << endl;
             int nbNeighbors = 0;
-            municipalities[i][j]->score = (float) scoreFromNeighbors(Coord(j, i), municipalities,nbNeighbors, nColumn, nLine);
+            municipalities[i][j]->score = (float) scoreFromNeighbors(Coord(i, j), municipalities,nbNeighbors, nColumn, nRows);
             cout << "SCORE OF " << municipalities[i][j]->coordinates.column << ", " <<municipalities[i][j]->coordinates.column << " : "  << municipalities[i][j]->score << endl;
             municipalities[i][j]->nbNeighbors = nbNeighbors - 1;
         }
@@ -97,18 +97,18 @@ void calculateScores(vector<vector<shared_ptr<Municipality>>> municipalities, in
 }
 
 // Calculate the score using the neighbors.
-float scoreFromNeighbors(Coord coord,vector<vector<shared_ptr<Municipality>>> municipalities ,int& nbNeighbors, int nColumn, int nLine){
+float scoreFromNeighbors(Coord coord,vector<vector<shared_ptr<Municipality>>> municipalities ,int& nbNeighbors, int nColumn, int nRows){
     // list of all possible neighbors offsets. 
     Coord possibleNeighbors[9] = { Coord(-1,-1), Coord(-1,0), Coord(-1,1),
-                                   Coord(0,-1),  Coord(0,0) ,  Coord(0,1),
-                                   Coord(1,-1),  Coord(1,0) ,  Coord(1,1)};
+                                   Coord(0,-1),  Coord(0,0) , Coord(0,1),
+                                   Coord(1,-1),  Coord(1,0) , Coord(1,1)};
     int sum = 0;
     int counter =0;
     for(int i =0; i<9;i++){
-        int column = coord.column + possibleNeighbors[i].column;
         int row = coord.row + possibleNeighbors[i].row;
+        int column = coord.column + possibleNeighbors[i].column;
 
-        if(CoordinateIsValid(column,row, nColumn, nLine)){
+        if(coordinateIsValid(row, column, nColumn, nRows)){
             sum += municipalities[row][column]->nbVotes;
             counter++;
         }
@@ -120,10 +120,10 @@ float scoreFromNeighbors(Coord coord,vector<vector<shared_ptr<Municipality>>> mu
 }
 
 // Verify if the coordinate is valid.
-bool CoordinateIsValid(int column_coord, int row_coord ,int nColumn, int nLine){
+bool coordinateIsValid(int row_coord, int column_coord ,int nColumn, int nRows){
     bool isValid = !(
     column_coord < 0 || row_coord < 0 ||
-    column_coord >= nColumn || row_coord >= nLine );
+    column_coord >= nColumn || row_coord >= nRows );
 
     return isValid;
 }

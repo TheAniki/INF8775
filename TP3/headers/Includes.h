@@ -20,7 +20,7 @@ struct Coord{
 		row(-1), column(-1){}
 
 	// Coord Ctor.
-	Coord(int row_coord, int column_coord, )
+	Coord(int row_coord, int column_coord)
 		:row(row_coord), column(column_coord) {}
 };
 
