@@ -2,10 +2,15 @@
 #include "./headers/algo.h"
 #include <queue>
 
+
+
+
 void algo(){
     cout<<"Bonjour je suis un algo qui marche!"<<endl;
     
 }
+
+
 
 Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, int nbCircumscription ){
     Solution solution = initializeSolution(nbCircumscription);
@@ -13,37 +18,20 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
 
     // constant parameters... -> TODO : put as attribute of a class ? ...
     const int nbMunicipalities = municipalities.size()*municipalities[0].size(); //n
-    const int votesToWin = ((50*(nbMunicipalities))/nbCircumscription)+1; 
+    int votesToWin = ((50*(nbMunicipalities))/nbCircumscription)+1; 
     const int maxDist = ceil(float(nbMunicipalities)/(2*nbCircumscription)); //   ceil(n/2m). m = nbCircumscription 
 
-    
     int minCirc = 0; //k_min
     int maxCirc = 0; //k_max
     computeCircBounds(nbMunicipalities, nbCircumscription, minCirc, maxCirc);
 
     queue<shared_ptr<Municipality>> unassignedMunicipality;
 
-    // queue<shared_ptr<Circumscription>> incompleteCircumscriptions(deque<shared_ptr<Circumscription>>(v.begin(),v.end()));
 
     for(long unsigned int i = 0 ; i < municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < municipalities[i].size(); j++){
             if(assignedMunicipalities[i][j]) continue;
-            
-            // Adding mun in first available spot
-            for(auto&& circumscription : solution.circumscriptions){
-                if(circumscription->municipalities.size()>=maxCirc) continue; //no more space in circumscription
-
-                if(validateMunFitsInCirc(circumscription, municipalities[i][j], maxDist ) ){
-                    addMunicipalityToCirc(circumscription, municipalities[i][j]);
-                    assignedMunicipalities[i][j] = true; 
-
-                    circumscription->totalVotes+=municipalities[i][j]->nbVotes;
-                    if(circumscription->totalVotes >= votesToWin){
-                        circumscription->isWon = true;
-                    }
-                    break;
-                }
-            }  
+            assignedMunicipalities[i][j] = addMunicipalityToFirstAvailableCirc(municipalities[i][j], solution.circumscriptions, maxDist, votesToWin,maxCirc); //Returns true if successfully added
 
             //Was impossible to add municipality to a circumscription 
             if(!assignedMunicipalities[i][j]){
@@ -141,7 +129,27 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     return solution;
 }
 
+bool addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality, 
+        vector<shared_ptr<Circumscription>> circumscriptions, 
+        int maxDist, 
+        int votesToWin,
+        int maxCirc ){
+    for(auto&& circumscription : circumscriptions){
+        if(circumscription->municipalities.size()>=maxCirc) continue; //no more space in circumscription
 
+            if(validateMunFitsInCirc(circumscription, municipality, maxDist ) ){
+            addMunicipalityToCirc(circumscription, municipality); 
+
+            circumscription->totalVotes+=municipality->nbVotes;
+            if(circumscription->totalVotes >= votesToWin){
+                circumscription->isWon = true;
+            }
+            return true; //successfully added 
+        }
+    }
+    return false;
+
+}
 
 
 int computeManhattanDist(const Coord& coord1, const Coord& coord2){

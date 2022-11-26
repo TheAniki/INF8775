@@ -11,6 +11,9 @@
 #include <math.h>       /* floor */
 using namespace std;
 
+    
+
+
 struct Coord{
     int row;
     int column;

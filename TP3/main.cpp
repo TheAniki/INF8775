@@ -2,6 +2,7 @@
 #include "./headers/utils.h" 
 #include "./headers/algo.h"
 
+
 int main(int argc, const char*argv[]){
 
     // Arguments parsing.
