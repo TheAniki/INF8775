@@ -19,7 +19,7 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     // constant parameters... -> TODO : put as attribute of a class ? ...
     const int nbMunicipalities = municipalities.size()*municipalities[0].size(); //n
     int votesToWin = ((50*(nbMunicipalities))/nbCircumscription)+1; 
-    const int maxDist = ceil(float(nbMunicipalities)/(2*nbCircumscription)); //   ceil(n/2m). m = nbCircumscription 
+    const int maxDist = ceil(float(nbMunicipalities)/(2*nbCircumscription)); //  ceil(n/2m). m = nbCircumscription 
 
     int minCirc = 0; //k_min
     int maxCirc = 0; //k_max
@@ -28,6 +28,7 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     queue<shared_ptr<Municipality>> unassignedMunicipality;
 
 
+    // Loops over all the municipalities to assign them to a circumscription 
     for(long unsigned int i = 0 ; i < municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < municipalities[i].size(); j++){
             if(assignedMunicipalities[i][j]) continue;
@@ -42,15 +43,8 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
    
     }
 
-
-
     //Creating incomplete circ vect
-    vector<shared_ptr<Circumscription>> incompleteCircs;
-    for(auto&& circ : solution.circumscriptions){
-        if(circ->municipalities.size() <minCirc){
-            incompleteCircs.push_back(circ);
-        }
-    }
+    vector<shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(solution.circumscriptions, minCirc);
     
     //Trying to repare solution
     // while(!unassignedMunicipality.empty()){
@@ -128,6 +122,18 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
 
     return solution;
 }
+
+vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions, int minCirc ){
+    vector<shared_ptr<Circumscription>> incompleteCircs;
+    for(auto&& circ : circumscriptions){
+        if(circ->municipalities.size() <minCirc){
+            incompleteCircs.push_back(circ);
+        }
+    }
+    return incompleteCircs;
+
+}
+
 
 bool addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality, 
         vector<shared_ptr<Circumscription>> circumscriptions, 
