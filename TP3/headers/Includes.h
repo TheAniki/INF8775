@@ -8,7 +8,7 @@
 #include <fstream>
 #include <string>
 #include <memory>
-
+#include <math.h>       /* floor */
 using namespace std;
 
 struct Coord{

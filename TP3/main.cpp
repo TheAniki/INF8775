@@ -45,10 +45,10 @@ int main(int argc, const char*argv[]){
     
 
     // Calculate the number of possible winning district.
-    int c = ((50*(nColumn*nRows))/nbCircumscription)+1;
-    cout<<"Nb de votes total pour gagner par circonstription: "<< c << endl;
+    int votesToWin = ((50*(nColumn*nRows))/nbCircumscription)+1;
+    cout<<"Nb de votes total pour gagner par circonstription: "<< votesToWin << endl;
     cout<<"Nb de votes total: "<<nbVotesTotal<<endl;
-    cout<<"Nb circonscription gagante possible: "<< nbVotesTotal/c;
+    cout<<"Nb circonscription gagante possible: "<< nbVotesTotal/votesToWin;
     cout<<" sur "<< nbCircumscription<<endl;
     
 

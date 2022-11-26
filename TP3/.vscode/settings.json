@@ -8,7 +8,8 @@
         "map": "cpp",
         "xstring": "cpp",
         "xstddef": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "cmath": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
