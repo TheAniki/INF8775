@@ -14,18 +14,12 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     const int nbMunicipalities = municipalities.size()*municipalities[0].size(); //n
     const int votesToWin = ((50*(nbMunicipalities))/nbCircumscription)+1; 
     const int maxDist = ceil(nbMunicipalities/(2*nbCircumscription)); //   ceil(n/2m). m = nbCircumscription 
-    cout << "MAX DISTS : " << maxDist<< endl;
+
     
     int minCirc = 0; //k_min
     int maxCirc = 0; //k_max
     computeCircBounds(nbMunicipalities, nbCircumscription, minCirc, maxCirc);
 
-    cout << "MIN CIRC : " << minCirc << endl;
-    cout << "MAX CIRC : " << maxCirc << endl;
-
-
-    int currentCircIndex = 0;
-    int counter = 0; //TODO : Remove -> only necessary for cout 
 
 
     for(long unsigned int i = 0 ; i < municipalities.size(); i++){
@@ -34,23 +28,19 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
             
             cout << "i, j : " << i << " , " << j  << "    ";
             assignedMunicipalities[i][j] = true; 
-            addMunicipalityToCirc(solution.circumscriptions[currentCircIndex], municipalities[i][j]);
-            solution.circumscriptions[currentCircIndex]->totalVotes+=municipalities[i][j]->nbVotes;
 
+            for(auto&& circumscription : solution.circumscriptions){
+                if(circumscription->municipalities.size()>=maxCirc) continue; //no more space in circumscription
 
-            cout << "MUNICIPALITY IN CIRC  " << currentCircIndex  << " : " << solution.circumscriptions[currentCircIndex]->municipalities[counter]->nbVotes<< endl;
-            counter++; //TODO : Remove -> only necessary for cout 
-
-            if(solution.circumscriptions[currentCircIndex]->municipalities.size()>=maxCirc){
-                if(solution.circumscriptions[currentCircIndex]->totalVotes >= votesToWin){
-                    solution.circumscriptions[currentCircIndex]->isWon = true;
+                if(validateMunFitsInCirc(circumscription, municipalities[i][j], maxDist ) ){
+                    addMunicipalityToCirc(circumscription, municipalities[i][j]);
+                    circumscription->totalVotes+=municipalities[i][j]->nbVotes;
+                    if(circumscription->totalVotes >= votesToWin){
+                        circumscription->isWon = true;
+                    }
+                    break;
                 }
-                cout << "CIRC  " << currentCircIndex  << " WINS..... ? : " << solution.circumscriptions[currentCircIndex]->isWon << "    --- total votes : " << solution.circumscriptions[currentCircIndex]->totalVotes <<endl << endl;
-                currentCircIndex++;
-                counter = 0; //TODO : Remove -> only necessary for cout 
-
- 
-            }
+            }  
         }
    
     }
@@ -60,6 +50,12 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     
     cout <<"HERE " << endl;
 
+
+
+    cout << "MAX DISTS : " << maxDist<< endl;
+    cout << "MIN CIRC : " << minCirc << endl;
+    cout << "MAX CIRC : " << maxCirc << endl;
+    cout << "NB CIRC : "<< nbCircumscription << endl;
 
     cout << "CIRC 0, Municipality 3 dist with first? " << dist << endl;
     cout << "CIRC 0, municipality 3 valid ? " << valide <<endl;
