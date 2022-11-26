@@ -29,7 +29,7 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
         for(long unsigned int j= 0 ; j < municipalities[i].size(); j++){
             if(assignedMunicipalities[i][j]) continue;
             
-       
+            // Adding mun in first available spot
             for(auto&& circumscription : solution.circumscriptions){
                 if(circumscription->municipalities.size()>=maxCirc) continue; //no more space in circumscription
 
@@ -44,8 +44,9 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
                     break;
                 }
             }  
+
+            //Was impossible to add municipality to a circumscription 
             if(!assignedMunicipalities[i][j]){
-                //Was impossible to add municipality to a circumscription 
                 unassignedMunicipality.push(municipalities[i][j]);
                 cout << "unassignedMunicipality : " << municipalities[i][j]->coordinates.row<<"   ,   "<<municipalities[i][j]->coordinates.column << endl;
             }
@@ -53,16 +54,82 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
    
     }
 
-    int i = 0 ;
+
+
+    //Creating incomplete circ vect
     vector<shared_ptr<Circumscription>> incompleteCircs;
     for(auto&& circ : solution.circumscriptions){
         if(circ->municipalities.size() <minCirc){
             incompleteCircs.push_back(circ);
-            cout << "INCOMPLETE CIRC : " << i << endl;
         }
-        i++;
     }
     
+    //Trying to repare solution
+    // while(!unassignedMunicipality.empty()){
+        vector<shared_ptr<Circumscription>> possibleCircumscription;
+
+        int i = 0 ;
+        // find possible solutions
+        for(auto&& circ : solution.circumscriptions){
+            if(validateMunFitsInCirc(circ, unassignedMunicipality.front(), maxDist)){
+                possibleCircumscription.push_back(circ);
+                cout<<"POSSIBLE CIRC FOR MUNICIPALITY : " << i << endl;
+            }
+            i++;
+        }
+
+        //chose municipality to remove from a possible circ 
+        if(possibleCircumscription.size()==0) return solution; // FAILED
+
+        int smallestDistToIncompleteCirc = maxCirc*nbMunicipalities; // INFINITY
+        shared_ptr<Municipality> municipalityToRemove;
+        for(auto&& municipalityFromValidCirc :  possibleCircumscription[0]->municipalities){
+            int totalDistToIncompleteCirc = 0;
+            for(auto&& municipalityFromIncompleteCirc :  incompleteCircs[0]->municipalities){
+                totalDistToIncompleteCirc += computeManhattanDist(municipalityFromValidCirc->coordinates, municipalityFromIncompleteCirc->coordinates);
+            }
+            if(totalDistToIncompleteCirc < smallestDistToIncompleteCirc){
+                smallestDistToIncompleteCirc = totalDistToIncompleteCirc;
+                municipalityToRemove = municipalityFromValidCirc;
+
+            }
+        }
+
+        int position =0;
+        for(auto&& possibleMunicipality : possibleCircumscription[0]->municipalities){
+            if(possibleMunicipality->coordinates.row == municipalityToRemove->coordinates.row && possibleMunicipality->coordinates.column == municipalityToRemove->coordinates.column){
+                possibleCircumscription[0]->municipalities.erase(possibleCircumscription[0]->municipalities.begin()+ position);
+                break;
+            }
+            position++;
+        }
+
+        addMunicipalityToCirc(possibleCircumscription[0],unassignedMunicipality.front() );
+        addMunicipalityToCirc(incompleteCircs[0],municipalityToRemove );
+       
+       
+
+        // add  possibleCircumscription[0]->municipalities unassignedMunicipality.front()
+
+        // remove_if(possibleCircumscription[0]->municipalities.begin(), possibleCircumscription[0]->municipalities.end(), []()->bool{
+
+
+        // })
+        // for(auto&& possibleMunicipality : possibleCircumscription[0]->municipalities){
+        //     if(possibleMunicipality->coordinates.row == municipalityToRemove )
+        //     swap(possibleCircumscription[0]->municipalities[municipalityToRemove->coordinates.row][municipalityToRemove->coordinates.column]
+
+
+
+        // municipalityToRemove->coordinates
+        // vector<shared_ptr<Municipality>> ints = possibleCircumscription[0]->municipalities;
+        // ints.erase(std::remove_if(begin(ints), end(ints), [](int i) { municipalityToRemove->  ints[i]->    }), end(ints));
+
+        
+        
+
+
+    // }
 
 
     cout << "MAX DISTS : " << maxDist<< endl;
