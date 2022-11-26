@@ -1,5 +1,6 @@
 #include "./headers/Includes.h"
 #include "./headers/algo.h"
+#include <queue>
 
 void algo(){
     cout<<"Bonjour je suis un algo qui marche!"<<endl;
@@ -20,19 +21,22 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     int maxCirc = 0; //k_max
     computeCircBounds(nbMunicipalities, nbCircumscription, minCirc, maxCirc);
 
+    queue<shared_ptr<Municipality>> unassignedMunicipality;
 
+    // queue<shared_ptr<Circumscription>> incompleteCircumscriptions(deque<shared_ptr<Circumscription>>(v.begin(),v.end()));
 
     for(long unsigned int i = 0 ; i < municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < municipalities[i].size(); j++){
             if(assignedMunicipalities[i][j]) continue;
             
-            assignedMunicipalities[i][j] = true; 
-
+       
             for(auto&& circumscription : solution.circumscriptions){
                 if(circumscription->municipalities.size()>=maxCirc) continue; //no more space in circumscription
 
                 if(validateMunFitsInCirc(circumscription, municipalities[i][j], maxDist ) ){
                     addMunicipalityToCirc(circumscription, municipalities[i][j]);
+                    assignedMunicipalities[i][j] = true; 
+
                     circumscription->totalVotes+=municipalities[i][j]->nbVotes;
                     if(circumscription->totalVotes >= votesToWin){
                         circumscription->isWon = true;
@@ -40,12 +44,24 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
                     break;
                 }
             }  
+            if(!assignedMunicipalities[i][j]){
+                //Was impossible to add municipality to a circumscription 
+                unassignedMunicipality.push(municipalities[i][j]);
+                cout << "unassignedMunicipality : " << municipalities[i][j]->coordinates.row<<"   ,   "<<municipalities[i][j]->coordinates.column << endl;
+            }
         }
    
     }
-    int dist = computeManhattanDist(solution.circumscriptions[0]->municipalities[0]->coordinates, solution.circumscriptions[0]->municipalities[3]->coordinates); 
 
-    bool valide = validateMunFitsInCirc(solution.circumscriptions[0],  solution.circumscriptions[0]->municipalities[3], maxDist);
+    int i = 0 ;
+    vector<shared_ptr<Circumscription>> incompleteCircs;
+    for(auto&& circ : solution.circumscriptions){
+        if(circ->municipalities.size() <minCirc){
+            incompleteCircs.push_back(circ);
+            cout << "INCOMPLETE CIRC : " << i << endl;
+        }
+        i++;
+    }
     
 
 
@@ -53,9 +69,13 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     cout << "MIN CIRC : " << minCirc << endl;
     cout << "MAX CIRC : " << maxCirc << endl;
     cout << "NB CIRC : "<< nbCircumscription << endl;
+    
 
     return solution;
 }
+
+
+
 
 int computeManhattanDist(const Coord& coord1, const Coord& coord2){
     return abs(coord2.row - coord1.row) + abs(coord2.column- coord1.column );
