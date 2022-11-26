@@ -13,10 +13,17 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     int currentCircIndex = 0;
     int counter = 0;
 
+    int minCirc = 0;
+    int maxCirc = 0;
+
+    computeCircBounds(municipalities.size()*municipalities[0].size(), nbCircumscription, minCirc, maxCirc);
+    cout << "MIN CIRC : " << minCirc << endl;
+    cout << "MAX CIRC : " << maxCirc << endl;
+
     for(long unsigned int i = 0 ; i < municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < municipalities[i].size(); j++){
             if(assignedMunicipalities[i][j]) continue;
-            
+        
 
                 cout << "i, j : " << i << " , " << j  << "    ";
     
@@ -35,8 +42,13 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
 }
 
 void addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality ){
-
     circumscription->municipalities.push_back(municipality);
+}
+
+void computeCircBounds(int nbMunicipalities, int nbCircumscription, int& minCirc, int& maxCirc){
+    float fraction = float(nbMunicipalities) /nbCircumscription;
+    minCirc = floor(fraction);
+    maxCirc = ceil(fraction);
 }
 
 //Generates a matrix that tells if a municipality is assigned to a 
