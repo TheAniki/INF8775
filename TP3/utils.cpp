@@ -62,7 +62,7 @@ vector<vector<shared_ptr<Municipality>>> createMunicipalityMatrix(ifstream& file
             municipalities.push_back(vector<shared_ptr<Municipality>>() );
 
             for(auto vote : txtVote){
-                municipalities[row].push_back(make_unique<Municipality>(column,row,vote));
+                municipalities[row].push_back(make_unique<Municipality>(row,column,vote));
                 column++;
             }
             // voteMatrix.push_back(txtVote);              
@@ -124,6 +124,11 @@ bool coordinateIsValid(int row_coord, int column_coord ,int nColumn, int nRows){
     puis lorsqu’on passe à une prochaine circonscription, on change de ligne. Par la suite, 
     lorsqu’une meilleure solution est trouvée, on saute deux fois la ligne.
 */
-void displaySolution(){
-    // TODO : Display solution.
+void displaySolution(const Solution& solution){
+    for(auto&& circumscription : solution.circumscriptions ){
+      for(auto&& municipality : circumscription->municipalities){
+        cout << municipality->coordinates.row << " " << municipality->coordinates.column << " ";
+      }
+      cout << endl;
+    }
 }

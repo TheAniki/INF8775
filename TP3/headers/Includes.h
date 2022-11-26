@@ -8,8 +8,11 @@
 #include <fstream>
 #include <string>
 #include <memory>
-
+#include <math.h>       /* floor */
 using namespace std;
+
+    
+
 
 struct Coord{
     int row;
@@ -41,11 +44,12 @@ struct Municipality {
 
 struct Circumscription{
 	bool isWon;
+	int totalVotes;
 	vector<shared_ptr<Municipality>> municipalities;
 
 	Circumscription(){}
 
-	Circumscription(bool isWon,  vector<shared_ptr<Municipality>> municipalities):isWon(isWon) {
+	Circumscription(bool isWon, int totalVotes, vector<shared_ptr<Municipality>> municipalities):isWon(isWon), totalVotes(totalVotes)  {
 		for(auto&& mun : municipalities){
 			municipalities.emplace_back(mun);
 		}
