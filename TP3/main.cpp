@@ -52,7 +52,8 @@ int main(int argc, const char*argv[]){
     cout<<" sur "<< nbCircumscription<<endl;
     
 
-    quickSolution(municipalities, nbCircumscription);
+    Solution solution = quickSolution(municipalities, nbCircumscription);
+    displaySolution(solution);
 
     return 0;
 }

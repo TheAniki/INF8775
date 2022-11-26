@@ -13,7 +13,7 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     // constant parameters... -> TODO : put as attribute of a class ? ...
     const int nbMunicipalities = municipalities.size()*municipalities[0].size(); //n
     const int votesToWin = ((50*(nbMunicipalities))/nbCircumscription)+1; 
-    const int maxDist = ceil(nbMunicipalities/(2*nbCircumscription)); //   ceil(n/2m). m = nbCircumscription 
+    const int maxDist = ceil(float(nbMunicipalities)/(2*nbCircumscription)); //   ceil(n/2m). m = nbCircumscription 
 
     
     int minCirc = 0; //k_min
@@ -26,7 +26,6 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
         for(long unsigned int j= 0 ; j < municipalities[i].size(); j++){
             if(assignedMunicipalities[i][j]) continue;
             
-            cout << "i, j : " << i << " , " << j  << "    ";
             assignedMunicipalities[i][j] = true; 
 
             for(auto&& circumscription : solution.circumscriptions){
@@ -48,17 +47,12 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
 
     bool valide = validateMunFitsInCirc(solution.circumscriptions[0],  solution.circumscriptions[0]->municipalities[3], maxDist);
     
-    cout <<"HERE " << endl;
-
 
 
     cout << "MAX DISTS : " << maxDist<< endl;
     cout << "MIN CIRC : " << minCirc << endl;
     cout << "MAX CIRC : " << maxCirc << endl;
     cout << "NB CIRC : "<< nbCircumscription << endl;
-
-    cout << "CIRC 0, Municipality 3 dist with first? " << dist << endl;
-    cout << "CIRC 0, municipality 3 valid ? " << valide <<endl;
 
     return solution;
 }
