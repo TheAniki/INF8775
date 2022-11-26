@@ -8,63 +8,77 @@ void algo(){
 
 Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, int nbCircumscription ){
     Solution solution = initializeSolution(nbCircumscription);
-
     vector<vector<bool>> assignedMunicipalities = createAssignedMun(municipalities);
-    int currentCircIndex = 0;
-    int currentCircVotes = 0;
-    int counter = 0;
 
-    int minCirc = 0;
-    int maxCirc = 0;
-    int nbMunicipalities = municipalities.size()*municipalities[0].size();
-    int votesToWin = ((50*(nbMunicipalities))/nbCircumscription)+1;
-
+    // constant parameters... -> TODO : put as attribute of a class ? ...
+    const int nbMunicipalities = municipalities.size()*municipalities[0].size(); //n
+    const int votesToWin = ((50*(nbMunicipalities))/nbCircumscription)+1; 
+    const int maxDist = ceil(nbMunicipalities/(2*nbCircumscription)); //   ceil(n/2m). m = nbCircumscription 
+    cout << "MAX DISTS : " << maxDist<< endl;
+    
+    int minCirc = 0; //k_min
+    int maxCirc = 0; //k_max
     computeCircBounds(nbMunicipalities, nbCircumscription, minCirc, maxCirc);
+
     cout << "MIN CIRC : " << minCirc << endl;
     cout << "MAX CIRC : " << maxCirc << endl;
+
+
+    int currentCircIndex = 0;
+    int counter = 0; //TODO : Remove -> only necessary for cout 
+
 
     for(long unsigned int i = 0 ; i < municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < municipalities[i].size(); j++){
             if(assignedMunicipalities[i][j]) continue;
+            
+            cout << "i, j : " << i << " , " << j  << "    ";
+            assignedMunicipalities[i][j] = true; 
+            addMunicipalityToCirc(solution.circumscriptions[currentCircIndex], municipalities[i][j]);
+            solution.circumscriptions[currentCircIndex]->totalVotes+=municipalities[i][j]->nbVotes;
+
+
+            cout << "MUNICIPALITY IN CIRC  " << currentCircIndex  << " : " << solution.circumscriptions[currentCircIndex]->municipalities[counter]->nbVotes<< endl;
+            counter++; //TODO : Remove -> only necessary for cout 
+
             if(solution.circumscriptions[currentCircIndex]->municipalities.size()>=maxCirc){
-                if(currentCircVotes >= votesToWin){
+                if(solution.circumscriptions[currentCircIndex]->totalVotes >= votesToWin){
                     solution.circumscriptions[currentCircIndex]->isWon = true;
                 }
-                cout << "CIRC  " << currentCircIndex  << " WINS..... ? : " << solution.circumscriptions[currentCircIndex]->isWon<< endl << endl;
+                cout << "CIRC  " << currentCircIndex  << " WINS..... ? : " << solution.circumscriptions[currentCircIndex]->isWon << "    --- total votes : " << solution.circumscriptions[currentCircIndex]->totalVotes <<endl << endl;
                 currentCircIndex++;
-                currentCircVotes = 0;
-                counter = 0;
+                counter = 0; //TODO : Remove -> only necessary for cout 
 
+ 
             }
-        
-
-                cout << "i, j : " << i << " , " << j  << "    ";
-    
-                assignedMunicipalities[i][j] = true;
-                addMunicipalityToCirc(solution.circumscriptions[currentCircIndex], municipalities[i][j]);
-                currentCircVotes+=municipalities[i][j]->nbVotes;
-
-
-                cout << "MUNICIPALITY IN CIRC  " << currentCircIndex  << " : " << solution.circumscriptions[currentCircIndex]->municipalities[counter]->nbVotes<< endl;
-                // ->municipalities.push_back(municipalities[i][j]);
-                counter++;
-
-
-
         }
    
     }
-     if(currentCircVotes >= votesToWin){
-                    solution.circumscriptions[currentCircIndex]->isWon = true;
-                }
-                cout << "CIRC  " << currentCircIndex  << " WINS..... ? : " << solution.circumscriptions[currentCircIndex]->isWon<< endl << endl;
-                currentCircIndex++;
-                currentCircVotes = 0;
-                counter = 0;
+    int dist = computeManhattanDist(solution.circumscriptions[0]->municipalities[0]->coordinates, solution.circumscriptions[0]->municipalities[3]->coordinates); 
+
+    bool valide = validateMunFitsInCirc(solution.circumscriptions[0],  solution.circumscriptions[0]->municipalities[3], maxDist);
+    
+    cout <<"HERE " << endl;
+
+
+    cout << "CIRC 0, Municipality 3 dist with first? " << dist << endl;
+    cout << "CIRC 0, municipality 3 valid ? " << valide <<endl;
 
     return solution;
 }
 
+int computeManhattanDist(const Coord& coord1, const Coord& coord2){
+    return abs(coord2.row - coord1.row) + abs(coord2.column- coord1.column );
+}
+
+bool validateMunFitsInCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipalityToValidate, int maxDist){
+    for(auto&& municipality : circumscription->municipalities){
+        if(computeManhattanDist(municipalityToValidate->coordinates, municipality->coordinates) > maxDist){
+            return false;
+        } 
+    }
+    return true;
+}
 
 void addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality ){
     circumscription->municipalities.push_back(municipality);
@@ -77,6 +91,7 @@ void computeCircBounds(int nbMunicipalities, int nbCircumscription, int& minCirc
 }
 
 //Generates a matrix that tells if a municipality is assigned to a 
+// Necessary, because there will be multiple solutions sharing the same municipalities
 vector<vector<bool>> createAssignedMun(vector<vector<shared_ptr<Municipality>>> municipalities){
     vector<vector<bool>> assignedMunicipalities(municipalities.size());
 
@@ -97,7 +112,7 @@ Solution initializeSolution(int nbCircumscription){
         for(int i = 0 ; i < nbCircumscription ; i++ ){
             vector<shared_ptr<Municipality>> emptyMunicipality;
             initialSolution.nbCircWon = 0;
-            initialSolution.circumscriptions[i] = make_shared<Circumscription>(false, emptyMunicipality  ); ;
+            initialSolution.circumscriptions[i] = make_shared<Circumscription>(false,  0, emptyMunicipality); ;
        }
 
        return initialSolution;
