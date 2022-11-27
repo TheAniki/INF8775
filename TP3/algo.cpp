@@ -48,17 +48,7 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     
     //Trying to repare solution
     // while(!unassignedMunicipality.empty()){
-        vector<shared_ptr<Circumscription>> possibleCircumscription;
-
-        int i = 0 ;
-        // find possible solutions
-        for(auto&& circ : solution.circumscriptions){
-            if(validateMunFitsInCirc(circ, unassignedMunicipality.front(), maxDist)){
-                possibleCircumscription.push_back(circ);
-                cout<<"POSSIBLE CIRC FOR MUNICIPALITY : " << i << endl;
-            }
-            i++;
-        }
+        vector<shared_ptr<Circumscription>> possibleCircumscription = findPossibleCircumscriptionToContain(unassignedMunicipality.front(),  solution.circumscriptions, maxDist);
 
         //chose municipality to remove from a possible circ 
         if(possibleCircumscription.size()==0) return solution; // FAILED
@@ -123,6 +113,26 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     return solution;
 }
 
+
+vector<shared_ptr<Circumscription>> findPossibleCircumscriptionToContain(shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered, int maxDist){
+    vector<shared_ptr<Circumscription>> possibleCircumscription;
+    
+    int i = 0 ; //TODO : remove
+    // find possible solutions
+    for(auto&& circ : circumscriptionsConsidered){
+        if(validateMunFitsInCirc(circ, municipalityToInclude, maxDist)){
+            possibleCircumscription.push_back(circ);
+            cout<<"POSSIBLE CIRC FOR MUNICIPALITY : " << i << endl;
+        }
+        i++;
+    }
+
+    return possibleCircumscription;
+
+}
+
+
+
 vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions, int minCirc ){
     vector<shared_ptr<Circumscription>> incompleteCircs;
     for(auto&& circ : circumscriptions){
@@ -133,6 +143,7 @@ vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circum
     return incompleteCircs;
 
 }
+
 
 
 bool addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality, 
