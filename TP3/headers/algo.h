@@ -16,5 +16,5 @@ bool addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality,
         int votesToWin,
         int maxCirc );
 vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions, int minCirc );
-
+vector<shared_ptr<Circumscription>> findPossibleCircumscriptionToContain(shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered, int maxDist);
 #endif // !ALGO_H
