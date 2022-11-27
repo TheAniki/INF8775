@@ -119,6 +119,11 @@ bool coordinateIsValid(int row_coord, int column_coord ,int nColumn, int nRows){
     return isValid;
 }
 
+// Compute Manhattan distance.
+int computeManhattanDist(const Coord& coord1, const Coord& coord2){
+    return abs(coord2.row - coord1.row) + abs(coord2.column- coord1.column);
+}
+
 /*  Pour une même solution, il faut afficher les différentes municipalités qui se trouvent dans une 
     même circonscription sur la même ligne, une à la suite de l’autre, séparées par un espace, 
     puis lorsqu’on passe à une prochaine circonscription, on change de ligne. Par la suite, 

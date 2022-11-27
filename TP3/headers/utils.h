@@ -8,4 +8,5 @@ void displaySolution(const Solution& solution);
 void calculateScores(vector<vector<shared_ptr<Municipality>>> municipalities, int nColumn, int nRows);
 float scoreFromNeighbors(Coord coord,vector<vector<shared_ptr<Municipality>>> municipalities ,int& nbNeighbors, int nColumn, int nRows);
 bool coordinateIsValid(int column_coord, int row_coord ,int nColumn, int nRows);
+int computeManhattanDist(const Coord& coord1, const Coord& coord2);
 #endif // !UTILS_H
