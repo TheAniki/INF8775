@@ -62,62 +62,47 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
         cout << "EMPTY QUEUE " << endl;
     }
 
-    // //Trying to repare solution
-    // // while(!unassignedMunicipality.empty()){
-    //     vector<shared_ptr<Circumscription>> possibleCircumscription = findPossibleCircumscriptionToContain(unassignedMunicipality.front(),  solution.circumscriptions, maxDist);
+    //Trying to repare solution
+    // while(!unassignedMunicipality.empty()){
+        vector<shared_ptr<Circumscription>> possibleCircumscriptions = findPossibleCircumscriptionsToContainMun(unassignedMunicipality.front(),  solution.circumscriptions, maxDist);
 
-    //     //chose municipality to remove from a possible circ 
-    //     if(possibleCircumscription.size()==0) return solution; // FAILED
+        //chose municipality to remove from a possible circ 
+        if(possibleCircumscriptions.size()==0) return solution; // FAILED
 
-    //     int smallestDistToIncompleteCirc = maxCirc*nbMunicipalities; // INFINITY
-    //     shared_ptr<Municipality> municipalityToRemove;
-    //     for(auto&& municipalityFromValidCirc :  possibleCircumscription[0]->municipalities){
-    //         int totalDistToIncompleteCirc = 0;
-    //         for(auto&& municipalityFromIncompleteCirc :  incompleteCircs[0]->municipalities){
-    //             totalDistToIncompleteCirc += computeManhattanDist(municipalityFromValidCirc->coordinates, municipalityFromIncompleteCirc->coordinates);
-    //         }
-    //         if(totalDistToIncompleteCirc < smallestDistToIncompleteCirc){
-    //             smallestDistToIncompleteCirc = totalDistToIncompleteCirc;
-    //             municipalityToRemove = municipalityFromValidCirc;
+     
+        shared_ptr<Municipality> municipalityToRemove =  choseMunicipalityToRemoveFromCirc( possibleCircumscriptions[0], incompleteCircs[0], nbMunicipalities,  maxCirc);
 
-    //         }
-    //     }
+        int position =0;
+        for(auto&& possibleMunicipality : possibleCircumscriptions[0]->municipalities){
+            if(possibleMunicipality->coordinates.row == municipalityToRemove->coordinates.row && possibleMunicipality->coordinates.column == municipalityToRemove->coordinates.column){
+                possibleCircumscriptions[0]->municipalities.erase(possibleCircumscriptions[0]->municipalities.begin()+ position);
+                break;
+            }
+            position++;
+        }
 
-    //     int position =0;
-    //     for(auto&& possibleMunicipality : possibleCircumscription[0]->municipalities){
-    //         if(possibleMunicipality->coordinates.row == municipalityToRemove->coordinates.row && possibleMunicipality->coordinates.column == municipalityToRemove->coordinates.column){
-    //             possibleCircumscription[0]->municipalities.erase(possibleCircumscription[0]->municipalities.begin()+ position);
-    //             break;
-    //         }
-    //         position++;
-    //     }
-
-    //     addMunicipalityToCirc(possibleCircumscription[0],unassignedMunicipality.front() );
-    //     addMunicipalityToCirc(incompleteCircs[0],municipalityToRemove );
+        addMunicipalityToCirc(possibleCircumscriptions[0],unassignedMunicipality.front() );
+        addMunicipalityToCirc(incompleteCircs[0],municipalityToRemove );
        
        
+        // NOT GOOD----------------------
+        // add  possibleCircumscriptions[0]->municipalities unassignedMunicipality.front()
 
-        // add  possibleCircumscription[0]->municipalities unassignedMunicipality.front()
-
-        // remove_if(possibleCircumscription[0]->municipalities.begin(), possibleCircumscription[0]->municipalities.end(), []()->bool{
+        // remove_if(possibleCircumscriptions[0]->municipalities.begin(), possibleCircumscriptions[0]->municipalities.end(), []()->bool{
 
 
         // })
-        // for(auto&& possibleMunicipality : possibleCircumscription[0]->municipalities){
+        // for(auto&& possibleMunicipality : possibleCircumscriptions[0]->municipalities){
         //     if(possibleMunicipality->coordinates.row == municipalityToRemove )
-        //     swap(possibleCircumscription[0]->municipalities[municipalityToRemove->coordinates.row][municipalityToRemove->coordinates.column]
+        //     swap(possibleCircumscriptions[0]->municipalities[municipalityToRemove->coordinates.row][municipalityToRemove->coordinates.column]
 
 
 
         // municipalityToRemove->coordinates
-        // vector<shared_ptr<Municipality>> ints = possibleCircumscription[0]->municipalities;
+        // vector<shared_ptr<Municipality>> ints = possibleCircumscriptions[0]->municipalities;
         // ints.erase(std::remove_if(begin(ints), end(ints), [](int i) { municipalityToRemove->  ints[i]->    }), end(ints));
-
-        
-        
-
-
-    // }
+        // ------------------
+    
 
 
     cout << "MAX DISTS : " << maxDist<< endl;
@@ -130,20 +115,42 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
 }
 
 
-vector<shared_ptr<Circumscription>> findPossibleCircumscriptionToContain(shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered, int maxDist){
-    vector<shared_ptr<Circumscription>> possibleCircumscription;
+// Choses a municipality to remove from a circ based on its total distance to an incomplete circ passed in parameter
+shared_ptr<Municipality> choseMunicipalityToRemoveFromCirc( shared_ptr<Circumscription> circumscriptionToRemoveIn, shared_ptr<Circumscription> incompleteCirc ,int nbMunicipalities, int maxCirc){
+    int smallestDistToIncompleteCirc = maxCirc*nbMunicipalities; // INFINITY
+    shared_ptr<Municipality> municipalityToRemove;
+
+    for(auto&& possibleMunicipalityToRemove :  circumscriptionToRemoveIn->municipalities){
+        int totalDistToIncompleteCirc = 0;
+        for(auto&& municipalityFromIncompleteCirc :  incompleteCirc->municipalities){
+            totalDistToIncompleteCirc += computeManhattanDist(possibleMunicipalityToRemove->coordinates, municipalityFromIncompleteCirc->coordinates);
+        }
+        if(totalDistToIncompleteCirc < smallestDistToIncompleteCirc){
+            smallestDistToIncompleteCirc = totalDistToIncompleteCirc;
+            municipalityToRemove = possibleMunicipalityToRemove;
+        }
+    }
+    return municipalityToRemove;
+
+}
+
+
+
+
+vector<shared_ptr<Circumscription>> findPossibleCircumscriptionsToContainMun(shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered, int maxDist){
+    vector<shared_ptr<Circumscription>> possibleCircumscriptions;
     
     int i = 0 ; //TODO : remove
     // find possible solutions
     for(auto&& circ : circumscriptionsConsidered){
         if(validateMunFitsInCirc(circ, municipalityToInclude, maxDist)){
-            possibleCircumscription.push_back(circ);
+            possibleCircumscriptions.push_back(circ);
             cout<<"POSSIBLE CIRC FOR MUNICIPALITY : " << i << endl;
         }
         i++;
     }
 
-    return possibleCircumscription;
+    return possibleCircumscriptions;
 
 }
 
