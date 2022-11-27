@@ -43,7 +43,7 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
         for(long unsigned int j= 0 ; j < municipalities[i].size(); j++){
             if(assignedMunicipalities[i][j]) continue;
 
-            assignedMunicipalities[i][j] = addMunicipalityToFirstAvailableCirc(municipalities[i][j], solution.circumscriptions, maxDist, votesToWin,maxCirc); //Returns true if successfully added
+            assignedMunicipalities[i][j] = addMunicipalityToFirstAvailableCirc(municipalities[i][j], solution, maxDist, votesToWin,maxCirc); //Returns true if successfully added
 
 
             //Was impossible to add municipality to a circumscription 
@@ -58,6 +58,10 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     //Creating incomplete circ vect
     vector<shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(solution.circumscriptions, minCirc);
     
+    if(unassignedMunicipality.empty()){
+        cout << "EMPTY QUEUE " << endl;
+    }
+
     // //Trying to repare solution
     // // while(!unassignedMunicipality.empty()){
     //     vector<shared_ptr<Circumscription>> possibleCircumscription = findPossibleCircumscriptionToContain(unassignedMunicipality.front(),  solution.circumscriptions, maxDist);
@@ -159,11 +163,11 @@ vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circum
 
 
 bool addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality, 
-        vector<shared_ptr<Circumscription>> circumscriptions, 
+        Solution& solution, 
         int maxDist, 
         int votesToWin,
         int maxCirc ){
-    for(auto&& circumscription : circumscriptions){
+    for(auto&& circumscription : solution.circumscriptions){
         if(circumscription->municipalities.size()>=maxCirc) continue; //no more space in circumscription
 
             if(validateMunFitsInCirc(circumscription, municipality, maxDist ) ){
@@ -171,7 +175,7 @@ bool addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality,
 
             if(circumscription->totalVotes >= votesToWin){
                 circumscription->isWon = true;
-               //TODO : COUNT SOLUTION WON...
+               solution.nbCircWon++;
 
             }
             return true; //successfully added 
