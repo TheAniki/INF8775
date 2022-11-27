@@ -20,4 +20,5 @@ bool addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality,
 vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions, int minCirc );
 vector<shared_ptr<Circumscription>> findPossibleCircumscriptionsToContainMun(shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered, int maxDist);
 shared_ptr<Municipality> choseMunicipalityToRemoveFromCirc( shared_ptr<Circumscription> circumscriptionToRemoveIn, shared_ptr<Circumscription> incompleteCirc ,int nbMunicipalities, int maxCirc);
+void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, shared_ptr<Circumscription> circumscription);
 #endif // !ALGO_H

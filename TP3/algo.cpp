@@ -72,14 +72,7 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
      
         shared_ptr<Municipality> municipalityToRemove =  choseMunicipalityToRemoveFromCirc( possibleCircumscriptions[0], incompleteCircs[0], nbMunicipalities,  maxCirc);
 
-        int position =0;
-        for(auto&& possibleMunicipality : possibleCircumscriptions[0]->municipalities){
-            if(possibleMunicipality->coordinates.row == municipalityToRemove->coordinates.row && possibleMunicipality->coordinates.column == municipalityToRemove->coordinates.column){
-                possibleCircumscriptions[0]->municipalities.erase(possibleCircumscriptions[0]->municipalities.begin()+ position);
-                break;
-            }
-            position++;
-        }
+        removeMunicipalityFromCirc(municipalityToRemove,  possibleCircumscriptions[0]);
 
         addMunicipalityToCirc(possibleCircumscriptions[0],unassignedMunicipality.front() );
         addMunicipalityToCirc(incompleteCircs[0],municipalityToRemove );
@@ -113,6 +106,20 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
 
     return solution;
 }
+
+void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, shared_ptr<Circumscription> circumscription){
+    //TODO : there are more efficient algorithms to remove an element from a vector
+   int position =0;
+    for(auto&& possibleMunicipality : circumscription->municipalities){
+        if(possibleMunicipality->coordinates.row == municipalityToRemove->coordinates.row && possibleMunicipality->coordinates.column == municipalityToRemove->coordinates.column){
+            circumscription->municipalities.erase(circumscription->municipalities.begin()+ position);
+            break;
+        }
+        position++;
+    }
+
+}
+
 
 
 // Choses a municipality to remove from a circ based on its total distance to an incomplete circ passed in parameter
