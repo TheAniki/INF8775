@@ -35,7 +35,7 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     cout << "MAX CIRC : " << maxCirc << endl;
     cout << "NB CIRC : "<< nbCircumscription << endl;
 
-    queue<shared_ptr<Municipality>> unassignedMunicipality;
+    queue<shared_ptr<Municipality>> unassignedMunicipalities;
 
 
     // Loops over all the municipalities to assign them to a circumscription 
@@ -48,8 +48,8 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
 
             //Was impossible to add municipality to a circumscription 
             if(!assignedMunicipalities[i][j]){
-                unassignedMunicipality.push(municipalities[i][j]);
-                cout << "unassignedMunicipality : " << municipalities[i][j]->coordinates.row<<"   ,   "<<municipalities[i][j]->coordinates.column << endl;
+                unassignedMunicipalities.push(municipalities[i][j]);
+                cout << "unassignedMunicipalities : " << municipalities[i][j]->coordinates.row<<"   ,   "<<municipalities[i][j]->coordinates.column << endl;
             }
         }
    
@@ -58,13 +58,13 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     //Creating incomplete circ vect
     vector<shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(solution.circumscriptions, minCirc);
     
-    if(unassignedMunicipality.empty()){
+    if(unassignedMunicipalities.empty()){
         cout << "EMPTY QUEUE " << endl;
     }
 
     //Trying to repare solution
-    // while(!unassignedMunicipality.empty()){
-        vector<shared_ptr<Circumscription>> possibleCircumscriptions = findPossibleCircumscriptionsToContainMun(unassignedMunicipality.front(),  solution.circumscriptions, maxDist);
+    while(!unassignedMunicipalities.empty()){
+        vector<shared_ptr<Circumscription>> possibleCircumscriptions = findPossibleCircumscriptionsToContainMun(unassignedMunicipalities.front(),  solution.circumscriptions, maxDist);
 
         //chose municipality to remove from a possible circ 
         if(possibleCircumscriptions.size()==0) return solution; // FAILED
@@ -73,18 +73,25 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
         shared_ptr<Municipality> municipalityToRemove =  choseMunicipalityToRemoveFromCirc( possibleCircumscriptions[0], incompleteCircs[0], nbMunicipalities,  maxCirc);
 
         removeMunicipalityFromCirc(municipalityToRemove,  possibleCircumscriptions[0]);
+        addMunicipalityToCirc(possibleCircumscriptions[0],unassignedMunicipalities.front() ); //Adds the unassignedMunicipality to the possibleCirc
 
-        addMunicipalityToCirc(possibleCircumscriptions[0],unassignedMunicipality.front() );
-        addMunicipalityToCirc(incompleteCircs[0],municipalityToRemove );
+
+        unassignedMunicipalities.pop(); //municipality is now assigned
+        unassignedMunicipalities.push(municipalityToRemove); // new unassigned municipality
+
+        if(validateMunFitsInCirc(incompleteCircs[0], unassignedMunicipalities.front() , maxDist )){
+            addMunicipalityToCirc(incompleteCircs[0], municipalityToRemove );
+            unassignedMunicipalities.pop();
+        }
        
        
         // NOT GOOD----------------------
-        // add  possibleCircumscriptions[0]->municipalities unassignedMunicipality.front()
+        // add  possibleCircumscriptions[0]->municipalities unassignedMunicipalities.front()
 
         // remove_if(possibleCircumscriptions[0]->municipalities.begin(), possibleCircumscriptions[0]->municipalities.end(), []()->bool{
 
 
-        // })
+    }
         // for(auto&& possibleMunicipality : possibleCircumscriptions[0]->municipalities){
         //     if(possibleMunicipality->coordinates.row == municipalityToRemove )
         //     swap(possibleCircumscriptions[0]->municipalities[municipalityToRemove->coordinates.row][municipalityToRemove->coordinates.column]
@@ -117,6 +124,9 @@ void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, s
         }
         position++;
     }
+
+
+
 
 }
 
