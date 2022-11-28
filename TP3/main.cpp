@@ -24,7 +24,8 @@ int main(int argc, const char*argv[]){
 
     // List of municipalities
     vector<vector<shared_ptr<Municipality>>> municipalities = createMunicipalityMatrix(file, nColumn, nRows);
-    if(nbCircumscription > nColumn*nRows){
+    unsigned int size = nColumn*nRows;
+    if(nbCircumscription > size && nbCircumscription == 0){
         cout<<"le nombre de circonscription ne peut pas depacer le nombre de municipalite"<<endl;
         return 0;
     }
@@ -34,12 +35,12 @@ int main(int argc, const char*argv[]){
     for(int i = 0 ; i < nRows ; i++){
         vector<shared_ptr<Municipality>> readLine = municipalities[i];
         for(auto&& municipality : readLine){
-            cout<<"column: "<< municipality->coordinates.column
-                <<" | row: "<< municipality->coordinates.row 
-                << " | votes for green party : "<< municipality->nbVotes
-                << " | score : "<< municipality->score
-                << " | nbVoisin: "<< municipality->nbNeighbors
-                << endl;
+            // cout<<"column: "<< municipality->coordinates.column
+            //     <<" | row: "<< municipality->coordinates.row 
+            //     << " | votes for green party : "<< municipality->nbVotes
+            //     << " | score : "<< municipality->score
+            //     << " | nbVoisin: "<< municipality->nbNeighbors
+            //     << endl;
             nbVotesTotal += municipality -> nbVotes;
         }
     }
@@ -52,9 +53,9 @@ int main(int argc, const char*argv[]){
     cout<<"Nb circonscription gagante possible: "<< nbVotesTotal/votesToWin;
     cout<<" sur "<< nbCircumscription<<endl;
     
-
-    Solution solution = quickSolution(municipalities, nbCircumscription);
-    displaySolution(solution);
+    Algo algo = Algo(municipalities, nbCircumscription);
+    algo.quickSolution();
+    displaySolution(algo.getSolution());
 
     return 0;
 }

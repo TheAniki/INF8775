@@ -1,24 +1,54 @@
 #ifndef ALGO_H
 #define ALGO_H
 
-void algo();
-vector<vector<bool>> createAssignedMun(vector<vector<shared_ptr<Municipality>>> municipalities);
-Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, int nbCircumscription );
-Solution initializeSolution(int nbCircumscription);
-void addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality );
-void computeCircBounds(int nbMunicipalities,int nbCircumscription, int& minCirc, int& maxCirc);
-int computeManhattanDist(const Coord& coord1, const Coord& coord2);
-bool validateMunFitsInCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipalityToValidate, int maxDist);
-void addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality, vector<shared_ptr<Circumscription>> circumscription, bool& isAddedSuccess );
-bool addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality, 
-        Solution& solution, 
-        int maxDist, 
-        int votesToWin,
-        int maxCirc);
+// ==================== Struct ==================== //
+struct CircBound{
+    int circSize;
+    int maxAmount;
 
+    CircBound():circSize(0), maxAmount(0){};
+    CircBound(int cSize, int mAmount ):
+        circSize(cSize), maxAmount(mAmount){};
+};
 
-vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions, int minCirc );
-vector<shared_ptr<Circumscription>> findPossibleCircumscriptionsToContainMun(shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered, int maxDist);
-shared_ptr<Municipality> choseMunicipalityToRemoveFromCirc( shared_ptr<Circumscription> circumscriptionToRemoveIn, shared_ptr<Circumscription> incompleteCirc ,int nbMunicipalities, int maxCirc);
-void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, shared_ptr<Circumscription> circumscription);
+// ================================================= //
+
+class Algo
+{        
+   public:
+    Algo();
+    Algo(vector<vector<shared_ptr<Municipality>>> municipalities, int nbCircumscription);
+    ~Algo();
+    void quickSolution();
+    vector<vector<bool>> createAssignedMun(vector<vector<shared_ptr<Municipality>>> municipalities);
+    Solution initializeSolution(int nbCircumscription);
+    void computeCircBounds();
+    void computeRepartition();
+    bool addMunicipalityToFirstAvailableCirc(int i, int j);
+    bool validateMunFitsInCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipalityToValidate);
+    void addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality);
+    vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions);
+    vector<shared_ptr<Circumscription>> findPossibleCircumscriptionsToContainMun(
+    shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered);
+    shared_ptr<Circumscription> findClosestCircumscription(Solution& solution);
+    shared_ptr<Circumscription> findNeighbourCircumscriptions(Coord coord, Solution& solution);     
+    void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, shared_ptr<Circumscription> circumscription);
+    shared_ptr<Municipality> choseMunicipalityToRemoveFromCirc( shared_ptr<Circumscription> circumscriptionToRemoveIn, shared_ptr<Circumscription> incompleteCirc);
+    
+    // Getters
+    Solution getSolution();
+
+   private:
+    int _nbMunicipalities;
+    int _votesToWin;
+    int _maxDist;
+    int _nbCircumscriptions;
+    CircBound _minCirc;
+    CircBound _maxCirc;     
+    Solution _solution;
+    vector<vector<bool>> _assignedMunicipalities;
+    vector<vector<shared_ptr<Municipality>>> _municipalities;
+    queue<shared_ptr<Municipality>> _unassignedMunicipalities;
+};
+
 #endif // !ALGO_H
