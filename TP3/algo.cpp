@@ -21,6 +21,8 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     // constant parameters... -> TODO : put as attribute of a class ? ...
     const int nbMunicipalities = municipalities.size()*municipalities[0].size(); //n
     int votesToWin = ((50*(nbMunicipalities))/nbCircumscription)+1; 
+
+    cout << "VOTES TO WIN : " << votesToWin << endl;
     const int maxDist = ceil(float(nbMunicipalities)/(2*nbCircumscription)); //  ceil(n/2m). m = nbCircumscription 
 
     int minCirc = 0; //k_min
@@ -64,15 +66,19 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
 
     //Trying to repare solution
     while(!unassignedMunicipalities.empty()){
+        cout << "FRONT OF QUEUE : " <<unassignedMunicipalities.front()->nbVotes<< endl;
         vector<shared_ptr<Circumscription>> possibleCircumscriptions = findPossibleCircumscriptionsToContainMun(unassignedMunicipalities.front(),  solution.circumscriptions, maxDist);
-
+        for(auto&& circ : possibleCircumscriptions)
+        cout << "POSSIBLE CIRCUMSCRIPTION TO CHOP : "<< circ->circumscriptionNumber <<endl;
         //chose municipality to remove from a possible circ 
-        if(possibleCircumscriptions.size()==0) return solution; // FAILED
+        if(possibleCircumscriptions.size()==0) {
+            shared_ptr<Circumscription> closestCirc= findClosestCircumscription();
+        }
 
      
         shared_ptr<Municipality> municipalityToRemove =  choseMunicipalityToRemoveFromCirc( possibleCircumscriptions[0], incompleteCircs[0], nbMunicipalities,  maxCirc);
 
-        removeMunicipalityFromCirc(municipalityToRemove,  possibleCircumscriptions[0]);
+        removeMunicipalityFromCirc(municipalityToRemove,  possibleCircumscriptions[0]); 
         addMunicipalityToCirc(possibleCircumscriptions[0],unassignedMunicipalities.front() ); //Adds the unassignedMunicipality to the possibleCirc
 
 
@@ -114,6 +120,25 @@ Solution quickSolution(vector<vector<shared_ptr<Municipality>>> municipalities, 
     return solution;
 }
 
+shared_ptr<Circumscription> findClosestCircumscription(Solution& solution){
+    shared_ptr<Circumscription> closestCirc;
+    for()
+}
+
+shared_ptr<Circumscription> findNeighbourCircumscriptions(Coord coord, Solution& solution){
+    int surroundCoords[3] = {-1, 0, 1};
+    for(int i : surroundCoords){
+        for(int j : surroundCoords){
+            if(i == 0 && j == 0) continue;
+
+
+
+        }
+
+
+    }
+}
+
 void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, shared_ptr<Circumscription> circumscription){
     //TODO : there are more efficient algorithms to remove an element from a vector
    int position =0;
@@ -125,6 +150,8 @@ void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, s
         position++;
     }
 
+    circumscription->totalVotes-= municipalityToRemove->nbVotes;
+    // TODO : UPDATE SOLUTION nbWon...  AND CIRCUMSCRIPTION->isWon
 
 
 
@@ -195,15 +222,13 @@ bool addMunicipalityToFirstAvailableCirc(shared_ptr<Municipality> municipality,
         if(circumscription->municipalities.size()>=maxCirc) continue; //no more space in circumscription
 
             if(validateMunFitsInCirc(circumscription, municipality, maxDist ) ){
-            addMunicipalityToCirc(circumscription, municipality); 
-
-            if(circumscription->totalVotes >= votesToWin){
-                circumscription->isWon = true;
-               solution.nbCircWon++;
-
+                addMunicipalityToCirc(circumscription, municipality); 
+                if(!circumscription->isWon && circumscription->totalVotes >= votesToWin){
+                    circumscription->isWon = true;
+                    solution.nbCircWon++;
+                }
+                return true; //successfully added 
             }
-            return true; //successfully added 
-        }
     }
     return false;
 
@@ -226,7 +251,6 @@ bool validateMunFitsInCirc(shared_ptr<Circumscription> circumscription, shared_p
 void addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality ){
     circumscription->municipalities.push_back(municipality);
     circumscription->totalVotes+=municipality->nbVotes;
-
 }
 
 void computeCircBounds(int nbMunicipalities, int nbCircumscription, int& minCirc, int& maxCirc){
@@ -257,7 +281,7 @@ Solution initializeSolution(int nbCircumscription){
         for(int i = 0 ; i < nbCircumscription ; i++ ){
             vector<shared_ptr<Municipality>> emptyMunicipality;
             initialSolution.nbCircWon = 0;
-            initialSolution.circumscriptions[i] = make_shared<Circumscription>(false,  0, emptyMunicipality); ;
+            initialSolution.circumscriptions[i] = make_shared<Circumscription>(i+1, false,  0, emptyMunicipality); ;
        }
 
        return initialSolution;

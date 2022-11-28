@@ -43,13 +43,14 @@ struct Municipality {
 };
 
 struct Circumscription{
+	int circumscriptionNumber;
 	bool isWon;
 	int totalVotes;
 	vector<shared_ptr<Municipality>> municipalities;
 
 	Circumscription(){}
 
-	Circumscription(bool isWon, int totalVotes, vector<shared_ptr<Municipality>> municipalities):isWon(isWon), totalVotes(totalVotes)  {
+	Circumscription(int circumscriptionNumber, bool isWon, int totalVotes, vector<shared_ptr<Municipality>> municipalities):circumscriptionNumber(circumscriptionNumber), isWon(isWon), totalVotes(totalVotes)  {
 		for(auto&& mun : municipalities){
 			municipalities.emplace_back(mun);
 		}
