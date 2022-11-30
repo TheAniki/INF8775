@@ -190,7 +190,7 @@ vector<shared_ptr<Circumscription>> Algo::findPossibleCircumscriptionsToContainM
 vector<shared_ptr<Circumscription>> Algo::findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions){
     vector<shared_ptr<Circumscription>> incompleteCircs;
     for(auto&& circ : circumscriptions){
-        if((int) circ->municipalities.size() < this->_maxCirc.circSize){
+        if((int) circ->municipalities.size() < this->_currentCirc.circSize){
             incompleteCircs.push_back(circ);
         }
     }
@@ -200,7 +200,7 @@ vector<shared_ptr<Circumscription>> Algo::findIncompleteCircs(vector<shared_ptr<
 bool Algo::addMunicipalityToFirstAvailableCirc(int i, int j){{
     // TODO: maxCirc while possible else minCirc.        
     for(auto&& circumscription : this->_solution.circumscriptions){
-        if((int) circumscription->municipalities.size()>=this->_maxCirc.circSize) continue; //no more space in circumscription
+        if((int) circumscription->municipalities.size()>=this->_currentCirc.circSize) continue; //no more space in circumscription
 
             if(validateMunFitsInCirc(circumscription, this->_municipalities[i][j]) ){
             
@@ -228,6 +228,10 @@ bool Algo::validateMunFitsInCirc(shared_ptr<Circumscription> circumscription, sh
 void Algo::addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality ){
     circumscription->municipalities.push_back(municipality);
     circumscription->totalVotes+=municipality->nbVotes;
+    if((int) circumscription->municipalities.size() >= this->_currentCirc.circSize)
+        this->_currentCirc.maxAmount--;
+    if(this->_currentCirc.maxAmount <= 0)
+        this->_currentCirc = this->_minCirc;
 }
 
 void Algo::computeCircBounds(){
@@ -265,7 +269,8 @@ void Algo::computeRepartition(){
         }
         this->_maxCirc.maxAmount = y;
         this->_minCirc.maxAmount = x;
-    }       
+    }    
+    this->_currentCirc = this->_maxCirc;   
 }
 //Generates a matrix that tells if a municipality is assigned to a 
 // Necessary, because there will be multiple solutions sharing the same municipalities

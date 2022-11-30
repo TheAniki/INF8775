@@ -44,7 +44,8 @@ class Algo
     int _maxDist;
     int _nbCircumscriptions;
     CircBound _minCirc;
-    CircBound _maxCirc;     
+    CircBound _maxCirc; 
+    CircBound _currentCirc;    
     Solution _solution;
     vector<vector<bool>> _assignedMunicipalities;
     vector<vector<shared_ptr<Municipality>>> _municipalities;
