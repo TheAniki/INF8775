@@ -28,7 +28,7 @@ class Algo
     bool forceAddMunicipality(shared_ptr<Municipality> municipalityToForce);
     bool validateMunFitsInCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipalityToValidate);
     void addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality);
-    vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions);
+    map<int, shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions);
     vector<shared_ptr<Circumscription>> findPossibleCircumscriptionsToContainMun(
     shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered);
     vector<shared_ptr<Circumscription>> findClosestCircumscription(shared_ptr<Municipality> municipality);

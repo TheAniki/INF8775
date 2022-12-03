@@ -50,7 +50,7 @@ bool Algo::quickSolution(){
 
 
     //Creating incomplete circ vect
-    vector<shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
+    map<int, shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
     
     if(this->_unassignedMunicipalities.empty()){
         cout << "EMPTY QUEUE " << endl;
@@ -104,6 +104,8 @@ bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce){
     // Finds the less problematic circ to force solution in
     shared_ptr<Circumscription> circumscriptionToBreak;
     vector<shared_ptr<Municipality>> municipalitiesToRemoveInBreakCirc;
+
+
     for(auto&& neighborCirc : neighborCircs){
         vector<shared_ptr<Municipality>> municipalitiesToRemoveInCurr;
         for(auto&& municipality : neighborCirc.second->municipalities){
@@ -116,14 +118,38 @@ bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce){
             municipalitiesToRemoveInBreakCirc = municipalitiesToRemoveInCurr;
             circumscriptionToBreak = neighborCirc.second;
         }
-
     }
+
     //else if TODO : si égale, prendre celle qui est la plus proche d'une circonscription incomplète 
     cout << "Circ to break : " << circumscriptionToBreak->circumscriptionNumber << endl;
-    cout << " Problematic muns: " << endl;
+    
+    
+    // Looping over the too-far circs
     for(auto&& mun : municipalitiesToRemoveInBreakCirc){
-        cout << mun->nbVotes << endl;
+        cout <<"Too far municipality : "  << mun->nbVotes << endl;
+        map<int, shared_ptr<Circumscription>> neighborCircsOfToRemove =  findNeighbourCircumscriptions(mun->coordinates);
+        map<int, shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
+        for(auto&& neighborCircOfToRemove : neighborCircsOfToRemove){
+            cout << "NEIGHBOUR OF TO REMOVE : " << neighborCircOfToRemove.second->circumscriptionNumber << endl;
+            if(incompleteCircs.count(neighborCircOfToRemove.second->circumscriptionNumber) > 0){
+                cout << "COUNTED : " << neighborCircOfToRemove.second->circumscriptionNumber << endl;
+                addMunicipalityToCirc(neighborCircOfToRemove.second, mun);
+            }
+        }
+        cout << "AMOUNT OF INCPMPLETES : " << incompleteCircs.size() << endl ;
+        
     }
+
+
+
+
+    
+
+
+
+
+
+
     return false;
 
 
@@ -230,12 +256,13 @@ vector<shared_ptr<Circumscription>> Algo::findPossibleCircumscriptionsToContainM
 
 }
 
-// TODO : Repair it. wrong number of municipality.
-vector<shared_ptr<Circumscription>> Algo::findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions){
-    vector<shared_ptr<Circumscription>> incompleteCircs;
+// TODO Repair ?... Looks ok
+map<int, shared_ptr<Circumscription>> Algo::findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions){
+    map<int, shared_ptr<Circumscription>> incompleteCircs;
     for(auto&& circ : circumscriptions){
         if((int) circ->municipalities.size() < this->_currentCirc.circSize){
-            incompleteCircs.push_back(circ);
+            incompleteCircs.emplace(circ->circumscriptionNumber, circ);
+            cout << "INCOMPLETE CIRC : " << circ->circumscriptionNumber << endl;
         }
     }
     return incompleteCircs;
