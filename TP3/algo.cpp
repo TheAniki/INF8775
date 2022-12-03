@@ -92,17 +92,27 @@ void Algo::quickSolution(){
 
 shared_ptr<Circumscription> Algo::findClosestCircumscription(){
     shared_ptr<Municipality> unassignedMun = this->_unassignedMunicipalities.front();
-    vector<shared_ptr<Circumscription>> closestCircs = findNeighbourCircumscriptions(unassignedMun->coordinates);
-    
+    vector<int> closestCircsIDs = findNeighbourCircumscriptions(unassignedMun->coordinates);
+    int distance = 10000; // set max distance.
+    int closestId = closestCircsIDs[0];
+    for(int id : closestCircsIDs){
+        cout<<"considering id: "<< id <<endl;
+        for(auto&& mun: this->_solution.circumscriptions[id]->municipalities){
+            if(distance > computeManhattanDist(mun->coordinates, unassignedMun->coordinates)){
+                cout<<"old closestId : "<< closestId << " new closestId: "<<mun->circumscriptionNumber<<endl;
+                closestId = mun->circumscriptionNumber;
+                distance = computeManhattanDist(mun->coordinates, unassignedMun->coordinates);
+            }
+        }        
+    }
     // int distanceToCirc;    
 
-    return closestCircs[0];
+    return this->_solution.circumscriptions[closestId];
 }
 
-vector<shared_ptr<Circumscription>> Algo::findNeighbourCircumscriptions(Coord coord){
-
-    vector<shared_ptr<Circumscription>> DummyReturn; // TODO: Remove dummy return.
-
+vector<int> Algo::findNeighbourCircumscriptions(Coord coord){
+    cout<<"finding neighbour of : "<<coord.column <<", " <<coord.row<<endl;
+    vector<int> closestCircsIDs;
     int surroundCoords[3] = {-1, 0, 1};
     for(int i : surroundCoords){
         for(int j : surroundCoords){
@@ -110,11 +120,12 @@ vector<shared_ptr<Circumscription>> Algo::findNeighbourCircumscriptions(Coord co
             if( i+coord.column < 0 || j +coord.row < 0) continue;
             if( i+coord.column >=(int) this->_municipalities[0].size()  
                 || j +coord.row >= (int) this->_municipalities.size()) continue;
-            
+            cout<<"circ id: "<<this->_municipalities[i+coord.column][j +coord.row]->circumscriptionNumber<<endl;
+            closestCircsIDs.push_back(this->_municipalities[i+coord.column][j +coord.row]->circumscriptionNumber);            
         }
     }
 
-    return DummyReturn; // TODO: Remove.
+    return closestCircsIDs; // TODO: Remove.
 }
 
 void Algo::removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, shared_ptr<Circumscription> circumscription){
@@ -214,7 +225,7 @@ bool Algo::validateMunFitsInCirc(shared_ptr<Circumscription> circumscription, sh
 }
 
 void Algo::addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality ){
-    circumscription->municipalities.push_back(municipality);
+    circumscription->addMun(municipality);
     circumscription->totalVotes+=municipality->nbVotes;
     if((int) circumscription->municipalities.size() >= this->_currentCirc.circSize)
         this->_currentCirc.maxAmount--;
