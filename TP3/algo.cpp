@@ -38,7 +38,7 @@ void Algo::quickSolution(){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
             if(this->_assignedMunicipalities[i][j]) continue;
 
-            this->_assignedMunicipalities[i][j] = addMunicipalityToFirstAvailableCirc(i,j); // Returns true if successfully added
+            this->_assignedMunicipalities[i][j] = addMunicipalityToFirstAvailableCirc(i,j); // Returns true if successfully added //TODO : Change for heuristic
 
             // Was impossible to add municipality to a circumscription 
             if(!this->_assignedMunicipalities[i][j]){
@@ -57,9 +57,11 @@ void Algo::quickSolution(){
         cout << "EMPTY QUEUE " << endl;
     }
 
-    //Trying to repare solution
+    //Trying to repair solution
     int counterOfMun = 0; // 
 
+
+    // TODO : POUBELLE
     while(!this->_unassignedMunicipalities.empty() && counterOfMun < (int)(this->_municipalities.size()*this->_municipalities[0].size())){
         // cout << "FRONT OF QUEUE : " <<this->_unassignedMunicipalities.front()->nbVotes<< endl;
         vector<shared_ptr<Circumscription>> possibleCircumscriptions = findPossibleCircumscriptionsToContainMun(this->_unassignedMunicipalities.front(),  this->_solution.circumscriptions);
