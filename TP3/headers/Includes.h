@@ -5,6 +5,7 @@
 #include <cstring>
 #include <sstream>
 #include <vector>
+#include <map>
 #include <fstream>
 #include <string>
 #include <memory>
@@ -33,7 +34,7 @@ struct Municipality {
     int nbVotes; // Number of votes for the green party.
 	float score; // score of the municipality : average of votes for the area of itself and euclidean neighbor.  
 	int nbNeighbors = 0; // number of neighbors in euclidean distance of 1.
-	int circumscriptionNumber;
+
     // Default Ctor.
 	Municipality():
 		coordinates(Coord()),nbVotes(-1){}
@@ -61,15 +62,19 @@ struct Circumscription{
 	}
 
 	void addMun(shared_ptr<Municipality> municipality){
-		municipality->circumscriptionNumber = this->circumscriptionNumber;
 		this->municipalities.emplace_back(municipality);
 	}
 
-	// void removeMun(shared_ptr<Municipality> municipality){
-	// 	for(auto&& mun : this->municipalities){
-	// 		if(mun == municipality) this->municipalities.erase(mun);
-	// 	}
-	// }
+	void removeMun(shared_ptr<Municipality> municipality){
+		int position =0;
+		for(auto&& mun : this->municipalities){
+			if(mun == municipality){
+				this->municipalities.erase(municipalities.begin()+ position);
+				break;
+			} 
+			position++;
+		}
+	}
 };
 
 struct Solution{
