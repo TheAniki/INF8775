@@ -30,8 +30,8 @@ class Algo
     vector<shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions);
     vector<shared_ptr<Circumscription>> findPossibleCircumscriptionsToContainMun(
     shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered);
-    shared_ptr<Circumscription> findClosestCircumscription(Solution& solution);
-    shared_ptr<Circumscription> findNeighbourCircumscriptions(Coord coord, Solution& solution);     
+    shared_ptr<Circumscription> findClosestCircumscription();
+    vector<shared_ptr<Circumscription>> findNeighbourCircumscriptions(Coord coord);     
     void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, shared_ptr<Circumscription> circumscription);
     shared_ptr<Municipality> choseMunicipalityToRemoveFromCirc( shared_ptr<Circumscription> circumscriptionToRemoveIn, shared_ptr<Circumscription> incompleteCirc);
     

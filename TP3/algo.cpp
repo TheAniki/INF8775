@@ -26,6 +26,13 @@ Algo::~Algo()
 
 void Algo::quickSolution(){      
 
+    cout << "MAX DISTS : " << this->_maxDist<< endl;
+    cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
+    cout << "MIN CIRC maxAmount: " <<this->_minCirc.maxAmount << endl;
+    cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
+    cout << "MAX CIRC maxAmount: "<< this->_maxCirc.maxAmount << endl;
+    cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
+
     // Loops over all the municipalities to assign them to a circumscription 
     for(long unsigned int i = 0 ; i < this->_municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
@@ -42,6 +49,7 @@ void Algo::quickSolution(){
         }   
     }
 
+
     //Creating incomplete circ vect
     vector<shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
     
@@ -50,79 +58,59 @@ void Algo::quickSolution(){
     }
 
     //Trying to repare solution
-    while(!this->_unassignedMunicipalities.empty()){
-        cout << "FRONT OF QUEUE : " <<this->_unassignedMunicipalities.front()->nbVotes<< endl;
+    int counterOfMun = 0; // 
+
+    while(!this->_unassignedMunicipalities.empty() && counterOfMun < (int)(this->_municipalities.size()*this->_municipalities[0].size())){
+        // cout << "FRONT OF QUEUE : " <<this->_unassignedMunicipalities.front()->nbVotes<< endl;
         vector<shared_ptr<Circumscription>> possibleCircumscriptions = findPossibleCircumscriptionsToContainMun(this->_unassignedMunicipalities.front(),  this->_solution.circumscriptions);
-        for(auto&& circ : possibleCircumscriptions)
-        cout << "POSSIBLE CIRCUMSCRIPTION TO CHOP : "<< circ->circumscriptionNumber <<endl;
         //chose municipality to remove from a possible circ 
         if(possibleCircumscriptions.size()==0) {
-            shared_ptr<Circumscription> closestCirc= findClosestCircumscription(this->_solution);
+            shared_ptr<Circumscription> closestCirc = findClosestCircumscription();
         }
+        else{
+            for(auto&& circ : possibleCircumscriptions)
+                cout << "POSSIBLE CIRCUMSCRIPTION TO CHOP : "<< circ->circumscriptionNumber <<endl;
+        
+            shared_ptr<Municipality> municipalityToRemove =  choseMunicipalityToRemoveFromCirc( possibleCircumscriptions[0], incompleteCircs[0]);
 
-     
-        shared_ptr<Municipality> municipalityToRemove =  choseMunicipalityToRemoveFromCirc( possibleCircumscriptions[0], incompleteCircs[0]);
+            removeMunicipalityFromCirc(municipalityToRemove,  possibleCircumscriptions[0]); 
+            addMunicipalityToCirc(possibleCircumscriptions[0],this->_unassignedMunicipalities.front() ); //Adds the unassignedMunicipality to the possibleCirc
+        
 
-        removeMunicipalityFromCirc(municipalityToRemove,  possibleCircumscriptions[0]); 
-        addMunicipalityToCirc(possibleCircumscriptions[0],this->_unassignedMunicipalities.front() ); //Adds the unassignedMunicipality to the possibleCirc
+            this->_unassignedMunicipalities.pop(); //municipality is now assigned
+            this->_unassignedMunicipalities.push(municipalityToRemove); // new unassigned municipality
 
-
-        this->_unassignedMunicipalities.pop(); //municipality is now assigned
-        this->_unassignedMunicipalities.push(municipalityToRemove); // new unassigned municipality
-
-        if(validateMunFitsInCirc(incompleteCircs[0], this->_unassignedMunicipalities.front())){
-            addMunicipalityToCirc(incompleteCircs[0], municipalityToRemove );
-            this->_unassignedMunicipalities.pop();
+            if(validateMunFitsInCirc(incompleteCircs[0], this->_unassignedMunicipalities.front())){
+                addMunicipalityToCirc(incompleteCircs[0], municipalityToRemove );
+                this->_unassignedMunicipalities.pop();
+            }       
         }
-       
-       
-        // NOT GOOD----------------------
-        // add  possibleCircumscriptions[0]->municipalities unassignedMunicipalities.front()
-
-        // remove_if(possibleCircumscriptions[0]->municipalities.begin(), possibleCircumscriptions[0]->municipalities.end(), []()->bool{
-
-
-    }
-        // for(auto&& possibleMunicipality : possibleCircumscriptions[0]->municipalities){
-        //     if(possibleMunicipality->coordinates.row == municipalityToRemove )
-        //     swap(possibleCircumscriptions[0]->municipalities[municipalityToRemove->coordinates.row][municipalityToRemove->coordinates.column]
-
-
-
-        // municipalityToRemove->coordinates
-        // vector<shared_ptr<Municipality>> ints = possibleCircumscriptions[0]->municipalities;
-        // ints.erase(std::remove_if(begin(ints), end(ints), [](int i) { municipalityToRemove->  ints[i]->    }), end(ints));
-        // ------------------
-    
-
-
-    cout << "MAX DISTS : " << this->_maxDist<< endl;
-    cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
-    cout << "MIN CIRC maxAmount: " <<this->_minCirc.maxAmount << endl;
-    cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
-    cout << "MAX CIRC maxAmount: "<< this->_maxCirc.maxAmount << endl;
-    cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
-    
+        counterOfMun++;
+        cout<<"cnt: "<<counterOfMun<<endl;
+    }  
 }
 
-shared_ptr<Circumscription> Algo::findClosestCircumscription(Solution& solution){
-    shared_ptr<Circumscription> closestCirc;
-    // for(){} // TODO: Do something with this?
+shared_ptr<Circumscription> Algo::findClosestCircumscription(){
+    shared_ptr<Municipality> unassignedMun = this->_unassignedMunicipalities.front();
+    vector<shared_ptr<Circumscription>> closestCircs = findNeighbourCircumscriptions(unassignedMun->coordinates);
+    
+    // int distanceToCirc;    
 
-    return closestCirc;
+    return closestCircs[0];
 }
 
-shared_ptr<Circumscription> Algo::findNeighbourCircumscriptions(Coord coord, Solution& solution){
+vector<shared_ptr<Circumscription>> Algo::findNeighbourCircumscriptions(Coord coord){
 
-    shared_ptr<Circumscription> DummyReturn; // TODO: Remove dummy return.
+    vector<shared_ptr<Circumscription>> DummyReturn; // TODO: Remove dummy return.
 
     int surroundCoords[3] = {-1, 0, 1};
     for(int i : surroundCoords){
         for(int j : surroundCoords){
-            if(i == 0 && j == 0) continue;
-
-
-
+            if( i == 0 && j == 0) continue;
+            if( i+coord.column < 0 || j +coord.row < 0) continue;
+            if( i+coord.column >=(int) this->_municipalities[0].size()  
+                || j +coord.row >= (int) this->_municipalities.size()) continue;
+            
         }
     }
 
@@ -171,15 +159,15 @@ vector<shared_ptr<Circumscription>> Algo::findPossibleCircumscriptionsToContainM
     shared_ptr<Municipality> municipalityToInclude, vector<shared_ptr<Circumscription>> circumscriptionsConsidered){
 
     vector<shared_ptr<Circumscription>> possibleCircumscriptions;
-    
-    int i = 0 ; //TODO : remove
+    // int i = 0 ; //TODO : remove
     // find possible solutions
-    for(auto&& circ : circumscriptionsConsidered){
+    for(auto&& circ : circumscriptionsConsidered){        
+            
         if(validateMunFitsInCirc(circ, municipalityToInclude)){
             possibleCircumscriptions.push_back(circ);
-            cout<<"POSSIBLE CIRC FOR MUNICIPALITY : " << i << endl;
+            // cout<<"POSSIBLE CIRC FOR MUNICIPALITY : " << i << endl;
         }
-        i++;
+        // i++;
     }
 
     return possibleCircumscriptions;
