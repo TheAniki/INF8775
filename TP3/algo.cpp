@@ -59,7 +59,6 @@ void Algo::quickSolution(){
 
     //Trying to repare solution
     int counterOfMun = 0; // 
-
     while(!this->_unassignedMunicipalities.empty() && counterOfMun < (int)(this->_municipalities.size()*this->_municipalities[0].size())){
         // cout << "FRONT OF QUEUE : " <<this->_unassignedMunicipalities.front()->nbVotes<< endl;
         vector<shared_ptr<Circumscription>> possibleCircumscriptions = findPossibleCircumscriptionsToContainMun(this->_unassignedMunicipalities.front(),  this->_solution.circumscriptions);
@@ -99,13 +98,10 @@ shared_ptr<Circumscription> Algo::findClosestCircumscription(){
         cout<<"considering id: "<< id <<endl;
         for(auto&& mun: this->_solution.circumscriptions[id]->municipalities){
             if(distance > computeManhattanDist(mun->coordinates, unassignedMun->coordinates)){
-                cout<<"old closestId : "<< closestId << " new closestId: "<<mun->circumscriptionNumber<<endl;
-                closestId = mun->circumscriptionNumber;
                 distance = computeManhattanDist(mun->coordinates, unassignedMun->coordinates);
             }
         }        
     }
-    // int distanceToCirc;    
 
     return this->_solution.circumscriptions[closestId];
 }
@@ -120,8 +116,7 @@ vector<int> Algo::findNeighbourCircumscriptions(Coord coord){
             if( i+coord.column < 0 || j +coord.row < 0) continue;
             if( i+coord.column >=(int) this->_municipalities[0].size()  
                 || j +coord.row >= (int) this->_municipalities.size()) continue;
-            cout<<"circ id: "<<this->_municipalities[i+coord.column][j +coord.row]->circumscriptionNumber<<endl;
-            closestCircsIDs.push_back(this->_municipalities[i+coord.column][j +coord.row]->circumscriptionNumber);            
+                          
         }
     }
 
