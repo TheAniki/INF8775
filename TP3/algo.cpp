@@ -24,7 +24,7 @@ Algo::~Algo()
 {
 }
 
-void Algo::quickSolution(){      
+bool Algo::quickSolution(){      
 
     cout << "MAX DISTS : " << this->_maxDist<< endl;
     cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
@@ -42,9 +42,8 @@ void Algo::quickSolution(){
 
             // Was impossible to add municipality to a circumscription 
             if(!this->_assignedMunicipalities[i][j]){
-                this->_unassignedMunicipalities.push(this->_municipalities[i][j]);
-                cout << "unassignedMunicipality : " << this->_municipalities[i][j]->coordinates.row<<"   ,   "
-                <<this->_municipalities[i][j]->coordinates.column << endl;
+                bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j]);
+                if(!isForceable) return false;
             }
         }   
     }
@@ -57,70 +56,121 @@ void Algo::quickSolution(){
         cout << "EMPTY QUEUE " << endl;
     }
 
-    //Trying to repare solution
-    int counterOfMun = 0; // 
-    while(!this->_unassignedMunicipalities.empty() && counterOfMun < (int)(this->_municipalities.size()*this->_municipalities[0].size())){
-        // cout << "FRONT OF QUEUE : " <<this->_unassignedMunicipalities.front()->nbVotes<< endl;
-        vector<shared_ptr<Circumscription>> possibleCircumscriptions = findPossibleCircumscriptionsToContainMun(this->_unassignedMunicipalities.front(),  this->_solution.circumscriptions);
-        //chose municipality to remove from a possible circ 
-        if(possibleCircumscriptions.size()==0) {
-            shared_ptr<Circumscription> closestCirc = findClosestCircumscription();
-        }
-        else{
-            for(auto&& circ : possibleCircumscriptions)
-                cout << "POSSIBLE CIRCUMSCRIPTION TO CHOP : "<< circ->circumscriptionNumber <<endl;
+//     //Trying to repare solution
+//     int counterOfMun = 0; // 
+//     while(!this->_unassignedMunicipalities.empty() && counterOfMun < (int)(this->_municipalities.size()*this->_municipalities[0].size())){
+//         // cout << "FRONT OF QUEUE : " <<this->_unassignedMunicipalities.front()->nbVotes<< endl;
+//         vector<shared_ptr<Circumscription>> possibleCircumscriptions = findPossibleCircumscriptionsToContainMun(this->_unassignedMunicipalities.front(),  this->_solution.circumscriptions);
+//         //chose municipality to remove from a possible circ 
+//         if(possibleCircumscriptions.size()==0) {
+//             shared_ptr<Circumscription> closestCirc = findClosestCircumscription();
+//         }
+//         else{
+//             for(auto&& circ : possibleCircumscriptions)
+//                 cout << "POSSIBLE CIRCUMSCRIPTION TO CHOP : "<< circ->circumscriptionNumber <<endl;
         
-            shared_ptr<Municipality> municipalityToRemove =  choseMunicipalityToRemoveFromCirc( possibleCircumscriptions[0], incompleteCircs[0]);
+//             shared_ptr<Municipality> municipalityToRemove =  choseMunicipalityToRemoveFromCirc( possibleCircumscriptions[0], incompleteCircs[0]);
 
-            removeMunicipalityFromCirc(municipalityToRemove,  possibleCircumscriptions[0]); 
-            addMunicipalityToCirc(possibleCircumscriptions[0],this->_unassignedMunicipalities.front() ); //Adds the unassignedMunicipality to the possibleCirc
+//             removeMunicipalityFromCirc(municipalityToRemove,  possibleCircumscriptions[0]); 
+//             addMunicipalityToCirc(possibleCircumscriptions[0],this->_unassignedMunicipalities.front() ); //Adds the unassignedMunicipality to the possibleCirc
         
 
-            this->_unassignedMunicipalities.pop(); //municipality is now assigned
-            this->_unassignedMunicipalities.push(municipalityToRemove); // new unassigned municipality
+//             this->_unassignedMunicipalities.pop(); //municipality is now assigned
+//             this->_unassignedMunicipalities.push(municipalityToRemove); // new unassigned municipality
 
-            if(validateMunFitsInCirc(incompleteCircs[0], this->_unassignedMunicipalities.front())){
-                addMunicipalityToCirc(incompleteCircs[0], municipalityToRemove );
-                this->_unassignedMunicipalities.pop();
-            }       
-        }
-        counterOfMun++;
-        cout<<"cnt: "<<counterOfMun<<endl;
-    }  
+//             if(validateMunFitsInCirc(incompleteCircs[0], this->_unassignedMunicipalities.front())){
+//                 addMunicipalityToCirc(incompleteCircs[0], municipalityToRemove );
+//                 this->_unassignedMunicipalities.pop();
+//             }       
+//         }
+//         counterOfMun++;
+//         cout<<"cnt: "<<counterOfMun<<endl;
+//     }  
+
+
+
+
+
+    //TODO :catch any error and return false-> if some case results in an error like segmentation, it's ok, we just won't consider it. 
 }
 
-shared_ptr<Circumscription> Algo::findClosestCircumscription(){
-    shared_ptr<Municipality> unassignedMun = this->_unassignedMunicipalities.front();
-    vector<int> closestCircsIDs = findNeighbourCircumscriptions(unassignedMun->coordinates);
-    int distance = 10000; // set max distance.
-    int closestId = closestCircsIDs[0];
-    for(int id : closestCircsIDs){
-        cout<<"considering id: "<< id <<endl;
-        for(auto&& mun: this->_solution.circumscriptions[id]->municipalities){
-            if(distance > computeManhattanDist(mun->coordinates, unassignedMun->coordinates)){
-                distance = computeManhattanDist(mun->coordinates, unassignedMun->coordinates);
+
+bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce){
+    cout << "**problematic mun " << municipalityToForce->nbVotes << endl;
+    map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates);
+    
+
+
+    // Finds the less problematic circ to force solution in
+    shared_ptr<Circumscription> circumscriptionToBreak;
+    vector<shared_ptr<Municipality>> municipalitiesToRemoveInBreakCirc;
+    for(auto&& neighborCirc : neighborCircs){
+        vector<shared_ptr<Municipality>> municipalitiesToRemoveInCurr;
+        for(auto&& municipality : neighborCirc.second->municipalities){
+            if(computeManhattanDist(municipality->coordinates, municipalityToForce->coordinates) > this->_maxDist){
+                municipalitiesToRemoveInCurr.push_back(municipality);
             }
-        }        
-    }
+        }
+        if(municipalitiesToRemoveInBreakCirc.size() == 0  ||
+                    municipalitiesToRemoveInCurr.size() < municipalitiesToRemoveInBreakCirc.size()){
+            municipalitiesToRemoveInBreakCirc = municipalitiesToRemoveInCurr;
+            circumscriptionToBreak = neighborCirc.second;
+        }
 
-    return this->_solution.circumscriptions[closestId];
+    }
+    //else if TODO : si égale, prendre celle qui est la plus proche d'une circonscription incomplète 
+    cout << "Circ to break : " << circumscriptionToBreak->circumscriptionNumber << endl;
+    cout << " Problematic muns: " << endl;
+    for(auto&& mun : municipalitiesToRemoveInBreakCirc){
+        cout << mun->nbVotes << endl;
+    }
+    return false;
+
+
+
 }
 
-vector<int> Algo::findNeighbourCircumscriptions(Coord coord){
+vector<shared_ptr<Circumscription>> Algo::findClosestCircumscription(shared_ptr<Municipality> municipality){
+    vector<shared_ptr<Circumscription>> closestCircs; // = findNeighbourCircumscriptions(municipality->coordinates);
+    int distance = 10000; // set max distance.
+    // int closestId = closestCircsIDs[0];
+    // for(int id : closestCircsIDs){
+    //     cout<<"considering id: "<< id <<endl;
+    //     for(auto&& mun: this->_solution.circumscriptions[id]->municipalities){
+    //         if(distance > computeManhattanDist(mun->coordinates, unassignedMun->coordinates)){
+    //             distance = computeManhattanDist(mun->coordinates, unassignedMun->coordinates);
+    //         }
+    //     }        
+    // }
+
+    return closestCircs;
+}
+
+map<int, shared_ptr<Circumscription>> Algo::findNeighbourCircumscriptions(Coord coord){
     cout<<"finding neighbour of : "<<coord.column <<", " <<coord.row<<endl;
-    vector<int> closestCircsIDs;
+    map<int, shared_ptr<Circumscription>> neighbourCircs;
     int surroundCoords[3] = {-1, 0, 1};
     for(int i : surroundCoords){
         for(int j : surroundCoords){
             if( i == 0 && j == 0) continue;
-            if( i+coord.column < 0 || j +coord.row < 0) continue;
-            if( i+coord.column >=(int) this->_municipalities[0].size()  
-                || j +coord.row >= (int) this->_municipalities.size()) continue;
+            if( i+coord.row < 0 || j +coord.column < 0) continue;
+            // if( i+coord.row >=(int) this->_municipalities[0].size()  
+            //     || j +coord.column >= (int) this->_municipalities.size()) continue; //TODO : demander Ouassim ce qu'il voulait faire ici
+
+            for(auto&& circ : this->_solution.circumscriptions){
+                for(auto&& mun : circ->municipalities){
+                    if(mun->coordinates.row ==i+coord.row && mun->coordinates.column == j + coord.column
+                         &&  neighbourCircs.count(circ->circumscriptionNumber)==0  ){
+                        neighbourCircs.emplace(circ->circumscriptionNumber, circ);
+                        cout << "NEIGHBOUR : " <<  circ->circumscriptionNumber << endl;
+                    }
+                }
+            }
                           
         }
     }
 
-    return closestCircsIDs; // TODO: Remove.
+    return neighbourCircs; // TODO: Remove.
 }
 
 void Algo::removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, shared_ptr<Circumscription> circumscription){
@@ -267,7 +317,7 @@ void Algo::computeRepartition(){
     this->_currentCirc = this->_maxCirc;   
 }
 //Generates a matrix that tells if a municipality is assigned to a 
-// Necessary, because there will be multiple solutions sharing the same municipalities
+//It's necessary, because there will be multiple solutions sharing the same municipalities
 vector<vector<bool>> Algo::createAssignedMun(vector<vector<shared_ptr<Municipality>>> municipalities){
     vector<vector<bool>> assignedMunicipalities(municipalities.size());
 
