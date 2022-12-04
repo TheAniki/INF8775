@@ -10,6 +10,7 @@
 #include <string>
 #include <memory>
 #include <queue>
+#include <set>
 #include <math.h>       /* floor */
 using namespace std;
 

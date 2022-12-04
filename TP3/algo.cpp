@@ -42,7 +42,8 @@ bool Algo::quickSolution(){
 
             // Was impossible to add municipality to a circumscription 
             if(!this->_assignedMunicipalities[i][j]){
-                bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], -1);
+                set<Coord> emptySet;
+                bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], emptySet);
                 cout << "IS FORCEABLE ? " << isForceable << endl;
                 if(!isForceable) return false;
             }
@@ -98,7 +99,7 @@ bool Algo::quickSolution(){
 }
 
 
-bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, int circNumberToNotForceInto){
+bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, set<Coord> historyOfForcedMun){
     cout << "**problematic mun " << municipalityToForce->coordinates.row << " , " << municipalityToForce->coordinates.column<< endl;
     map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates);
     
@@ -111,7 +112,7 @@ bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, in
     map<int, shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
 
     for(auto&& neighborCirc : neighborCircs){
-        if(neighborCirc.first == circNumberToNotForceInto) continue;
+        // if(neighborCirc.first == circNumberToNotForceInto) continue;
         vector<shared_ptr<Municipality>> municipalitiesToRemoveInCurr;
         for(auto&& municipality : neighborCirc.second->municipalities){
             if(computeManhattanDist(municipality->coordinates, municipalityToForce->coordinates) > this->_maxDist){
@@ -174,7 +175,7 @@ bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, in
                 return true;
             }
             else{//the mun we try to place DOES NOT fit in an incomplete circ
-                forceAddMunicipality(mun,circumscriptionToBreak->circumscriptionNumber);
+                forceAddMunicipality(mun, historyOfForcedMun);
             }
 
         }
