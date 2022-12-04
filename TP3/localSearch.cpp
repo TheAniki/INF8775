@@ -18,7 +18,7 @@ Solution LocalSearch::getSolution(){
 }
 
 void LocalSearch::upgradeSolution(int nbIterations){
-    for(int i=0; i<nbIterations<i++){
+    for(int i=0; i<nbIterations; i++){
         // TODO: upgrade current solution.
     }
 }

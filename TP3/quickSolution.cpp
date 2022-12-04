@@ -91,7 +91,7 @@ bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
 // Add mun to chosen circ in solution.
 bool QuickSolution::addMunicipalityToChosenCirc(SharedCirc circChosen,int i,int j){
     for(auto&& circumscription : this->_solution.circumscriptions){
-        if((int) circumscription->municipalities.size()>=this->_currentCirc.circSize) continue;
+        if((int) circumscription->municipalities.size()>=this->_currentBound.circSize) continue;
         if(circChosen->circumscriptionNumber != circumscription->circumscriptionNumber) continue;       
         addMunicipalityToCirc(circumscription, this->_municipalities[i][j]); 
         
