@@ -10,9 +10,18 @@
 #include <memory>
 #include <queue>
 #include <math.h>       /* floor */
+#include <numeric>
 using namespace std;
 
-    
+// ==================== Struct ==================== //
+struct CircBound{
+    int circSize;
+    int maxAmount;
+
+    CircBound():circSize(0), maxAmount(0){};
+    CircBound(int cSize, int mAmount ):
+        circSize(cSize), maxAmount(mAmount){};
+};    
 
 
 struct Coord{
