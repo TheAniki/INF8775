@@ -11,6 +11,7 @@
 #include <memory>
 #include <queue>
 #include <set>
+#include <algorithm>
 #include <math.h>       /* floor */
 using namespace std;
 
