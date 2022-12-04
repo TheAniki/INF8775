@@ -42,9 +42,12 @@ bool Algo::quickSolution(){
 
             // Was impossible to add municipality to a circumscription 
             if(!this->_assignedMunicipalities[i][j]){
-                bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j]);
+                bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], -1);
+                cout << "IS FORCEABLE ? " << isForceable << endl;
                 if(!isForceable) return false;
             }
+
+            displaySolution(this->_solution);
         }   
     }
 
@@ -95,64 +98,103 @@ bool Algo::quickSolution(){
 }
 
 
-bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce){
-    cout << "**problematic mun " << municipalityToForce->nbVotes << endl;
+bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, int circNumberToNotForceInto){
+    cout << "**problematic mun " << municipalityToForce->coordinates.row << " , " << municipalityToForce->coordinates.column<< endl;
     map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates);
     
-
-
     // Finds the less problematic circ to force solution in
     shared_ptr<Circumscription> circumscriptionToBreak;
     vector<shared_ptr<Municipality>> municipalitiesToRemoveInBreakCirc;
 
 
+
+    map<int, shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
+
     for(auto&& neighborCirc : neighborCircs){
+        if(neighborCirc.first == circNumberToNotForceInto) continue;
         vector<shared_ptr<Municipality>> municipalitiesToRemoveInCurr;
         for(auto&& municipality : neighborCirc.second->municipalities){
             if(computeManhattanDist(municipality->coordinates, municipalityToForce->coordinates) > this->_maxDist){
                 municipalitiesToRemoveInCurr.push_back(municipality);
             }
         }
-        if(municipalitiesToRemoveInBreakCirc.size() == 0  ||
+        if(municipalitiesToRemoveInBreakCirc.size() == 0  || // initial case
                     municipalitiesToRemoveInCurr.size() < municipalitiesToRemoveInBreakCirc.size()){
             municipalitiesToRemoveInBreakCirc = municipalitiesToRemoveInCurr;
             circumscriptionToBreak = neighborCirc.second;
         }
+        else if(municipalitiesToRemoveInCurr.size() == municipalitiesToRemoveInBreakCirc.size()){
+
+            int smallestDistanceToIncompleteCircOld = 10000;
+            for(auto const& pair : incompleteCircs){
+                int totalDistanceOld = computeTotalDistanceToCirc(municipalitiesToRemoveInBreakCirc[0], pair.second);
+                if(totalDistanceOld < smallestDistanceToIncompleteCircOld){
+                    smallestDistanceToIncompleteCircOld = totalDistanceOld;
+                }
+
+            }
+
+            int smallestDistanceToIncompleteCircNew = 10000;
+            for(auto const& pair : incompleteCircs){
+                int totalDistanceNew = computeTotalDistanceToCirc(municipalitiesToRemoveInCurr[0],pair.second);
+                if(totalDistanceNew < smallestDistanceToIncompleteCircNew){
+                    smallestDistanceToIncompleteCircNew = totalDistanceNew;
+                }
+            }
+
+            if(smallestDistanceToIncompleteCircNew <smallestDistanceToIncompleteCircOld){
+                municipalitiesToRemoveInBreakCirc = municipalitiesToRemoveInCurr;
+                circumscriptionToBreak = neighborCirc.second;
+
+            }
+
+        }
     }
 
+    
+    addMunicipalityToCirc(circumscriptionToBreak, municipalityToForce);
+
+
+
     //else if TODO : si égale, prendre celle qui est la plus proche d'une circonscription incomplète 
-    cout << "Circ to break : " << circumscriptionToBreak->circumscriptionNumber << endl;
+    cout << "CIRC TO BREAK: " << circumscriptionToBreak->circumscriptionNumber << endl;
     
     
     // Looping over the too-far circs
     for(auto&& mun : municipalitiesToRemoveInBreakCirc){
-        cout <<"Too far municipality : "  << mun->nbVotes << endl;
+        removeMunicipalityFromCirc(mun, circumscriptionToBreak);
+
+        cout <<"TOO FAR MUNICIPALITY : "  << mun->nbVotes << endl;
         map<int, shared_ptr<Circumscription>> neighborCircsOfToRemove =  findNeighbourCircumscriptions(mun->coordinates);
-        map<int, shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
         for(auto&& neighborCircOfToRemove : neighborCircsOfToRemove){
-            cout << "NEIGHBOUR OF TO REMOVE : " << neighborCircOfToRemove.second->circumscriptionNumber << endl;
-            if(incompleteCircs.count(neighborCircOfToRemove.second->circumscriptionNumber) > 0){
+            if(neighborCircOfToRemove.second->circumscriptionNumber == circumscriptionToBreak->circumscriptionNumber) continue; // We don't want to put it back in the circ to break
+            if( incompleteCircs.count(neighborCircOfToRemove.second->circumscriptionNumber) > 0){ //the mun we try to place fits in an incomplete circ
                 cout << "COUNTED : " << neighborCircOfToRemove.second->circumscriptionNumber << endl;
                 addMunicipalityToCirc(neighborCircOfToRemove.second, mun);
+                return true;
             }
+            else{//the mun we try to place DOES NOT fit in an incomplete circ
+                forceAddMunicipality(mun,circumscriptionToBreak->circumscriptionNumber);
+            }
+
         }
-        cout << "AMOUNT OF INCPMPLETES : " << incompleteCircs.size() << endl ;
+   
         
     }
-
-
-
-
-    
-
-
-
-
-
 
     return false;
 
 
+
+}
+
+int Algo::computeTotalDistanceToCirc(shared_ptr<Municipality> municipality, shared_ptr<Circumscription> circumscription ){
+    int totalDistance = 0;
+    for(auto&& munInTargetCirc:circumscription->municipalities){
+        totalDistance += computeManhattanDist(municipality->coordinates, munInTargetCirc->coordinates);
+    }
+
+    return totalDistance;
 
 }
 
@@ -173,7 +215,6 @@ vector<shared_ptr<Circumscription>> Algo::findClosestCircumscription(shared_ptr<
 }
 
 map<int, shared_ptr<Circumscription>> Algo::findNeighbourCircumscriptions(Coord coord){
-    cout<<"finding neighbour of : "<<coord.column <<", " <<coord.row<<endl;
     map<int, shared_ptr<Circumscription>> neighbourCircs;
     int surroundCoords[3] = {-1, 0, 1};
     for(int i : surroundCoords){
@@ -260,9 +301,9 @@ vector<shared_ptr<Circumscription>> Algo::findPossibleCircumscriptionsToContainM
 map<int, shared_ptr<Circumscription>> Algo::findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions){
     map<int, shared_ptr<Circumscription>> incompleteCircs;
     for(auto&& circ : circumscriptions){
-        if((int) circ->municipalities.size() < this->_currentCirc.circSize){
+        if((int) circ->municipalities.size() < this->_minCirc.circSize){
             incompleteCircs.emplace(circ->circumscriptionNumber, circ);
-            cout << "INCOMPLETE CIRC : " << circ->circumscriptionNumber << endl;
+            cout << "INCOMPLETE CIRC : " << circ->circumscriptionNumber << " AMUONT : " <<circ->municipalities.size()   << endl;
         }
     }
     return incompleteCircs;
@@ -271,7 +312,7 @@ map<int, shared_ptr<Circumscription>> Algo::findIncompleteCircs(vector<shared_pt
 bool Algo::addMunicipalityToFirstAvailableCirc(int i, int j){{
     // TODO: maxCirc while possible else minCirc.        
     for(auto&& circumscription : this->_solution.circumscriptions){
-        if((int) circumscription->municipalities.size()>=this->_currentCirc.circSize) continue; //no more space in circumscription
+        if((int) circumscription->municipalities.size()>=this->_maxCirc.circSize) continue; //no more space in circumscription
 
             if(validateMunFitsInCirc(circumscription, this->_municipalities[i][j]) ){
             
@@ -299,10 +340,11 @@ bool Algo::validateMunFitsInCirc(shared_ptr<Circumscription> circumscription, sh
 void Algo::addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality ){
     circumscription->addMun(municipality);
     circumscription->totalVotes+=municipality->nbVotes;
-    if((int) circumscription->municipalities.size() >= this->_currentCirc.circSize)
-        this->_currentCirc.maxAmount--;
-    if(this->_currentCirc.maxAmount <= 0)
-        this->_currentCirc = this->_minCirc;
+  
+    // if((int) circumscription->municipalities.size() >= this->_currentBound.circSize)
+    //     this->_currentBound.maxAmount--;
+    // if(this->_currentBound.maxAmount <= 0)
+    //     this->_currentBound = this->_minCirc;
 }
 
 void Algo::computeCircBounds(){
@@ -341,7 +383,7 @@ void Algo::computeRepartition(){
         this->_maxCirc.maxAmount = y;
         this->_minCirc.maxAmount = x;
     }    
-    this->_currentCirc = this->_maxCirc;   
+    this->_currentBound = this->_maxCirc;   
 }
 //Generates a matrix that tells if a municipality is assigned to a 
 //It's necessary, because there will be multiple solutions sharing the same municipalities

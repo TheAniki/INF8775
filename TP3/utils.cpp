@@ -131,10 +131,10 @@ int computeManhattanDist(const Coord& coord1, const Coord& coord2){
 */
 void displaySolution(const Solution& solution){
     cout << "CIRC WON : "<< solution.nbCircWon << endl;
-    int munCnt = 0;
+  
     for(auto&& circumscription : solution.circumscriptions ){
-        cout<<"mun: "<< munCnt << " | size: "<<circumscription->municipalities.size() <<" | ";
-        munCnt++;
+        cout<<"CIRC: "<< circumscription->circumscriptionNumber << " | size: "<<circumscription->municipalities.size() <<" | ";
+      
         for(auto&& municipality : circumscription->municipalities){
             cout << municipality->coordinates.row << " " << municipality->coordinates.column << " ";
         }

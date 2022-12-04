@@ -25,8 +25,9 @@ class Algo
     void computeCircBounds();
     void computeRepartition();
     bool addMunicipalityToFirstAvailableCirc(int i, int j);
-    bool forceAddMunicipality(shared_ptr<Municipality> municipalityToForce);
+   bool forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, int circNumberToNotForceInto);
     bool validateMunFitsInCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipalityToValidate);
+    int computeTotalDistanceToCirc(shared_ptr<Municipality> municipality, shared_ptr<Circumscription> circumscription);
     void addMunicipalityToCirc(shared_ptr<Circumscription> circumscription, shared_ptr<Municipality> municipality);
     map<int, shared_ptr<Circumscription>> findIncompleteCircs(vector<shared_ptr<Circumscription>> circumscriptions);
     vector<shared_ptr<Circumscription>> findPossibleCircumscriptionsToContainMun(
@@ -46,7 +47,7 @@ class Algo
     int _nbCircumscriptions;
     CircBound _minCirc;
     CircBound _maxCirc; 
-    CircBound _currentCirc;    
+    CircBound _currentBound;
     Solution _solution;
     vector<vector<bool>> _assignedMunicipalities; //TODO : I dont think we need that
     vector<vector<shared_ptr<Municipality>>> _municipalities;
