@@ -20,6 +20,7 @@ class QuickSolution : protected virtual SingleSolution
         vector<int> calculateDistance(vector<pair<SharedCirc, double>> circsInRange,int i, int j);
         bool addMunicipalityToChosenCirc(SharedCirc circChosen,int i,int j);
         bool forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, vector<Coord> historyOfForcedMun);
+        int findSmallestTotalDistanceToAnIncomplete(shared_ptr<Municipality> municipalityToCheck , map<int, shared_ptr<Circumscription>> incompleteCircs);
 
         //getter
         Solution getSolution();
