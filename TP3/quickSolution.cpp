@@ -113,18 +113,18 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
         //neighborCirc is complete
         else{
             vector<shared_ptr<Municipality>> tooFarMuns;
-            for(auto&& municipality : neighborCirc.second->municipalities){     
-                if(isMunInVector(municipality, historyOfForcedMun))continue;          // TODO : not that 
-                if(computeManhattanDist(municipalityToForce->coordinates, municipality->coordinates) > this->_maxDist){ //Has to be removed for municipalityToForce because tooFar
-                    
+            for(auto&& candidateMunicipality : neighborCirc.second->municipalities){     
+                if(isMunInVector(candidateMunicipality, historyOfForcedMun))continue;          // TODO : not that 
+                if(computeManhattanDist(municipalityToForce->coordinates, candidateMunicipality->coordinates) > this->_maxDist){ //Has to be removed for municipalityToForce because tooFar
+                    tooFarMuns.push_back(candidateMunicipality);
                     if(tooFarMuns.size() > 1 ) {
                         continue ; // TODO : deal with the case where the other tooFar was the bestMun
                     };   
-                    int munSmallestDistToAnIncompleteCirc = findSmallestTotalDistanceToAnIncomplete(municipality, incompleteCircs);
+                    int munSmallestDistToAnIncompleteCirc = findSmallestTotalDistanceToAnIncomplete(candidateMunicipality, incompleteCircs);
    
                     if(munSmallestDistToAnIncompleteCirc < totalDistanceToIncompleteCircOfBestMunToRemove){ // Adjust bestToRemove
                         totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc;
-                        bestMunicipalityToRemove = municipality;
+                        bestMunicipalityToRemove = candidateMunicipality;
                         bestCircumscriptionToBreak = neighborCirc.second;
                     }
                 }
@@ -133,10 +133,10 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
                     continue; //We will remove the munTooFar regardless of the others
                 }
                 else{//No tooFar yet detected
-                    int munSmallestDistToAnIncompleteCirc = findSmallestTotalDistanceToAnIncomplete(municipality, incompleteCircs);
+                    int munSmallestDistToAnIncompleteCirc = findSmallestTotalDistanceToAnIncomplete(candidateMunicipality, incompleteCircs);
                     if(munSmallestDistToAnIncompleteCirc < totalDistanceToIncompleteCircOfBestMunToRemove){ // Adjust bestToRemove
                         totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc;
-                        bestMunicipalityToRemove = municipality;
+                        bestMunicipalityToRemove = candidateMunicipality;
                         bestCircumscriptionToBreak = neighborCirc.second;
                     }
                 }
@@ -165,7 +165,6 @@ int QuickSolution::findSmallestTotalDistanceToAnIncomplete(shared_ptr<Municipali
 
 // Add municipality to corcumscription using proba heur.
 bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
-    
     double nbEmpty = 0.0;
     
     vector<pair<SharedCirc, double>> circsInRange = findCircsInRange(i,j);
