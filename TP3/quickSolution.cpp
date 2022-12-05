@@ -33,7 +33,7 @@ bool QuickSolution::create(){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
 
             // TODO : Replace with this
-            //bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
+            // bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
 
             bool added = false;
             // TODO: OLD FUNCTION -> adds in order.        
@@ -59,7 +59,10 @@ bool QuickSolution::create(){
                 vector<Coord> emptyHistory;
                 bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], emptyHistory);
                 cout << "IS FORCEABLE ? " << isForceable << endl;
-                if(!isForceable) return false;
+                if(!isForceable) {
+                    cout << "AMOUNT OF INCOMPLETES :  " << findIncompleteCircs(this->_solution.circumscriptions).size() << endl;
+                    return false;
+                }
             }
         }
        
@@ -79,6 +82,7 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
     map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates);
     shared_ptr<Circumscription> bestCircumscriptionToBreak;
     shared_ptr<Municipality> bestMunicipalityToRemove;
+    vector<shared_ptr<Municipality>> bestTooFarMunicipalitiesToRemove;
     int totalDistanceToIncompleteCircOfBestMunToRemove = 100000;
     
    for(auto&& neighborCirc : neighborCircs){
@@ -113,37 +117,68 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
         //neighborCirc is complete
         else{
             vector<shared_ptr<Municipality>> tooFarMuns;
+            int worseDistanceInTooFarMuns = 0;
             for(auto&& candidateMunicipality : neighborCirc.second->municipalities){     
-                if(isMunInVector(candidateMunicipality, historyOfForcedMun))continue;          // TODO : not that 
                 if(computeManhattanDist(municipalityToForce->coordinates, candidateMunicipality->coordinates) > this->_maxDist){ //Has to be removed for municipalityToForce because tooFar
-                    tooFarMuns.push_back(candidateMunicipality);
+                    if(isMunInVector(candidateMunicipality, historyOfForcedMun)){ //If mun too far and in history, then it's impossible to put municipalityToPush in that circ
+                        tooFarMuns.clear(); // clearing vector -> size = 0
+                        break;
+                    }
+                    // tooFarMuns.push_back(candidateMunicipality);
+                    // int munSmallestDistToAnIncompleteCirc = findSmallestTotalDistanceToAnIncomplete(candidateMunicipality, incompleteCircs);
+                    // if(munSmallestDistToAnIncompleteCirc >worseDistanceInTooFarMuns ){
+                    //     worseDistanceInTooFarMuns = munSmallestDistToAnIncompleteCirc;
+                    // }
+
+
+                    // USE THIS CODE TO REMOVE MAX ONE MUN
                     if(tooFarMuns.size() > 1 ) {
-                        continue ; // TODO : deal with the case where the other tooFar was the bestMun
+                        break ; // TODO : deal with the case where the other tooFar was the bestMun
                     };   
-                    int munSmallestDistToAnIncompleteCirc = findSmallestTotalDistanceToAnIncomplete(candidateMunicipality, incompleteCircs);
+                    int munSmallestDistToAnIncompleteCirc2 = findSmallestTotalDistanceToAnIncomplete(candidateMunicipality, incompleteCircs);
    
-                    if(munSmallestDistToAnIncompleteCirc < totalDistanceToIncompleteCircOfBestMunToRemove){ // Adjust bestToRemove
-                        totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc;
+                    if(munSmallestDistToAnIncompleteCirc2 < totalDistanceToIncompleteCircOfBestMunToRemove){ // Adjust bestToRemove
+                        totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc2;
                         bestMunicipalityToRemove = candidateMunicipality;
                         bestCircumscriptionToBreak = neighborCirc.second;
                     }
+
                 }
 
                 else if(tooFarMuns.size() >=1 ) {
-                    continue; //We will remove the munTooFar regardless of the others
+                    continue; //We will remove the tooFarMuns regardless of the others
                 }
                 else{//No tooFar yet detected
                     int munSmallestDistToAnIncompleteCirc = findSmallestTotalDistanceToAnIncomplete(candidateMunicipality, incompleteCircs);
                     if(munSmallestDistToAnIncompleteCirc < totalDistanceToIncompleteCircOfBestMunToRemove){ // Adjust bestToRemove
+                        // bestTooFarMunicipalitiesToRemove.clear(); // The best option is not a vector of tooFarMuns
                         totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc;
                         bestMunicipalityToRemove = candidateMunicipality;
                         bestCircumscriptionToBreak = neighborCirc.second;
                     }
                 }
             }
+
+            // The tooFarMuns of this circ are the best option from all neighbors
+            if(tooFarMuns.size()>0 && worseDistanceInTooFarMuns < totalDistanceToIncompleteCircOfBestMunToRemove){ 
+                bestTooFarMunicipalitiesToRemove = tooFarMuns;
+                bestMunicipalityToRemove = nullptr;
+                bestCircumscriptionToBreak = neighborCirc.second;
+            }
         }
 
     }
+
+    // if(bestTooFarMunicipalitiesToRemove.size() >0){
+    //     bool allForceAddWorked = true;
+    //     for(auto&& municipalityToRemove : bestTooFarMunicipalitiesToRemove){
+    //         removeMunicipalityFromCirc(municipalityToRemove, bestCircumscriptionToBreak);
+    //         addMunicipalityToCirc( bestCircumscriptionToBreak, municipalityToForce);
+    //         allForceAddWorked = allForceAddWorked && forceAddMunicipality(municipalityToRemove, historyOfForcedMun);
+    //     }
+    //     return allForceAddWorked;
+    // }
+
     removeMunicipalityFromCirc(bestMunicipalityToRemove, bestCircumscriptionToBreak);
     addMunicipalityToCirc( bestCircumscriptionToBreak, municipalityToForce);
     return forceAddMunicipality(bestMunicipalityToRemove, historyOfForcedMun);
