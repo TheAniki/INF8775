@@ -1,6 +1,7 @@
 #include "./headers/Includes.h"
 #include "./headers/utils.h" 
-#include "./headers/algo.h"
+#include "./headers/quickSolution.h"
+#include "./headers/localSearch.h"
 
 
 int main(int argc, const char*argv[]){
@@ -53,11 +54,24 @@ int main(int argc, const char*argv[]){
     cout<<"Nb circonscription gagante possible: "<< nbVotesTotal/votesToWin;
     cout<<" sur "<< nbCircumscription<<endl;
     
+
     Algo algo = Algo(municipalities, nbCircumscription);
     bool worked = algo.quickSolution();
     displaySolution(algo.getSolution());
 
     cout << "MARCHÉ ? .... " << worked << endl;
+
+
+    SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
+    QuickSolution quickSolution = QuickSolution(singleSolution);
+    LocalSearch localSearch = LocalSearch(singleSolution);
+    
+    // test:
+    quickSolution.create();
+    displaySolution(quickSolution.getSolution());
+    cout<<"in local: "<<endl;
+    displaySolution(localSearch.getSolution());
+
 
     return 0;
 }

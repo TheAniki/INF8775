@@ -130,13 +130,11 @@ int computeManhattanDist(const Coord& coord1, const Coord& coord2){
     lorsqu’une meilleure solution est trouvée, on saute deux fois la ligne.
 */
 void displaySolution(const Solution& solution){
-    cout << "CIRC WON : "<< solution.nbCircWon << endl;
-  
+    // cout << "CIRC WON : "<< solution.nbCircWon << endl;
     for(auto&& circumscription : solution.circumscriptions ){
-        cout<<"CIRC: "<< circumscription->circumscriptionNumber << " | size: "<<circumscription->municipalities.size() <<" | ";
-      
+        cout<<"mun: "<< circumscription->circumscriptionNumber << " | size: "<<circumscription->municipalities.size() <<" | ";
         for(auto&& municipality : circumscription->municipalities){
-            cout << municipality->coordinates.row << " " << municipality->coordinates.column << " ";
+            cout <<"( "<< municipality->coordinates.row << ", " << municipality->coordinates.column << " ) ";
         }
         cout << endl;
     }
