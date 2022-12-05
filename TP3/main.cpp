@@ -65,10 +65,12 @@ int main(int argc, const char*argv[]){
     LocalSearch localSearch = LocalSearch(singleSolution);
     bool worked = false;
     // test:
-    while(!worked){
-    worked = quickSolution.create();     
+    // while(!worked){
+    worked = quickSolution.create();    
+    // cout<<"in local: "<<endl;
+    // displaySolution(localSearch.getSolution());
     cout << "MARCHÉ ? .... " << worked << endl;
-    }    
+    // }
     displaySolution(quickSolution.getSolution());
     cout<<"in local: "<<endl;
     localSearch.upgradeSolution(5);
