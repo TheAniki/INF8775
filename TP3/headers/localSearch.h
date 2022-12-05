@@ -10,12 +10,17 @@ class LocalSearch : protected virtual SingleSolution
         LocalSearch(SingleSolution singleSolution);
         
         void upgradeSolution(int nbIterations);
-        map<int, shared_ptr<Circumscription>> findNeihborCircumscriptionsOfLowest(SharedCirc circ);
-        SharedMun findLowestMunicipality(SharedCirc circ);
+        
+        
 
         vector<pair<SharedCirc,int>> orderLosingCirc();
         void increaseVotesClosestToTreshold(SharedCirc losingCirc);
         void increaseVotesofAllLosing(vector<pair<SharedCirc,int>>  losingCirc);
+        void TrySwappingMunicipalities(SharedCirc losingCirc, SharedCirc bestCirc);
+
+        SharedMun findBestMunicipalityToRemove(SharedCirc circ);
+        SharedMun findLowestMunicipality(SharedCirc circ);
+        map<int,SharedCirc> findNeihborCircumscriptionsOfLowest(SharedCirc circ);
 
         // getter
         Solution getSolution();

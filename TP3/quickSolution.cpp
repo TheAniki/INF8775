@@ -33,30 +33,29 @@ bool QuickSolution::create(){
 
     for(long unsigned int i = 0 ; i < this->_municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
-            displaySolution(this->_solution);
+            //displaySolution(this->_solution);
 
             // TODO : Replace with this
-            //bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
+            bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
+            // bool added = false;
+            // // TODO: OLD FUNCTION -> adds in order.        
+            // for(auto&& circumscription : this->_solution.circumscriptions){
+            //     if((int) circumscription->municipalities.size()>=this->_maxCirc.circSize) continue; //no more space in circumscription
 
-            bool added = false;
-            // TODO: OLD FUNCTION -> adds in order.        
-            for(auto&& circumscription : this->_solution.circumscriptions){
-                if((int) circumscription->municipalities.size()>=this->_maxCirc.circSize) continue; //no more space in circumscription
-
-                if(validateMunFitsInCirc(circumscription, this->_municipalities[i][j]) ){
+            //     if(validateMunFitsInCirc(circumscription, this->_municipalities[i][j]) ){
                 
-                    addMunicipalityToCirc(circumscription, this->_municipalities[i][j]); 
-                    if(circumscription->totalVotes >= this->_votesToWin){
-                        circumscription->isWon = true;
-                        this->_solution.nbCircWon++;
-                    }
-                    added  =  true; //successfully added 
-                    break;
+            //         addMunicipalityToCirc(circumscription, this->_municipalities[i][j]); 
+            //         if(circumscription->totalVotes >= this->_votesToWin){
+            //             circumscription->isWon = true;
+            //             this->_solution.nbCircWon++;
+            //         }
+            //         added  =  true; //successfully added 
+            //         break;
                     
-                }
+            //     }
                 
-                // Was impossible to add municipality to a circumscription 
-            }
+            //     // Was impossible to add municipality to a circumscription 
+            // }
 
             if(!added){
                 vector<Coord> emptyHistory;
@@ -277,6 +276,8 @@ SharedCirc QuickSolution::choseCircumscriptionFrom(vector<pair<SharedCirc, doubl
     //Chose circ to add municipality:
     double previousTreshold = 0.0;
     double currentTreshold = 0.0;
+    
+    srand(time(NULL));
     double randomNumber = double(rand() & 10000)/10000; // number between 0.0000 and 1.0000 
     
     for(auto&& circ : circsInRange){               
