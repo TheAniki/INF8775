@@ -32,20 +32,37 @@ bool QuickSolution::create(){
     for(long unsigned int i = 0 ; i < this->_municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
 
-            bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
-            // Was impossible to add municipality to a circumscription 
-            if(!added){
-                this->_unassignedMunicipalities.push(this->_municipalities[i][j]);
-                cout << " UnassignedMunicipality : " << this->_municipalities[i][j]->coordinates.row<<" , "
-                <<this->_municipalities[i][j]->coordinates.column << endl;
+            bool added = false;
+            // TODO: OLD FUNCTION -> adds in order.        
+            for(auto&& circumscription : this->_solution.circumscriptions){
+                if((int) circumscription->municipalities.size()>=this->_maxCirc.circSize) continue; //no more space in circumscription
 
-                vector<Coord> emptyHistory;
-             
-                bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], emptyHistory);
-                cout << "IS FORCEABLE ? " << isForceable << endl;
-                if(!isForceable) return false;
+                    if(validateMunFitsInCirc(circumscription, this->_municipalities[i][j]) ){
+                    
+                        addMunicipalityToCirc(circumscription, this->_municipalities[i][j]); 
+                        if(circumscription->totalVotes >= this->_votesToWin){
+                            circumscription->isWon = true;
+                            this->_solution.nbCircWon++;
+                        }
+                        added  =  true; //successfully added 
+                        
+                    }
+
+    
+                    // TODO : Replace with this
+                    //bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
+                    
+                    
+                    // Was impossible to add municipality to a circumscription 
+                    if(!added){
+                        vector<Coord> emptyHistory;
+                        bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], emptyHistory);
+                        cout << "IS FORCEABLE ? " << isForceable << endl;
+                        if(!isForceable) return false;
+                    }
+                }
             }
-        }            
+       
     }           
     
     return true;

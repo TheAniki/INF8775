@@ -168,10 +168,7 @@ bool SingleSolution::validateMunFitsInCirc(SharedCirc circumscription, shared_pt
 }
 
 bool SingleSolution::isMunInVector(shared_ptr<Municipality> municipality, const vector<Coord>& munCoordList){
-    cout<<"in is Mun vector"<<endl;
     for(Coord coord : munCoordList){
-        cout<<"mun coord: "<< municipality->coordinates.row <<" , "<<municipality->coordinates.column<<endl;
-        cout<<"mun list coord: "<< coord.row <<" , "<<coord.column<<endl;
         if(municipality->coordinates.row == coord.row && municipality->coordinates.column == coord.column ){
             return true;
         }
