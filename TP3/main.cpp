@@ -55,23 +55,22 @@ int main(int argc, const char*argv[]){
     cout<<" sur "<< nbCircumscription<<endl;
     
 
-    Algo algo = Algo(municipalities, nbCircumscription);
-    bool worked = algo.quickSolution();
-    displaySolution(algo.getSolution());
+    // Algo algo = Algo(municipalities, nbCircumscription);
+    // bool worked = algo.quickSolution();
+    // displaySolution(algo.getSolution());
 
-    cout << "MARCHÉ ? .... " << worked << endl;
-
-
+    
     SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
     QuickSolution quickSolution = QuickSolution(singleSolution);
     LocalSearch localSearch = LocalSearch(singleSolution);
-    
+    bool worked = false;
     // test:
-    quickSolution.create();
+    while(!worked){
+    worked = quickSolution.create();    
+    // cout<<"in local: "<<endl;
+    // displaySolution(localSearch.getSolution());
+    cout << "MARCHÉ ? .... " << worked << endl;
+    }
     displaySolution(quickSolution.getSolution());
-    cout<<"in local: "<<endl;
-    displaySolution(localSearch.getSolution());
-
-
     return 0;
 }

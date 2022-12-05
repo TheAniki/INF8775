@@ -24,23 +24,23 @@ SingleSolution::~SingleSolution()
 {
 }
 
-SharedCirc SingleSolution::findClosestCircumscription(){
-    shared_ptr<Municipality> unassignedMun = this->_unassignedMunicipalities.front();
-    vector<int> closestCircsIDs = findNeighbourCircumscriptions(unassignedMun->coordinates);
-    int distance = 10000; // set max distance.
-    int closestId = closestCircsIDs[0];
-    for(int id : closestCircsIDs){
-        cout<<"considering id: "<< id <<endl;
-        for(auto&& mun: this->_solution.circumscriptions[id]->municipalities){
-            if(distance > computeManhattanDist(mun->coordinates, unassignedMun->coordinates)){
-                distance = computeManhattanDist(mun->coordinates, unassignedMun->coordinates);
-            }
-        }       
-    }
+// SharedCirc SingleSolution::findClosestCircumscription(){
+//     shared_ptr<Municipality> unassignedMun = this->_unassignedMunicipalities.front();
+//     map<int, SharedCirc> closestCircsIDs = findNeighbourCircumscriptions(unassignedMun->coordinates);
+//     int distance = 10000; // set max distance.
+//     int closestId = closestCircsIDs[0];
+//     for(int id : closestCircsIDs){
+//         cout<<"considering id: "<< id <<endl;
+//         for(auto&& mun: this->_solution.circumscriptions[id]->municipalities){
+//             if(distance > computeManhattanDist(mun->coordinates, unassignedMun->coordinates)){
+//                 distance = computeManhattanDist(mun->coordinates, unassignedMun->coordinates);
+//             }
+//         }       
+//     }
 
 
-    return this->_solution.circumscriptions[closestId]; // dummy return;
-}
+//     return this->_solution.circumscriptions[closestId]; // dummy return;
+// }
 
 int SingleSolution::computeTotalDistanceToCirc(shared_ptr<Municipality> municipality, SharedCirc circumscription ){
     int totalDistance = 0;
@@ -52,21 +52,40 @@ int SingleSolution::computeTotalDistanceToCirc(shared_ptr<Municipality> municipa
 
 }
 
-vector<int> SingleSolution::findNeighbourCircumscriptions(Coord coord){
-    cout<<"finding neighbour of : "<<coord.column <<", " <<coord.row<<endl;
-    vector<int> closestCircsIDs; // = findNeighbourCircumscriptions(municipality->coordinates);
-    int distance = 10000; // set max distance.
-    // int closestId = closestCircsIDs[0];
-    // for(int id : closestCircsIDs){
-    //     cout<<"considering id: "<< id <<endl;
-    //     for(auto&& mun: this->_solution.circumscriptions[id]->municipalities){
-    //         if(distance > computeManhattanDist(mun->coordinates, unassignedMun->coordinates)){
-    //             distance = computeManhattanDist(mun->coordinates, unassignedMun->coordinates);
-    //         }
-    //     }        
-    // }
+vector<shared_ptr<Municipality>> SingleSolution::getTooFarMunsInCirc(shared_ptr<Municipality> referenceMunicipality, SharedCirc circumscription){
+    vector<shared_ptr<Municipality>> tooFarMuns;
+    for(auto&& municipalityInCirc : circumscription->municipalities){
+        if(computeManhattanDist(referenceMunicipality->coordinates, municipalityInCirc->coordinates) > this->_maxDist){
+            tooFarMuns.push_back(municipalityInCirc);
+        }
+    }
+    return tooFarMuns;
+}
 
-    return closestCircsIDs;
+map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
+    map<int, SharedCirc> neighbourCircs;
+    int surroundCoords[3] = {-1, 0, 1};
+    for(int i : surroundCoords){
+        for(int j : surroundCoords){
+            if( i == 0 && j == 0) continue;
+            if( i+coord.row < 0 || j +coord.column < 0) continue;
+            // if( i+coord.row >=(int) this->_municipalities[0].size()  
+            //     || j +coord.column >= (int) this->_municipalities.size()) continue; //TODO : demander Ouassim ce qu'il voulait faire ici
+
+            for(auto&& circ : this->_solution.circumscriptions){
+                for(auto&& mun : circ->municipalities){
+                    if(mun->coordinates.row ==i+coord.row && mun->coordinates.column == j + coord.column
+                         &&  neighbourCircs.count(circ->circumscriptionNumber)==0  ){
+                        neighbourCircs.emplace(circ->circumscriptionNumber, circ);
+                        cout << "NEIGHBOUR : " <<  circ->circumscriptionNumber << endl;
+                    }
+                }
+            }
+                          
+        }
+    }
+
+    return neighbourCircs; // TODO: Remove.
 }
 
 
@@ -128,25 +147,36 @@ vector<SharedCirc> SingleSolution::findPossibleCircumscriptionsToContainMun(
 }
 
 // TODO : Repair it. wrong number of municipality.
-vector<SharedCirc> SingleSolution::findIncompleteCircs(vector<SharedCirc> circumscriptions){
-    vector<SharedCirc> incompleteCircs;
+map<int, SharedCirc> SingleSolution::findIncompleteCircs(vector<SharedCirc> circumscriptions){
+    map<int, SharedCirc> incompleteCircs;
     for(auto&& circ : circumscriptions){
-        if((int) circ->municipalities.size() < this->_minCirc.circSize){
-            // incompleteCircs.emplace(circ->circumscriptionNumber, circ); // error in compilation.
+        if((int) circ->municipalities.size() < this->_currentBound.circSize){
+            incompleteCircs.emplace(circ->circumscriptionNumber, circ);
             cout << "INCOMPLETE CIRC : " << circ->circumscriptionNumber << " AMUONT : " <<circ->municipalities.size()   << endl;
         }
     }
     return incompleteCircs;
 }
-
 bool SingleSolution::validateMunFitsInCirc(SharedCirc circumscription, shared_ptr<Municipality> municipalityToValidate){
-    if((int) circumscription->municipalities.size() >= this->_maxCirc.circSize) return false;
+    if((int) circumscription->municipalities.size() >= this->_currentBound.circSize) return false;
     for(auto&& municipality : circumscription->municipalities){
         if(computeManhattanDist(municipalityToValidate->coordinates, municipality->coordinates) > this->_maxDist ){
             return false;
         } 
     }
     return true;
+}
+
+bool SingleSolution::isMunInVector(shared_ptr<Municipality> municipality, const vector<Coord>& munCoordList){
+    cout<<"in is Mun vector"<<endl;
+    for(Coord coord : munCoordList){
+        cout<<"mun coord: "<< municipality->coordinates.row <<" , "<<municipality->coordinates.column<<endl;
+        cout<<"mun list coord: "<< coord.row <<" , "<<coord.column<<endl;
+        if(municipality->coordinates.row == coord.row && municipality->coordinates.column == coord.column ){
+            return true;
+        }
+    }
+    return false;
 }
 
 void SingleSolution::addMunicipalityToCirc(SharedCirc circumscription, shared_ptr<Municipality> municipality ){

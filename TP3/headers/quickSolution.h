@@ -11,7 +11,7 @@ class QuickSolution : protected virtual SingleSolution
         ~QuickSolution();
         
         // create solution
-        void create();
+        bool create();
 
         // methods
         bool addMunicipalityWithProbaHeur(int i, int j);
@@ -19,7 +19,8 @@ class QuickSolution : protected virtual SingleSolution
         SharedCirc choseCircumscriptionFrom(vector<pair<SharedCirc, double>> circsInRange, int,int);
         vector<int> calculateDistance(vector<pair<SharedCirc, double>> circsInRange,int i, int j);
         bool addMunicipalityToChosenCirc(SharedCirc circChosen,int i,int j);
-        bool forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, int circNumberToNotForceInto);
+        bool forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, vector<Coord> historyOfForcedMun);
+
         //getter
         Solution getSolution();
     

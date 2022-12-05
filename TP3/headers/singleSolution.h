@@ -15,15 +15,16 @@ class SingleSolution
         void computeRepartition();
         bool validateMunFitsInCirc(SharedCirc circumscription, shared_ptr<Municipality> municipalityToValidate);
         void addMunicipalityToCirc(SharedCirc circumscription, shared_ptr<Municipality> municipality);
-        vector<SharedCirc> findIncompleteCircs(vector<SharedCirc> circumscriptions);
+        map<int, SharedCirc> findIncompleteCircs(vector<SharedCirc> circumscriptions);
         vector<SharedCirc> findPossibleCircumscriptionsToContainMun(
         shared_ptr<Municipality> municipalityToInclude, vector<SharedCirc> circumscriptionsConsidered);
-        SharedCirc findClosestCircumscription();
-        vector<int> findNeighbourCircumscriptions(Coord coord);     
+        //SharedCirc findClosestCircumscription();
+        map<int, SharedCirc> findNeighbourCircumscriptions(Coord coord); 
+        bool isMunInVector(shared_ptr<Municipality> municipality, const vector<Coord>& munCoordList);    
         void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, SharedCirc circumscription);
         shared_ptr<Municipality> choseMunicipalityToRemoveFromCirc( SharedCirc circumscriptionToRemoveIn, SharedCirc incompleteCirc);
         int computeTotalDistanceToCirc(shared_ptr<Municipality> municipality, SharedCirc circumscription);
-        
+        vector<shared_ptr<Municipality>> getTooFarMunsInCirc(shared_ptr<Municipality> referenceMunicipality, SharedCirc circumscription);
         // Getters
         Solution getSolution();
 
