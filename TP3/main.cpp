@@ -54,8 +54,10 @@ int main(int argc, const char*argv[]){
     cout<<" sur "<< nbCircumscription<<endl;
     
     Algo algo = Algo(municipalities, nbCircumscription);
-    algo.quickSolution();
+    bool worked = algo.quickSolution();
     displaySolution(algo.getSolution());
+
+    cout << "MARCHÉ ? .... " << worked << endl;
 
     return 0;
 }

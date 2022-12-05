@@ -26,13 +26,6 @@ Algo::~Algo()
 
 bool Algo::quickSolution(){      
 
-    cout << "MAX DISTS : " << this->_maxDist<< endl;
-    cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
-    cout << "MIN CIRC maxAmount: " <<this->_minCirc.maxAmount << endl;
-    cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
-    cout << "MAX CIRC maxAmount: "<< this->_maxCirc.maxAmount << endl;
-    cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
-
     // Loops over all the municipalities to assign them to a circumscription 
     for(long unsigned int i = 0 ; i < this->_municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
@@ -49,17 +42,26 @@ bool Algo::quickSolution(){
                 if(!isForceable) return false;
             }
 
-            displaySolution(this->_solution);
+            // displaySolution(this->_solution);
         }   
     }
 
+    
+    cout << "MAX DISTS : " << this->_maxDist<< endl;
+    cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
+    cout << "MIN CIRC maxAmount: " <<this->_minCirc.maxAmount << endl;
+    cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
+    cout << "MAX CIRC maxAmount: "<< this->_maxCirc.maxAmount << endl;
+    cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
+
+
 
     //Creating incomplete circ vect
-    map<int, shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
+    // map<int, shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
     
-    if(this->_unassignedMunicipalities.empty()){
-        cout << "EMPTY QUEUE " << endl;
-    }
+    // if(this->_unassignedMunicipalities.empty()){
+    //     cout << "EMPTY QUEUE " << endl;
+    // }
 
 //     //Trying to repare solution
 //     int counterOfMun = 0; // 
@@ -97,14 +99,13 @@ bool Algo::quickSolution(){
 
 
     //TODO :catch any error and return false-> if some case results in an error like segmentation, it's ok, we just won't consider it. 
+    return true;
 }
 
 
 bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, vector<Coord> historyOfForcedMun){
     historyOfForcedMun.push_back(municipalityToForce->coordinates);
     if(historyOfForcedMun.size() > 5) return false;
-
-
 
     cout << "**problematic mun " << municipalityToForce->coordinates.row << " , " << municipalityToForce->coordinates.column<< endl;
     
@@ -113,9 +114,10 @@ bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, ve
     map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates);
     shared_ptr<Circumscription> bestCircumscriptionToBreak;
     shared_ptr<Municipality> bestMunicipalityToRemove;
-    int totalDistanceToIncompleteCircOfBestMunToRemove = 0xdeadbeef;
+    int totalDistanceToIncompleteCircOfBestMunToRemove = 100000;
 
     
+
    for(auto&& neighborCirc : neighborCircs){
         //If we neighbour an incomplete circ
         if(neighborCirc.second->municipalities.size() < this->_maxCirc.circSize){ 
@@ -126,97 +128,106 @@ bool Algo::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, ve
                 return true;
             }
 
-
-            int amountOfToFar = 0;
-            shared_ptr<Municipality> tooFarMun;
+            vector<shared_ptr<Municipality>> tooFarMuns;
             for(auto&& municipality : neighborCirc.second->municipalities){
-                bool isMunInHistory = false;
-                for(Coord coord : historyOfForcedMun){ // IN HISTORY
-                   if(municipality->coordinates.row == coord.row && municipality->coordinates.column == coord.column ){
-                        isMunInHistory = true;
-                        break;
-                    }
-                }
-                if(isMunInHistory) {
-                    cout << "IN HISTORYYYYYYYYYYYYY : "<< municipality->nbVotes << endl;
-                    break;
-                }
+                if(isMunInVector(municipality, historyOfForcedMun))continue;
                 if(computeManhattanDist(municipality->coordinates, municipalityToForce->coordinates) > this->_maxDist){
-                    if(++amountOfToFar>1) break;
-                    tooFarMun = municipality;
+                    tooFarMuns.push_back( municipality);
                 }
+                if(tooFarMuns.size() > 1) break;
             }
-            if(amountOfToFar == 1){
-            cout << "AMOUNT OF TOO FAR "<< amountOfToFar <<endl;
-                removeMunicipalityFromCirc(tooFarMun, neighborCirc.second);
+            if(tooFarMuns.size() == 1){
+            cout << "AMOUNT OF TOO FAR "<< tooFarMuns.size() <<endl;
+                removeMunicipalityFromCirc(tooFarMuns[0], neighborCirc.second);
                 addMunicipalityToCirc(neighborCirc.second, municipalityToForce );
-                displaySolution(this->_solution);
-                return forceAddMunicipality(tooFarMun, historyOfForcedMun);
+                // displaySolution(this->_solution);
+                return forceAddMunicipality(tooFarMuns[0], historyOfForcedMun);
             }
         }
+        else{
+        cout << "NOT STOPPED IN NEIGHBOUR INCOMPLETE "<< endl;
+
+        //If we don't neighbour an incomplete circ
+        int amountOfMunTooFarFromMunicipalityToForce = 0;
+        for(auto&& municipality : neighborCirc.second->municipalities){     
+            if(isMunInVector(municipality, historyOfForcedMun))continue;
+            if(computeManhattanDist(municipalityToForce->coordinates, municipality->coordinates) > this->_maxDist){ //Has to be removed for municipalityToForce because tooFar
+                cout<< " ................. Presence of too far.... " << municipality->coordinates.row << " , " << municipality->coordinates.column << endl;
+                //We deal with at tooFar
+                if(++amountOfMunTooFarFromMunicipalityToForce > 1 ) {
+                    continue ; // TODO : deal with the case where the other tooFar was the bestMun
+                };   
+                int munSmallestDistToAnIncompleteCirc = 100000;
+                for(auto const& pair : incompleteCircs){
+                    cout << ".............................. munSmallestDistToAnIncompleteCirc : " << munSmallestDistToAnIncompleteCirc << endl ;
+                    int totalDistance = computeTotalDistanceToCirc(municipality, pair.second);
+                    if(totalDistance < munSmallestDistToAnIncompleteCirc){
+                        munSmallestDistToAnIncompleteCirc = totalDistance;
+                    }   
+                }
+                if(munSmallestDistToAnIncompleteCirc < totalDistanceToIncompleteCircOfBestMunToRemove){ // Adjust bestToRemove
+                    totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc;
+                    bestMunicipalityToRemove = municipality;
+                    bestCircumscriptionToBreak = neighborCirc.second;
+
+                    cout << "...............................................new totalDistanceToIncompleteCircOfBestMunToRemove " << totalDistanceToIncompleteCircOfBestMunToRemove <<endl;
+                    cout << "...............................................new bestMunicipalityToRemove " << bestMunicipalityToRemove->nbVotes <<endl;
+                    cout << "...............................................new bestCircumscriptionToBreak " << bestCircumscriptionToBreak->circumscriptionNumber <<endl;
+                    
+
+                }
+            }
+            else if(amountOfMunTooFarFromMunicipalityToForce >=1 ) {
+                cout << " ................ TOO MANY TO FAR  ...." << endl;
+                continue; //We will remove the munTooFar regardless of the others
+            }
+            else{//No tooFar yet detected
+                int munSmallestDistToAnIncompleteCirc = 1000000;
+                for(auto const& pair : incompleteCircs){
+                    int totalDistance = computeTotalDistanceToCirc(municipality, pair.second);
+                    if(totalDistance < munSmallestDistToAnIncompleteCirc){
+                        munSmallestDistToAnIncompleteCirc = totalDistance;
+                    }   
+                }
+                if(munSmallestDistToAnIncompleteCirc < totalDistanceToIncompleteCircOfBestMunToRemove){ // Adjust bestToRemove
+                    totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc;
+                    bestMunicipalityToRemove = municipality;
+                    bestCircumscriptionToBreak = neighborCirc.second;
+                }
+            }
+         }
+
+
+        }
+
+    }
+    removeMunicipalityFromCirc(bestMunicipalityToRemove, bestCircumscriptionToBreak);
+    addMunicipalityToCirc( bestCircumscriptionToBreak, municipalityToForce);
+    return forceAddMunicipality(bestMunicipalityToRemove, historyOfForcedMun);
         
-
-    //     //If we don't neighbour an incomplete circ
-    //     int amountOfMunTooFarFromMunicipalityToForce = 0;
-    //     for(auto&& municipality : neighborCirc.second->municipalities){             
-    //         for(Coord coord : historyOfForcedMun){
-    //             if(municipality->coordinates.row == coord.row && municipality->coordinates.column == coord.column ){
-    //                 continue;
-    //             }
-    //         }
-
-    //         if(computeManhattanDist(municipalityToForce->coordinates, municipality->coordinates) > this->_maxDist){ //Has to be removed for municipalityToForce because tooFar
-    //             //We deal with at tooFar
-    //             if(++amountOfMunTooFarFromMunicipalityToForce > 1 ) {
-    //                 continue ; // TODO : deal with the case where the other tooFar was the bestMun
-    //             };   
-    //             int munSmallestDistToAnIncompleteCirc = 0xdeadbeef;
-    //             for(auto const& pair : incompleteCircs){
-    //                 int totalDistance = computeTotalDistanceToCirc(municipality, pair.second);
-    //                 if(totalDistance < munSmallestDistToAnIncompleteCirc){
-    //                     munSmallestDistToAnIncompleteCirc = totalDistance;
-    //                 }   
-    //             }
-    //             if(munSmallestDistToAnIncompleteCirc < totalDistanceToIncompleteCircOfBestMunToRemove){ // Adjust bestToRemove
-    //                 totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc;
-    //                 bestMunicipalityToRemove = municipality;
-    //                 bestCircumscriptionToBreak = neighborCirc.second;
-    //             }
-    //         }
-    //         else if(amountOfMunTooFarFromMunicipalityToForce >= 1) continue; //We will remove the munTooFar regardless of the others
-
-    //         else{//No tooFar yet detected
-    //             int munSmallestDistToAnIncompleteCirc = 0xdeadbeef;
-    //             for(auto const& pair : incompleteCircs){
-    //                 int totalDistance = computeTotalDistanceToCirc(municipality, pair.second);
-    //                 if(totalDistance < munSmallestDistToAnIncompleteCirc){
-    //                     munSmallestDistToAnIncompleteCirc = totalDistance;
-    //                 }   
-    //             }
-    //             if(munSmallestDistToAnIncompleteCirc < totalDistanceToIncompleteCircOfBestMunToRemove){ // Adjust bestToRemove
-    //                 totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc;
-    //                 bestMunicipalityToRemove = municipality;
-    //                 bestCircumscriptionToBreak = neighborCirc.second;
-    //             }
-    //         }
-    //     }
-
-    //     removeMunicipalityFromCirc(bestMunicipalityToRemove, bestCircumscriptionToBreak);
-    //     addMunicipalityToCirc(municipalityToForce, bestCircumscriptionToBreak);
-    //     return forceAddMunicipality(bestMunicipalityToRemove, historyOfForcedMun);
-
-   }
-
-
     return false;
-
-
-
-
 
 }
 
+bool Algo::isMunInVector(shared_ptr<Municipality> municipality, const vector<Coord>& munCoordList){
+    for(Coord coord : munCoordList){
+        if(municipality->coordinates.row == coord.row && municipality->coordinates.column == coord.column ){
+            return true;
+        }
+    }
+    return false;
+}
 
+
+vector<shared_ptr<Municipality>> Algo::getTooFarMunsInCirc(shared_ptr<Municipality> referenceMunicipality, shared_ptr<Circumscription> circumscription){
+    vector<shared_ptr<Municipality>> tooFarMuns;
+    for(auto&& municipalityInCirc : circumscription->municipalities){
+        if(computeManhattanDist(referenceMunicipality->coordinates, municipalityInCirc->coordinates) > this->_maxDist){
+            tooFarMuns.push_back(municipalityInCirc);
+        }
+    }
+    return tooFarMuns;
+}
 
 /*
 
@@ -359,6 +370,8 @@ void Algo::removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRem
         }
         position++;
     }
+
+    cout << "REMOVED SUCCESS " << endl;
 
     circumscription->totalVotes-= municipalityToRemove->nbVotes;
     // TODO : UPDATE SOLUTION nbWon...  AND CIRCUMSCRIPTION->isWon

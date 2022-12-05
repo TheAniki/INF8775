@@ -36,6 +36,10 @@ class Algo
     map<int, shared_ptr<Circumscription>> findNeighbourCircumscriptions(Coord coord);
     void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, shared_ptr<Circumscription> circumscription);
     shared_ptr<Municipality> choseMunicipalityToRemoveFromCirc( shared_ptr<Circumscription> circumscriptionToRemoveIn, shared_ptr<Circumscription> incompleteCirc);
+
+
+    bool isMunInVector(shared_ptr<Municipality> municipality, const vector<Coord>& munCoordList);
+    vector<shared_ptr<Municipality>> getTooFarMunsInCirc(shared_ptr<Municipality> referenceMunicipality, shared_ptr<Circumscription> circumscription);
     
     // Getters
     Solution getSolution();
