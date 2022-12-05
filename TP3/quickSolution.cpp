@@ -67,49 +67,46 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
     
 
    for(auto&& neighborCirc : neighborCircs){
-        //If we neighbour an incomplete circ
+        //If neighborCirc is an incomplete circ -> if possible, municipalityToForce is added here
         if((int) neighborCirc.second->municipalities.size() < this->_maxCirc.circSize){ 
-            cout << "A NEIGHBOUR IS AN INCOMPLETE CIRC --------- " << neighborCirc.second->circumscriptionNumber << endl;
+            //If possible to add in this incomplete circ
             if(validateMunFitsInCirc(neighborCirc.second, municipalityToForce)){
-                cout << "WE FIT IN INCOMPLETE :) :) :) :) " << endl;
                 addMunicipalityToCirc(neighborCirc.second, municipalityToForce);
                 return true;
             }
-
+            //No fit => at least one municipality too far from municipalityToForce
             vector<shared_ptr<Municipality>> tooFarMuns;
             for(auto&& municipality : neighborCirc.second->municipalities){
-                if(isMunInVector(municipality, historyOfForcedMun))continue;
                 if(computeManhattanDist(municipality->coordinates, municipalityToForce->coordinates) > this->_maxDist){
-                    tooFarMuns.push_back( municipality);
+                    tooFarMuns.push_back(municipality);
+                    if(isMunInVector(municipality, historyOfForcedMun)){ //If mun too far and in history, then it's impossible to put municipalityToPush in that circ
+                        tooFarMuns.clear(); // clearing vector -> size = 0
+                        break;
+                    }
                 }
-                if(tooFarMuns.size() > 1) break;
+                if(tooFarMuns.size() > 1) break; //The algorithms kicks out at most one municipality 
             }
-            // Cause a seg fault here when size of too Far muns is over 1.
+            
+            //If and only if 1 tooFarMun, removes it , add municipalityToForce, calls forceAddMunicipality with the removed mun
             if(tooFarMuns.size() == 1){
-                cout<<"maybe segfault? "<<tooFarMuns[0]->nbVotes<<endl;
-                cout << "AMOUNT OF TOO FAR "<< tooFarMuns.size() <<endl;
                 removeMunicipalityFromCirc(tooFarMuns[0], neighborCirc.second);
                 addMunicipalityToCirc(neighborCirc.second, municipalityToForce );
-                // displaySolution(this->_solution);
                 return forceAddMunicipality(tooFarMuns[0], historyOfForcedMun);
             }
         }
-        else{
-        cout << "NOT STOPPED IN NEIGHBOUR INCOMPLETE "<< endl;
 
-        //If we don't neighbour an incomplete circ
+        //neighborCirc is complete
+        else{
         int amountOfMunTooFarFromMunicipalityToForce = 0;
         for(auto&& municipality : neighborCirc.second->municipalities){     
             if(isMunInVector(municipality, historyOfForcedMun))continue;
             if(computeManhattanDist(municipalityToForce->coordinates, municipality->coordinates) > this->_maxDist){ //Has to be removed for municipalityToForce because tooFar
-                cout<< " ................. Presence of too far.... " << municipality->coordinates.row << " , " << municipality->coordinates.column << endl;
                 //We deal with at tooFar
                 if(++amountOfMunTooFarFromMunicipalityToForce > 1 ) {
                     continue ; // TODO : deal with the case where the other tooFar was the bestMun
                 };   
                 int munSmallestDistToAnIncompleteCirc = 100000;
                 for(auto const& pair : incompleteCircs){
-                    cout << ".............................. munSmallestDistToAnIncompleteCirc : " << munSmallestDistToAnIncompleteCirc << endl ;
                     int totalDistance = computeTotalDistanceToCirc(municipality, pair.second);
                     if(totalDistance < munSmallestDistToAnIncompleteCirc){
                         munSmallestDistToAnIncompleteCirc = totalDistance;
@@ -119,16 +116,9 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
                     totalDistanceToIncompleteCircOfBestMunToRemove = munSmallestDistToAnIncompleteCirc;
                     bestMunicipalityToRemove = municipality;
                     bestCircumscriptionToBreak = neighborCirc.second;
-
-                    cout << "...............................................new totalDistanceToIncompleteCircOfBestMunToRemove " << totalDistanceToIncompleteCircOfBestMunToRemove <<endl;
-                    cout << "...............................................new bestMunicipalityToRemove " << bestMunicipalityToRemove->nbVotes <<endl;
-                    cout << "...............................................new bestCircumscriptionToBreak " << bestCircumscriptionToBreak->circumscriptionNumber <<endl;
-                    
-
                 }
             }
             else if(amountOfMunTooFarFromMunicipalityToForce >=1 ) {
-                cout << " ................ TOO MANY TO FAR  ...." << endl;
                 continue; //We will remove the munTooFar regardless of the others
             }
             else{//No tooFar yet detected
