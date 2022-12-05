@@ -66,11 +66,12 @@ int main(int argc, const char*argv[]){
     bool worked = false;
     // test:
     while(!worked){
-    worked = quickSolution.create();    
-    // cout<<"in local: "<<endl;
-    // displaySolution(localSearch.getSolution());
+    worked = quickSolution.create();     
     cout << "MARCHÉ ? .... " << worked << endl;
-    }
+    }    
     displaySolution(quickSolution.getSolution());
+    cout<<"in local: "<<endl;
+    localSearch.upgradeSolution(5);
+    displaySolution(localSearch.getSolution());
     return 0;
 }

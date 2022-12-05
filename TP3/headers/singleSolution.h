@@ -2,29 +2,30 @@
 #define SINGLESOLUTION_H
 #include "Includes.h"
 using SharedCirc = shared_ptr<Circumscription>;
+using SharedMun = shared_ptr<Municipality>;
 
 class SingleSolution 
 {
     public:
         SingleSolution();
-        SingleSolution(vector<vector<shared_ptr<Municipality>>> municipalities, int nbCircumscription);
+        SingleSolution(vector<vector<SharedMun>> municipalities, int nbCircumscription);
         ~SingleSolution();
         Solution initializeSolution(int nbCircumscription);
-        vector<vector<bool>> createAssignedMun(vector<vector<shared_ptr<Municipality>>> municipalities);        
+        vector<vector<bool>> createAssignedMun(vector<vector<SharedMun>> municipalities);        
         void computeCircBounds();
         void computeRepartition();
-        bool validateMunFitsInCirc(SharedCirc circumscription, shared_ptr<Municipality> municipalityToValidate);
-        void addMunicipalityToCirc(SharedCirc circumscription, shared_ptr<Municipality> municipality);
+        bool validateMunFitsInCirc(SharedCirc circumscription, SharedMun municipalityToValidate);
+        void addMunicipalityToCirc(SharedCirc circumscription, SharedMun municipality);
         map<int, SharedCirc> findIncompleteCircs(vector<SharedCirc> circumscriptions);
         vector<SharedCirc> findPossibleCircumscriptionsToContainMun(
-        shared_ptr<Municipality> municipalityToInclude, vector<SharedCirc> circumscriptionsConsidered);
+        SharedMun municipalityToInclude, vector<SharedCirc> circumscriptionsConsidered);
         //SharedCirc findClosestCircumscription();
         map<int, SharedCirc> findNeighbourCircumscriptions(Coord coord); 
-        bool isMunInVector(shared_ptr<Municipality> municipality, const vector<Coord>& munCoordList);    
-        void removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, SharedCirc circumscription);
-        shared_ptr<Municipality> choseMunicipalityToRemoveFromCirc( SharedCirc circumscriptionToRemoveIn, SharedCirc incompleteCirc);
-        int computeTotalDistanceToCirc(shared_ptr<Municipality> municipality, SharedCirc circumscription);
-        vector<shared_ptr<Municipality>> getTooFarMunsInCirc(shared_ptr<Municipality> referenceMunicipality, SharedCirc circumscription);
+        bool isMunInVector(SharedMun municipality, const vector<Coord>& munCoordList);    
+        void removeMunicipalityFromCirc(SharedMun municipalityToRemove, SharedCirc circumscription);
+        SharedMun choseMunicipalityToRemoveFromCirc( SharedCirc circumscriptionToRemoveIn, SharedCirc incompleteCirc);
+        int computeTotalDistanceToCirc(SharedMun municipality, SharedCirc circumscription);
+        vector<SharedMun> getTooFarMunsInCirc(SharedMun referenceMunicipality, SharedCirc circumscription);
         // Getters
         Solution getSolution();
 
@@ -38,8 +39,8 @@ class SingleSolution
         CircBound _currentBound;    
         Solution _solution;
         vector<vector<bool>> _assignedMunicipalities;
-        vector<vector<shared_ptr<Municipality>>> _municipalities;
-        queue<shared_ptr<Municipality>> _unassignedMunicipalities;
+        vector<vector<SharedMun>> _municipalities;
+        queue<SharedMun> _unassignedMunicipalities;
 };
 
 

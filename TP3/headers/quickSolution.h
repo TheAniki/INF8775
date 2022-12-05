@@ -21,6 +21,8 @@ class QuickSolution : protected virtual SingleSolution
         bool addMunicipalityToChosenCirc(SharedCirc circChosen,int i,int j);
         bool forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, vector<Coord> historyOfForcedMun);
 
+
+        SharedMun findHighestMunThatFit(SharedMun mun);
         //getter
         Solution getSolution();
     
