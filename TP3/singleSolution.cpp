@@ -77,7 +77,6 @@ map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
                     if(mun->coordinates.row ==i+coord.row && mun->coordinates.column == j + coord.column
                          &&  neighbourCircs.count(circ->circumscriptionNumber)==0  ){
                         neighbourCircs.emplace(circ->circumscriptionNumber, circ);
-                        cout << "NEIGHBOUR : " <<  circ->circumscriptionNumber << endl;
                     }
                 }
             }
@@ -152,7 +151,6 @@ map<int, SharedCirc> SingleSolution::findIncompleteCircs(vector<SharedCirc> circ
     for(auto&& circ : circumscriptions){
         if((int) circ->municipalities.size() < this->_currentBound.circSize){
             incompleteCircs.emplace(circ->circumscriptionNumber, circ);
-            cout << "INCOMPLETE CIRC : " << circ->circumscriptionNumber << " AMUONT : " <<circ->municipalities.size()   << endl;
         }
     }
     return incompleteCircs;
