@@ -22,6 +22,10 @@ class QuickSolution : protected virtual SingleSolution
         bool forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, vector<Coord> historyOfForcedMun);
         int findSmallestTotalDistanceToAnIncomplete(shared_ptr<Municipality> municipalityToCheck , map<int, shared_ptr<Circumscription>> incompleteCircs);
 
+
+    int howManyRemainingMunFitInCirc(shared_ptr<Circumscription> circToComplete, int i, int j);
+
+
         //getter
         Solution getSolution();
     

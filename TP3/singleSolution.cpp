@@ -42,6 +42,21 @@ SingleSolution::~SingleSolution()
 //     return this->_solution.circumscriptions[closestId]; // dummy return;
 // }
 
+Coord SingleSolution::findFurthestMunicipalityInCirc(shared_ptr<Municipality> municipality, SharedCirc circumscription ){
+    int maxDistance = 0;
+    Coord furthestCoord; 
+    for(auto&& munInTargetCirc:circumscription->municipalities){
+        int distance =computeManhattanDist(municipality->coordinates, munInTargetCirc->coordinates);
+        if(distance > maxDistance){
+            maxDistance = distance;
+            furthestCoord = munInTargetCirc->coordinates;
+        }
+    }
+
+    return furthestCoord;
+
+}
+
 int SingleSolution::computeTotalDistanceToCirc(shared_ptr<Municipality> municipality, SharedCirc circumscription ){
     int totalDistance = 0;
     for(auto&& munInTargetCirc:circumscription->municipalities){

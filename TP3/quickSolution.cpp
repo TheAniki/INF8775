@@ -23,18 +23,12 @@ Solution QuickSolution::getSolution(){
 // Create the initial solution.
 bool QuickSolution::create(){     
     srand((unsigned) time(0)); 
-    cout << "MAX DISTS : " << this->_maxDist<< endl;
-    cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
- 
-    cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
 
-    cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
     // Loops over all the municipalities to assign them to a circumscription     
     for(long unsigned int i = 0 ; i < this->_municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
-            // displaySolution(this->_solution);
-            // if(i==3) return false  ;
-
+            cout << "----------------------" <<endl;
+            cout << "NOW PLACING (" << i << " , " <<  j << ")"<<endl;
             // TODO : Replace with this
             bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
 
@@ -55,20 +49,25 @@ bool QuickSolution::create(){
                     
             //     }
             // }
-                 
 
             if(!added){
                 vector<Coord> emptyHistory;
                 bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], emptyHistory);
                 cout << "IS FORCEABLE ? " << isForceable << endl;
                 if(!isForceable) {
-                    cout << "AMOUNT OF INCOMPLETES :  " << findIncompleteCircs(this->_solution.circumscriptions).size() << endl;
                     return false;
                 }
             }
+        // displaySolution(this->_solution);
+        // if(i==3) return false  ;
         }
-       
     }           
+
+
+    cout << "MAX DISTS : " << this->_maxDist<< endl;
+    cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
+    cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
+    cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
     
     return true;
 }
@@ -212,20 +211,19 @@ bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
     if(circsInRange.size() == 0){
         cout << "NO CIRC IN RANGE" << endl;
 
-        double randomNumber = double(rand() & 10000)/10000;
-        double threshold = 0.05;
-        if(randomNumber > threshold){
-        cout << "......DECIDING TO FORCE" << endl;
-            vector<Coord> emptyHistory;
-            if(forceAddMunicipality(this->_municipalities[i][j], emptyHistory )){
-                cout << " FORCING WORKED ! ... " << endl;
-                return true;
-            } 
-        }
+        // double randomNumber = double(rand() & 10000)/10000;
+        // double threshold = 0.0;
+        // if(randomNumber > threshold){
+        // cout << "......DECIDING TO FORCE" << endl;
+        //     vector<Coord> emptyHistory;
+        //     if(forceAddMunicipality(this->_municipalities[i][j], emptyHistory )){
+        //         cout << " FORCING WORKED ! ... " << endl;
+        //         return true;
+        //     } 
+        // }
 
         cout << ".....DECIDING TO  TO TAKE NEW" << endl;
         for(auto&& circumscription : this->_solution.circumscriptions){
-
             if(circumscription->municipalities.size()==0){
                 addMunicipalityToCirc(circumscription, this->_municipalities[i][j]);
                 return true;
@@ -238,27 +236,32 @@ bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
         cout << "EXACTLY ONE CIRC IN RANGE" << endl;
         // // can be added at random to a new circ or to the circ in range. 
       
-        double randomNumber = double(rand() & 10000)/10000;
-        // double nbIncomplete = findIncompleteCircs(this->_solution.circumscriptions).size();
-        double nbOfNotStarted = 0;
-        for(auto&& circ : this->_solution.circumscriptions){
-            if(circ->municipalities.size() ==0) nbOfNotStarted++;
-        }
+        // double randomNumber = double(rand() & 10000)/10000;
+        // // double nbIncomplete = findIncompleteCircs(this->_solution.circumscriptions).size();
+        // double nbOfNotStarted = 0;
+        // for(auto&& circ : this->_solution.circumscriptions){
+        //     if(circ->municipalities.size() ==0) nbOfNotStarted++;
+        // }
 
-        cout << "nb incompletes : " << nbOfNotStarted << endl;
-        double threshold = 0.4*(nbOfNotStarted/this->_solution.circumscriptions.size()); // x 40%
-        cout << "threshold for joining existing : " << threshold << endl;
-        // double threshold = 0.2;
-        cout<< "Random number is " << randomNumber << endl;
-        if(randomNumber >= threshold){
-            cout << "JOINING THE EXISTING "  <<endl;
+        // cout << "nb incompletes : " << nbOfNotStarted << endl;
+        // // double threshold = 0.05*(nbOfNotStarted/this->_solution.circumscriptions.size()); // x 40%
+        // // cout << "threshold for joining existing : " << threshold << endl;
+        // double threshold = 0.05;
+        // cout<< "Random number is " << randomNumber << endl;
+        // double tresh = double(computeTotalDistanceToCirc(this->_municipalities[i][j], circsInRange[0].first)) /circsInRange[0].first->municipalities.size();
+        Coord maxCoords = findFurthestMunicipalityInCirc(this->_municipalities[i][j], circsInRange[0].first);
+    
+        double columnMax = ceil(double(this->_maxDist)/2);
+        double rowMax = floor(double(this->_maxDist)/2);
+        if(abs(maxCoords.column - j)<=columnMax && abs(maxCoords.row-i) <=rowMax && validateMunFitsInCirc(circsInRange[0].first,this->_municipalities[i][j] )){
+            cout << "...JOINING THE EXISTING "  <<endl;
             addMunicipalityToCirc(circsInRange[0].first, this->_municipalities[i][j]);
             return true;   
         }
         
         for(auto&& circumscription : this->_solution.circumscriptions){
             if(circumscription->municipalities.size()==0){
-            cout << "ADDING TO CIRC  ... "<< circumscription->circumscriptionNumber<<endl;
+            cout << "...ADDING TO NEW CIRC  ... "<< circumscription->circumscriptionNumber<<endl;
                 addMunicipalityToCirc(circumscription, this->_municipalities[i][j]);
                 return true;
             }
@@ -267,9 +270,9 @@ bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
         return true;            
     }
  
+    cout << "ADDING TO AN EXISTING CIRC " <<endl;
     // chose circumscription.
     SharedCirc circChosen = choseCircumscriptionFrom(circsInRange,i,j);    
-
     return addMunicipalityToChosenCirc(circChosen,i,j);    
 }
 
@@ -288,14 +291,71 @@ bool QuickSolution::addMunicipalityToChosenCirc(SharedCirc circChosen,int i,int 
 
 // Find all circs in manhattan range of i,j and that can be fitted 
 vector<pair<SharedCirc, double>> QuickSolution::findCircsInRange(int i, int j){
+
+
     vector<pair<SharedCirc, double>> circsInRange;
     for(auto&& circumscription : this->_solution.circumscriptions){
         if(circumscription->municipalities.size()>0 && validateMunFitsInCirc(circumscription, this->_municipalities[i][j])){
-            circsInRange.push_back(make_pair(circumscription,0.0));
-            cout << "This circ is in range : " << circumscription->circumscriptionNumber << endl;
+            int nFits = howManyRemainingMunFitInCirc(circumscription, i, j);
+            cout << "IMPORTANT ... #mun fitting in  " <<circumscription->circumscriptionNumber  << "   is : "<< nFits << endl;
+            int totalDistance = computeTotalDistanceToCirc(this->_municipalities[i][j], circumscription);
+            double heur = double(totalDistance)/circumscription->municipalities.size();
+            // double heur = double(circumscription->municipalities.size());
+            heur = heur*nFits;
+            // double heur = nFits;
+            circsInRange.push_back(make_pair(circumscription,heur));
         }
     }
+
+    std::sort(circsInRange.begin(), circsInRange.end(), [](pair<SharedCirc, double> a, pair<SharedCirc, double> b) {
+        // return a.second > b.second; //biggest first
+        return a.second < b.second; //smallest first
+
+    });
+    for(auto&& circPair : circsInRange){
+        cout << ".... circ in range  : " << circPair.first->circumscriptionNumber << "    average distance : " << circPair.second <<endl;
+    }
+
     return circsInRange;
+}
+
+int QuickSolution::howManyRemainingMunFitInCirc(shared_ptr<Circumscription> circToComplete, int i, int j){
+    // cout << "howManyRemainingMunFitInCirc " <<endl;
+    int counter =0;
+
+    for(int row = i ; i < this->_municipalities.size() ; i++){
+        while(true){
+            // cout<< i << ",";
+            // cout << j << " ";
+            bool jFits = validateMunFitsInCirc(circToComplete, this->_municipalities[i][j]);
+            j++;
+            if(jFits)counter++;
+            if(j >= this->_municipalities[0].size()){
+                cout << endl;
+                j=0;
+                break;
+            }
+        }
+        if(abs(row-i) > this->_maxDist) break;
+    }
+    // cout << "COUNTER IS : " << counter << endl;
+    return counter;
+
+    // while(true){
+    //     bool jFits = validateMunFitsInCirc(circToComplete, this->_municipalities[i][j]);
+    //     if(jFits)counter++;
+    //     cout<< i << ",";
+    //     cout << j++ << " ";
+    //     if(j >= this->_municipalities[0].size() || !jFits){
+    //         cout << endl;
+    //         j=0;
+    //         i++;
+    //         if(i>= this->_municipalities.size()){
+    //             break;
+    //         }
+    //     }
+    // }
+    // return counter;
 }
 
 // Calculate the distance of each circumscription from the number of vote requierd to win the circumscription.
@@ -315,6 +375,8 @@ vector<int> QuickSolution::calculateDistance(vector<pair<SharedCirc, double>> ci
 
 // Chose a circumscription From circumscriptions in range.
 SharedCirc QuickSolution::choseCircumscriptionFrom(vector<pair<SharedCirc, double>> circsInRange,int i, int j){
+    cout << "... best circ to add in is " <<  circsInRange[0].first->circumscriptionNumber << endl;
+    return circsInRange[0].first;
     
     // vector<int> distanceCirc = calculateDistance(circsInRange,i,j);
     // int totalDistance = reduce(distanceCirc.begin(),distanceCirc.end()); 
@@ -334,11 +396,11 @@ SharedCirc QuickSolution::choseCircumscriptionFrom(vector<pair<SharedCirc, doubl
         double circFullness = (double(circPair.first->municipalities.size()) ) / this->_minCirc.circSize;
         // double circFullness = 1;
         int totalDistanceToCirc = computeTotalDistanceToCirc(this->_municipalities[i][j], circPair.first);
-        // double circWeight = (1/circFullness)* totalDistanceToCirc ;
-        double circWeight = circFullness;
+        int distanceWeight = totalDistanceToCirc*totalDistanceToCirc;
+        double circWeight = (circFullness)* (double(100)/distanceWeight ) ;
         circPair.second = circWeight;
         totalWeight += circWeight; 
-        cout << "for circ " << circPair.first->circumscriptionNumber <<" : total distance "<< totalDistanceToCirc <<" - circFullness : " << circFullness << " - circWeight : " << circPair.second << endl;
+        cout << "for circ " << circPair.first->circumscriptionNumber <<" : total distance "<< totalDistanceToCirc <<" - inverse distance :" << double(100)/distanceWeight <<" - circFullness : " << circFullness << " - circWeight : " << circPair.second << endl;
     }
 
 
@@ -348,7 +410,6 @@ SharedCirc QuickSolution::choseCircumscriptionFrom(vector<pair<SharedCirc, doubl
         circPair.second = (double(circPair.second))/totalWeight;
         cout << "for circ " << circPair.first->circumscriptionNumber << " - PROBA :  : " << circPair.second << endl;
 
-
     }
 
 
@@ -357,11 +418,13 @@ SharedCirc QuickSolution::choseCircumscriptionFrom(vector<pair<SharedCirc, doubl
     double currentTreshold = 0.0;
     double randomNumber = double(rand() & 10000)/10000; // number between 0.0000 and 1.0000 
     
+    cout << "RANDOM NUMBER FOR CHOSING IS CIRC " << randomNumber << endl;
     for(auto&& circ : circsInRange){               
         currentTreshold = previousTreshold + circ.second;
         if(randomNumber >= previousTreshold && randomNumber <currentTreshold){
-           circChosen = circ.first; 
-           break;         
+            cout << "CHOOSING CIRC " << circ.first->circumscriptionNumber << endl;
+            circChosen = circ.first; 
+            break;         
         }
         previousTreshold = currentTreshold;
     }

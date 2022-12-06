@@ -25,6 +25,10 @@ class SingleSolution
         shared_ptr<Municipality> choseMunicipalityToRemoveFromCirc( SharedCirc circumscriptionToRemoveIn, SharedCirc incompleteCirc);
         int computeTotalDistanceToCirc(shared_ptr<Municipality> municipality, SharedCirc circumscription);
         vector<shared_ptr<Municipality>> getTooFarMunsInCirc(shared_ptr<Municipality> referenceMunicipality, SharedCirc circumscription);
+      
+        Coord findFurthestMunicipalityInCirc(shared_ptr<Municipality> municipality, SharedCirc circumscription );
+
+
         // Getters
         Solution getSolution();
 
