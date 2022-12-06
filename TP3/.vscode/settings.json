@@ -52,7 +52,8 @@
         "xtr1common": "cpp",
         "xtree": "cpp",
         "numeric": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "set": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled",
     "cSpell.words": [

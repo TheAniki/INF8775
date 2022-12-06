@@ -92,5 +92,56 @@ int main(int argc, const char*argv[]){
             displaySolution(localSearch.getSolution());
         }        
     }    
+
+
+
+
+
+
+
+
+
+
+    // bool worked = false;
+    // // test:
+    // // while(!worked){
+    // // cout<<"in local: "<<endl;
+    // // displaySolution(localSearch.getSolution());
+    // // }
+    //  srand((unsigned) time(0)); 
+
+    // SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
+    // QuickSolution quickSolution = QuickSolution(singleSolution);
+    // LocalSearch localSearch = LocalSearch(singleSolution);
+        
+    // // quickSolution.getSolution();
+    // // worked = quickSolution.create(100);    
+    // // quickSolution.getSolution();
+    // // cout << "MARCHÉ ? .... " << worked << endl;
+    // //   cout<<"--------------------------"<<endl;
+
+
+
+
+
+
+
+
+
+    // // for(double ratio = 20 ; ratio <= 30  ; ratio+=0.5){
+    // //     cout <<"RATIO : " << ratio << " - ";
+    //     int counter =0;
+    //     for(int i = 0 ; i < 500 ; i++){
+    //         SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
+    //         QuickSolution quickSolution = QuickSolution(singleSolution);
+    //         worked = quickSolution.create(1);    
+    //         if(worked)     counter++;
+    //     } 
+    //     cout << "WORKED : " << counter << "/500" <<endl;
+    //     cout << endl;
+    // // }
+
+
+
     return 0;
 }

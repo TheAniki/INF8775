@@ -91,7 +91,7 @@ map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
                     if(mun->coordinates.row ==i+coord.row && mun->coordinates.column == j + coord.column
                          &&  neighbourCircs.count(circ->circumscriptionNumber)==0  ){
                         neighbourCircs.emplace(circ->circumscriptionNumber, circ);
-                        //cout << "NEIGHBOUR : " <<  circ->circumscriptionNumber << endl;
+                        // cout << "NEIGHBOUR : " <<  circ->circumscriptionNumber << endl;
                     }
                 }
             }
@@ -172,7 +172,8 @@ vector<SharedCirc> SingleSolution::findPossibleCircumscriptionsToContainMun(
 }
 
 // TODO : Repair it. wrong number of municipality.
-map<int, SharedCirc> SingleSolution::findIncompleteCircs(vector<SharedCirc> circumscriptions){
+map<int, SharedCirc> SingleSolution::findIncompleteCircs(){
+    vector<shared_ptr<Circumscription>> circumscriptions = this->_solution.circumscriptions;
     map<int, SharedCirc> incompleteCircs;
     for(auto&& circ : circumscriptions){
         if((int) circ->municipalities.size() < this->_currentBound.circSize){
@@ -233,7 +234,6 @@ void SingleSolution::computeCircBounds(){
     float fraction = float(this->_nbMunicipalities)/(this->_nbCircumscriptions);
 
     this->_minCirc = CircBound(floor(fraction), 0);
-    cout << "_MIN CIRC ***************** " << this->_minCirc.circSize << endl;
     this->_maxCirc = CircBound(ceil(fraction), 0);   
 
     computeRepartition();    
