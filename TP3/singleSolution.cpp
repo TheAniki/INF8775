@@ -77,6 +77,7 @@ map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
                     if(mun->coordinates.row ==i+coord.row && mun->coordinates.column == j + coord.column
                          &&  neighbourCircs.count(circ->circumscriptionNumber)==0  ){
                         neighbourCircs.emplace(circ->circumscriptionNumber, circ);
+                        cout << "NEIGHBOUR : " <<  circ->circumscriptionNumber << endl;
                     }
                 }
             }
@@ -89,7 +90,10 @@ map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
 
 
 void SingleSolution::removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, SharedCirc circumscription){
-    //TODO : there are more efficient SingleSolutionrithms to remove an element from a vector
+    if(!circumscription || !municipalityToRemove) { //if parameter undefined
+        return;
+    } 
+ 
    int position =0;
     for(auto&& possibleMunicipality : circumscription->municipalities){
         if(possibleMunicipality->coordinates.row == municipalityToRemove->coordinates.row && possibleMunicipality->coordinates.column == municipalityToRemove->coordinates.column){
@@ -98,6 +102,8 @@ void SingleSolution::removeMunicipalityFromCirc(shared_ptr<Municipality> municip
         }
         position++;
     }
+    
+
 
     circumscription->totalVotes-= municipalityToRemove->nbVotes;
     // TODO : UPDATE SOLUTION nbWon...  AND CIRCUMSCRIPTION->isWon
@@ -175,6 +181,10 @@ bool SingleSolution::isMunInVector(shared_ptr<Municipality> municipality, const 
 }
 
 void SingleSolution::addMunicipalityToCirc(SharedCirc circumscription, shared_ptr<Municipality> municipality ){
+    if(!circumscription || !municipality) { //if parameter undefined
+        return;
+    } 
+
     circumscription->addMun(municipality);
     circumscription->totalVotes+=municipality->nbVotes;
     if(circumscription->totalVotes >= this->_votesToWin){
@@ -191,6 +201,7 @@ void SingleSolution::computeCircBounds(){
     float fraction = float(this->_nbMunicipalities)/(this->_nbCircumscriptions);
 
     this->_minCirc = CircBound(floor(fraction), 0);
+    cout << "_MIN CIRC ***************** " << this->_minCirc.circSize << endl;
     this->_maxCirc = CircBound(ceil(fraction), 0);   
 
     computeRepartition();    
@@ -223,7 +234,7 @@ void SingleSolution::computeRepartition(){
         this->_maxCirc.maxAmount = y;
         this->_minCirc.maxAmount = x;
     }    
-    this->_currentBound = this->_maxCirc;   
+    this->_currentBound = this->_minCirc;   
 }
 //Generates a matrix that tells if a municipality is assigned to a 
 // Necessary, because there will be multiple solutions sharing the same municipalities

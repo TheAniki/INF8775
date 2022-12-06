@@ -14,6 +14,12 @@
 #include <algorithm>
 #include <math.h>       /* floor */
 #include <numeric>
+
+#include <cstdlib>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctime>
 using namespace std;
 
 // ==================== Struct ==================== //
