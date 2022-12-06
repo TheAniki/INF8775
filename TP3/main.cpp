@@ -63,6 +63,7 @@ int main(int argc, const char*argv[]){
     
     bool worked = false;
     int it = 0;
+    int oldBest = 0;
     while(!worked){
         SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
         QuickSolution quickSolution = QuickSolution(singleSolution);
@@ -74,11 +75,40 @@ int main(int argc, const char*argv[]){
         // cout << "MARCHÉ ? .... " << worked << endl;
         // cout<<" ====================================== "<<endl;  
         if(worked){
-            cout<<"en "<<it<<" iterations"<<endl;    
-        displaySolution(quickSolution.getSolution());
-        cout<<"in local: "<<endl;
-        localSearch.upgradeSolution(1);
-        displaySolution(localSearch.getSolution());
+            //cout<<"en "<<it<<" iterations"<<endl;    
+            displaySolution(quickSolution.getSolution());
+            //cout<<"in local: "<<endl;
+            int i =0;
+            int newBest =(nbCircumscription/2)+1;
+            int maxIterationWithoutAmelioration = 50;
+            int numIteration =0;
+            while(i<newBest){                
+                localSearch.upgradeSolution(nbCircumscription);
+                i = 0;
+                for(auto&& circ : localSearch.getSolution().circumscriptions){
+                    if(circ->totalVotes >= votesToWin)
+                        i++;
+                }
+                cout<<"Number of circs won "<<i<<" of "<<nbCircumscription<<endl;
+                //displaySolution(localSearch.getSolution());
+                if(i>newBest){
+                    newBest = i;
+                    numIteration=0;
+                }
+                else{
+                    numIteration++;
+                }
+                if(oldBest > i){
+                    break;
+                }
+
+                if(numIteration > maxIterationWithoutAmelioration){
+                    if(newBest > oldBest)
+                        oldBest = newBest;
+                    worked = false;
+                    break;
+                } 
+            }
         }
     }
     

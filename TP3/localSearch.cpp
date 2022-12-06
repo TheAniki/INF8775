@@ -20,13 +20,15 @@ Solution LocalSearch::getSolution(){
 }
 
 // algo 2-opt
-void LocalSearch::upgradeSolution(int nbIterations){    
+void LocalSearch::upgradeSolution(int nbIterations){       
     for(int i=0; i<nbIterations; i++){
-        cout<<"Upgrading solution"<<endl;
+        // cout<<"Upgrading solution"<<endl;
+
 
         //vector<SharedCirc> neighbors = findNeihborCircumscriptions(this->_solution.circumscriptions[i]);
-        vector<pair<SharedCirc,int>> losingCircs = orderLosingCirc();
-        
+        vector<pair<SharedCirc,int>> losingCircs = orderLosingCirc();      
+         
+
         increaseVotesofAllLosing(losingCircs);
 
         // definir le voisinage.
@@ -43,15 +45,16 @@ void LocalSearch::upgradeSolution(int nbIterations){
 }
 void LocalSearch::increaseVotesofAllLosing(vector<pair<SharedCirc,int>> losingCircs){
     
-
+    // cout<<"increasing : "<<losingCircs[0].first->circumscriptionNumber<<endl;
+    // increaseVotesClosestToTreshold(losingCircs[0].first, losingCircs[0].second);  
     for(auto&& circ : losingCircs){
-        cout<<"increasing : "<<circ.first->circumscriptionNumber<<endl;
-        increaseVotesClosestToTreshold(circ.first, circ.second);
-    }
-    
+        // cout<<"increasing : "<<circ.first->circumscriptionNumber<<endl;
+        bool success = increaseVotesClosestToTreshold(circ.first, circ.second);
+        if(success) return;
+    }    
 }
 
-void LocalSearch::increaseVotesClosestToTreshold(SharedCirc losingCirc, int distanceToWinning){
+bool LocalSearch::increaseVotesClosestToTreshold(SharedCirc losingCirc, int distanceToWinning){
     // find all circonscription around it.
     /*  prend en paramètre une circonscription (perdante) et considére toutes les circonscription 
         autour pour faire des échanges de municipalités de façon à la faire  gagner (en dépassant le moins possible le treshhold), 
@@ -63,20 +66,23 @@ void LocalSearch::increaseVotesClosestToTreshold(SharedCirc losingCirc, int dist
         neighbors.push_back(neigbor.second);
     }
     
-    TrySwappingMunicipalities(losingCirc, neighbors,distanceToWinning);
+    return TrySwappingMunicipalities(losingCirc, neighbors,distanceToWinning);
 
 }
 
-void LocalSearch::TrySwappingMunicipalities(SharedCirc losingCirc, vector<SharedCirc> neighbors,int distanceToWinning){
+bool LocalSearch::TrySwappingMunicipalities(SharedCirc losingCirc, vector<SharedCirc> neighbors, int distanceToWinning){
     // SharedMun lowestValueMunicipality = findLowestMunicipality(losingCirc);
     // SharedMun bestValueMunicipality = findBestMunicipalityToRemove(bestCirc);
     vector<SharedMun> lowestMuns;
-    if(distanceToWinning >= 51){
-        lowestMuns = findAllBestMunicipalities(losingCirc);
-    }
-    else{
-        lowestMuns = findAllLowestMunicipalities(losingCirc);        
-    }
+    //cout<<" distance to win "<<distanceToWinning<<endl;
+    // if(distanceToWinning >= 51){
+    //     lowestMuns = findAllBestMunicipalities(losingCirc);
+    // }
+    // else{
+    //     lowestMuns = findAllLowestMunicipalities(losingCirc);        
+    // }
+
+    lowestMuns = findAllLowestMunicipalities(losingCirc);
 
     // find municipalities from neighbor that can be added to losingCirc.
     vector<pair<int,SharedMun>> circAndMun; // int: circ where mun can be added.
@@ -100,21 +106,123 @@ void LocalSearch::TrySwappingMunicipalities(SharedCirc losingCirc, vector<Shared
         }        
     }
 
-    cout<<"municipalities from neighbor that can be added to losingCirc"<<endl;
-    for(auto& mun : circAndMun){
-        cout<<"circ : "<< mun.first << " and mun that can be added: "<<mun.second->nbVotes
-            <<"(" <<  mun.second->coordinates.row<<" , "<< mun.second->coordinates.column <<")"
-            <<" distance: "<< abs(mun.second->nbVotes - distanceToWinning) <<endl;
-    }
-    cout<<"municipalities that can be added to neigbor"<<endl;
-    for(auto& mun : munInNeig){
-        cout<<"circ : "<< mun.first << " and mun that can be added: "<<mun.second->nbVotes
-            <<"(" <<  mun.second->coordinates.row<<" , "<< mun.second->coordinates.column <<")"
-            <<" distance: "<< abs(mun.second->nbVotes - distanceToWinning) <<endl;
-    }
-    cout<<endl;   
+    // cout<<"municipalities from neighbor that can be added to losingCirc"<<endl;
+    // for(auto& mun : circAndMun){
+    //     cout<<"circ : "<< mun.first << " and mun that can be added: "<<mun.second->nbVotes
+    //         <<"(" <<  mun.second->coordinates.row<<" , "<< mun.second->coordinates.column <<")"
+    //         <<" distance: "<< abs(mun.second->nbVotes - distanceToWinning) <<endl;
+    // }
+    // cout<<"municipalities that can be added to neigbor"<<endl;
+    // for(auto& mun : munInNeig){
+    //     cout<<"circ : "<< mun.first << " and mun that can be added: "<<mun.second->nbVotes
+    //         <<"(" <<  mun.second->coordinates.row<<" , "<< mun.second->coordinates.column <<")"
+    //         <<" distance: "<< abs(mun.second->nbVotes - distanceToWinning) <<endl;
+    // }
+    // cout<<endl;   
 
+    SharedCirc bestNeigbor = this->_solution.circumscriptions[ circAndMun[0].first - 1];
+    for(auto&& neighbor : neighbors){
+        //cout<<" checking neighbor : "<<neighbor->circumscriptionNumber<<endl;
+        if(neighbor == losingCirc) continue;
+        if(!isContainedInBoth(neighbor->circumscriptionNumber , munInNeig, circAndMun)) continue;
+        //cout<<bestNeigbor->circumscriptionNumber<< " is contained in munNeig and circAndMun"<<endl;
+        if(bestNeigbor->totalVotes < neighbor->totalVotes){
+            bestNeigbor = neighbor;
+        }
+    }
+    //cout<<" best neigbor "<< bestNeigbor->circumscriptionNumber<< " with " << bestNeigbor->totalVotes <<" votes" <<endl;
+    
+    // find worst mun in circAndMun
+    SharedMun worstMunInLosing = findLowestMunicipality(losingCirc); 
+    int lastBest = 1000;
+    for(auto& mun : munInNeig){
+        if(mun.first == bestNeigbor->circumscriptionNumber && mun.second->nbVotes < lastBest ){
+            worstMunInLosing = mun.second;
+            lastBest = mun.second->nbVotes;
+        }
+    }
+    
+    // find best that fits without making the municipality lose;
+    SharedMun bestMunInNeighbor = findLowestMunicipality(losingCirc);
+    lastBest = 0;
+    int nbVoteToWin = ((losingCirc->municipalities.size()*100)/2)+1;
+    for(auto& mun : circAndMun){
+        if(mun.first == bestNeigbor->circumscriptionNumber && mun.second->nbVotes > lastBest ){
+            if(bestNeigbor->totalVotes < nbVoteToWin){
+                bestMunInNeighbor = mun.second;
+                lastBest = mun.second->nbVotes;
+            }
+            else if( (bestNeigbor->totalVotes - bestMunInNeighbor->nbVotes + worstMunInLosing->nbVotes) >= nbVoteToWin){
+                bestMunInNeighbor = mun.second;
+                lastBest = mun.second->nbVotes;
+            }              
+        }
+    }
+
+    // if none is found return.
+    if(bestMunInNeighbor->nbVotes == worstMunInLosing->nbVotes) return false;
+    // cout<<"worst in losing that can be swapped with neigbor "<< worstMunInLosing->nbVotes 
+    // << " coords: "<<"(" <<  worstMunInLosing->coordinates.row<<" , "<< worstMunInLosing->coordinates.column <<")"<<endl;
+    // cout<<"best in neigbor that can be swapped with losing "<< bestMunInNeighbor->nbVotes 
+    // << " coords: "<<"(" <<  bestMunInNeighbor->coordinates.row<<" , "<< bestMunInNeighbor->coordinates.column <<")"<<endl;
+    int oldLosing = losingCirc->totalVotes;
+    swapMuns(bestNeigbor->circumscriptionNumber ,bestMunInNeighbor, losingCirc->circumscriptionNumber , worstMunInLosing);
+    
+    return (oldLosing < losingCirc->totalVotes);
+    
     // TODO: verify combinations. to not make a circ lose. 
+}
+
+void LocalSearch::swapMuns(int bestCircNb , SharedMun bestMunInNeighbor , int losingCircNb , SharedMun worstMunInLosing){
+
+
+
+    int initialLosing = this->_solution.circumscriptions[losingCircNb-1]->totalVotes;
+    int initialBest = this->_solution.circumscriptions[bestCircNb-1]->totalVotes;
+
+    int newLosing = initialLosing - worstMunInLosing->nbVotes + bestMunInNeighbor->nbVotes;
+
+    // only updateSolution if best value is found
+    if(newLosing <= initialLosing) return;
+    
+   removeMunicipalityFromCirc(bestMunInNeighbor, this->_solution.circumscriptions[bestCircNb-1]);
+   removeMunicipalityFromCirc(worstMunInLosing, this->_solution.circumscriptions[losingCircNb-1]);
+
+    // cout<<" removed elements from bestCirc " << bestCircNb <<" and losingCirc "<<losingCircNb<<endl;
+    // cout<<"         removed : "<< bestMunInNeighbor->nbVotes 
+    // << " coords: "<<"(" <<  bestMunInNeighbor->coordinates.row<<" , "<< bestMunInNeighbor->coordinates.column <<")"<<endl;
+    // cout<<"         removed : "<< worstMunInLosing->nbVotes 
+    // << " coords: "<<"(" <<  worstMunInLosing->coordinates.row<<" , "<< worstMunInLosing->coordinates.column <<")"<<endl;
+    //displaySolution(this->_solution); 
+
+   addMunicipalityToCirc(this->_solution.circumscriptions[losingCircNb-1], bestMunInNeighbor);
+   addMunicipalityToCirc(this->_solution.circumscriptions[bestCircNb-1], worstMunInLosing);   
+    //    cout<<" swapped elements from bestCirc " << bestCircNb <<" and losingCirc "<<losingCircNb<<endl;
+    //    cout<<"         swapped : "<< bestMunInNeighbor->nbVotes 
+    //     << " coords: "<<"(" <<  bestMunInNeighbor->coordinates.row<<" , "<< bestMunInNeighbor->coordinates.column <<")"<<endl;
+    //     cout<<"         swapped : "<< worstMunInLosing->nbVotes 
+    //     << " coords: "<<"(" <<  worstMunInLosing->coordinates.row<<" , "<< worstMunInLosing->coordinates.column <<")"<<endl;
+    //     displaySolution(this->_solution); 
+
+    // cout<<" new losing total vote : "<< this->_solution.circumscriptions[losingCircNb-1]->totalVotes<<endl;
+    // cout<<" old best total vote : "<< this->_solution.circumscriptions[bestCircNb-1]->totalVotes<<endl;
+
+}
+
+bool isContainedInBoth(int circNumber, vector<pair<int,SharedMun>> neig, vector<pair<int,SharedMun>> loss){
+    bool isContainedInNeig = isContainedIn(circNumber, neig);
+    bool isContainedInLoss = isContainedIn(circNumber, loss);
+
+    return isContainedInNeig && isContainedInLoss;
+}
+
+bool isContainedIn(int circNumber, vector<pair<int,SharedMun>> list){
+    for(auto& n : list){
+        if(n.first == circNumber){
+            return true;
+        }
+    }
+    return false;
 }
 
 // Find the Circ with the greater winning margin.
@@ -135,11 +243,14 @@ SharedCirc findBestWinningCric(map<int, SharedCirc> neighbors){
 
 map<int, SharedCirc> LocalSearch::findNeihborCircumscriptionsOfLowest(SharedCirc circ){
     
+    // TODO: chose random municipality.
     SharedMun lowestValueMunicipality = findLowestMunicipality(circ);
-    cout<<" lowest value: "<< lowestValueMunicipality->nbVotes
-        <<"(" <<  lowestValueMunicipality->coordinates.row<<" , "<< lowestValueMunicipality->coordinates.column <<")"
-        << " in circ "<< circ->circumscriptionNumber<<endl;
-    map<int, SharedCirc> neighborCircs =  findNeighbourCircumscriptions(lowestValueMunicipality->coordinates);
+
+    // cout<<" lowest value: "<< lowestValueMunicipality->nbVotes
+    //     <<"(" <<  lowestValueMunicipality->coordinates.row<<" , "<< lowestValueMunicipality->coordinates.column <<")"
+    //     << " in circ "<< circ->circumscriptionNumber<<endl;
+    // find all neighbors in manhattan distance of lowest
+    map<int, SharedCirc> neighborCircs =  findNeighbourCircumscriptions(lowestValueMunicipality->coordinates, false);
 
     return neighborCircs;
 } 
@@ -198,12 +309,14 @@ vector<SharedMun> LocalSearch::findAllLowestMunicipalities(SharedCirc circ){
 }
 
 SharedMun LocalSearch::findLowestMunicipality(SharedCirc circ){
-    SharedMun lowest = circ->municipalities[0];
-    for(auto& mun : circ->municipalities){
-        if(mun->nbVotes < lowest->nbVotes){
-            lowest = mun;
-        }
-    }
+    srand(time(NULL));
+    SharedMun lowest = circ->municipalities[ rand()% circ->municipalities.size()];
+    
+    // for(auto& mun : circ->municipalities){
+    //     if(mun->nbVotes < lowest->nbVotes){
+    //         lowest = mun;
+    //     }
+    // }
     
     return lowest;
 }
@@ -224,8 +337,8 @@ vector<pair<SharedCirc,int>> LocalSearch::orderLosingCirc(){
     });
 
     for(auto& circ : losingCircs){
-        cout<<"# "<<circ.first->circumscriptionNumber<<": "<<circ.second<<" ";
+        //cout<<"# "<<circ.first->circumscriptionNumber<<": "<<circ.second<<" ";
     }    
-    cout<<endl;
+    // cout<<endl;
     return losingCircs;
 }

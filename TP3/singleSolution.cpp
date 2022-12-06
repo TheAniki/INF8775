@@ -62,7 +62,7 @@ vector<SharedMun> SingleSolution::getTooFarMunsInCirc(SharedMun referenceMunicip
     return tooFarMuns;
 }
 
-map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
+map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord, bool inManhattan){
     map<int, SharedCirc> neighbourCircs;
     int surroundCoords[3] = {-1, 0, 1};
     for(int i : surroundCoords){
@@ -71,6 +71,16 @@ map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
             if( i+coord.row < 0 || j +coord.column < 0) continue;
             // if( i+coord.row >=(int) this->_municipalities[0].size()  
             //     || j +coord.column >= (int) this->_municipalities.size()) continue; //TODO : demander Ouassim ce qu'il voulait faire ici
+            if(inManhattan){
+                for(auto&& circ : this->_solution.circumscriptions){
+                    for(auto&& mun : circ->municipalities){
+                        if( computeManhattanDist(coord, mun->coordinates)<=this->_maxDist
+                            &&  neighbourCircs.count(circ->circumscriptionNumber)==0  ){
+                            neighbourCircs.emplace(circ->circumscriptionNumber, circ);
+                        }
+                    }
+                }
+            }
 
             for(auto&& circ : this->_solution.circumscriptions){
                 for(auto&& mun : circ->municipalities){

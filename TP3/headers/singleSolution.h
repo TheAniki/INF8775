@@ -20,7 +20,7 @@ class SingleSolution
         vector<SharedCirc> findPossibleCircumscriptionsToContainMun(
         SharedMun municipalityToInclude, vector<SharedCirc> circumscriptionsConsidered);
         //SharedCirc findClosestCircumscription();
-        map<int, SharedCirc> findNeighbourCircumscriptions(Coord coord); 
+        map<int, SharedCirc> findNeighbourCircumscriptions(Coord coord, bool inManhattan); 
         bool isMunInVector(SharedMun municipality, const vector<Coord>& munCoordList);    
         void removeMunicipalityFromCirc(SharedMun municipalityToRemove, SharedCirc circumscription);
         SharedMun choseMunicipalityToRemoveFromCirc( SharedCirc circumscriptionToRemoveIn, SharedCirc incompleteCirc);

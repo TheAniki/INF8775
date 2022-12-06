@@ -14,9 +14,9 @@ class LocalSearch : protected virtual SingleSolution
         
 
         vector<pair<SharedCirc,int>> orderLosingCirc();
-        void increaseVotesClosestToTreshold(SharedCirc losingCirc,int distanceToWinning);
+        bool increaseVotesClosestToTreshold(SharedCirc losingCirc,int distanceToWinning);
         void increaseVotesofAllLosing(vector<pair<SharedCirc,int>>  losingCirc);
-        void TrySwappingMunicipalities(SharedCirc losingCirc, vector<SharedCirc> neighbors,int distanceToWinning);
+        bool TrySwappingMunicipalities(SharedCirc losingCirc, vector<SharedCirc> neighbors,int distanceToWinning);
         vector<SharedMun> findAllCircsThatFit(SharedCirc circ, SharedCirc inCirc);
         SharedMun findBestMunicipalityToRemove(SharedCirc circ);
         vector<SharedMun> findAllBestMunicipalities(SharedCirc circ);
@@ -27,6 +27,8 @@ class LocalSearch : protected virtual SingleSolution
 
         map<int,SharedCirc> findNeihborCircumscriptionsOfLowest(SharedCirc circ);
 
+
+        void swapMuns(int bestCircNb , SharedMun bestMunInNeighbor , int losingCircNb , SharedMun worstMunInLosing);
         // getter
         Solution getSolution();
         
@@ -35,6 +37,7 @@ class LocalSearch : protected virtual SingleSolution
     private:
         /* data */  
 };
-
+bool isContainedInBoth(int circNumber, vector<pair<int,SharedMun>> neig, vector<pair<int,SharedMun>> loss);
+bool isContainedIn(int circNumber, vector<pair<int,SharedMun>> list);
 SharedCirc findBestWinningCric(map<int, SharedCirc> neighbors);
 #endif // !LOCALSEARCH_H

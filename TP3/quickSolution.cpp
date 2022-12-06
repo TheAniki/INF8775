@@ -81,7 +81,7 @@ bool QuickSolution::forceAddMunicipality(SharedMun municipalityToForce, vector<C
     
     map<int, shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs(this->_solution.circumscriptions);
     // Finds the less problematic circ to force solution in
-    map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates);
+    map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates,false);
     shared_ptr<Circumscription> bestCircumscriptionToBreak;
     SharedMun bestMunicipalityToRemove;
     int totalDistanceToIncompleteCircOfBestMunToRemove = 100000;
