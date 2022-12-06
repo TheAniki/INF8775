@@ -62,12 +62,12 @@ int main(int argc, const char*argv[]){
     
     
     bool worked = false;
-    int it = 0;
-    int oldBest = 0;
     SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
     QuickSolution quickSolution = QuickSolution(singleSolution);
     LocalSearch localSearch = LocalSearch(singleSolution);
-    worked = quickSolution.create(); 
+    worked = quickSolution.create();
+    cout<<" worked? "<<worked<<endl; 
+
     int i=0;
     for(auto&& circ : localSearch.getSolution().circumscriptions){
         if(circ->totalVotes >= votesToWin)
@@ -76,12 +76,11 @@ int main(int argc, const char*argv[]){
     cout<<"Number of circs won "<<i<<" of "<<nbCircumscription<<endl;
     displaySolution(quickSolution.getSolution());
 
-    int best = 0;
     i=0;
     int lastBest = 0;
     while(i<13){
         i=0;
-        localSearch.upgradeSolution(1);
+        localSearch.upgradeSolution(10);
         
         for(auto&& circ : localSearch.getSolution().circumscriptions){
             if(circ->totalVotes >= votesToWin)

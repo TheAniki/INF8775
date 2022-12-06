@@ -338,7 +338,7 @@ int QuickSolution::howManyRemainingMunFitInCirc(shared_ptr<Circumscription> circ
     int counter =0;
     int col = j;
 
-    for(int row = i ; row < this->_municipalities.size() ; row++){
+    for(int row = i ; row < (int) this->_municipalities.size() ; row++){
         while(true){
             cout<< row << ",";
             cout << col << " ";

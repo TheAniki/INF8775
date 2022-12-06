@@ -107,8 +107,8 @@ map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
 
 
 void SingleSolution::removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, SharedCirc circumscription){
-    cout<<"removing "<< municipalityToRemove->nbVotes 
-    << " ("<<municipalityToRemove->coordinates.row <<" , "<< municipalityToRemove->coordinates.column<<") from "<<circumscription->circumscriptionNumber<<endl;
+    // cout<<"removing "<< municipalityToRemove->nbVotes 
+    // << " ("<<municipalityToRemove->coordinates.row <<" , "<< municipalityToRemove->coordinates.column<<") from "<<circumscription->circumscriptionNumber<<endl;
     if(!circumscription || !municipalityToRemove) { //if parameter undefined
         
         return;
@@ -211,8 +211,8 @@ bool SingleSolution::isMunInVector(SharedMun municipality, const vector<Coord>& 
 }
 
 void SingleSolution::addMunicipalityToCirc(SharedCirc circumscription, shared_ptr<Municipality> municipality ){
-    cout<<"adding "<< municipality->nbVotes 
-    << " ("<<municipality->coordinates.row <<" , "<< municipality->coordinates.column<<") from "<<circumscription->circumscriptionNumber<<endl;
+    // cout<<"adding "<< municipality->nbVotes 
+    // << " ("<<municipality->coordinates.row <<" , "<< municipality->coordinates.column<<") to "<<circumscription->circumscriptionNumber<<endl;
     if(!circumscription || !municipality) { //if parameter undefined
         return;
     } 
