@@ -1,14 +1,14 @@
 #include "./headers/Includes.h"
 #include "./headers/SingleSolution.h"
 #include "./headers/utils.h"
-
+//#include <ra> 
 // Default Ctor. 
 SingleSolution::SingleSolution()
 {
 }
 
 // SingleSolution Ctor using municipalities and the number of circumscriptions.
-SingleSolution::SingleSolution(vector<vector<shared_ptr<Municipality>>> municipalities, int nbCircumscriptions):
+SingleSolution::SingleSolution(vector<vector<SharedMun>> municipalities, int nbCircumscriptions):
     _nbCircumscriptions(nbCircumscriptions),
     _municipalities(municipalities)
 {
@@ -25,7 +25,7 @@ SingleSolution::~SingleSolution()
 }
 
 // SharedCirc SingleSolution::findClosestCircumscription(){
-//     shared_ptr<Municipality> unassignedMun = this->_unassignedMunicipalities.front();
+//     SharedMun unassignedMun = this->_unassignedMunicipalities.front();
 //     map<int, SharedCirc> closestCircsIDs = findNeighbourCircumscriptions(unassignedMun->coordinates);
 //     int distance = 10000; // set max distance.
 //     int closestId = closestCircsIDs[0];
@@ -42,7 +42,7 @@ SingleSolution::~SingleSolution()
 //     return this->_solution.circumscriptions[closestId]; // dummy return;
 // }
 
-int SingleSolution::computeTotalDistanceToCirc(shared_ptr<Municipality> municipality, SharedCirc circumscription ){
+int SingleSolution::computeTotalDistanceToCirc(SharedMun municipality, SharedCirc circumscription ){
     int totalDistance = 0;
     for(auto&& munInTargetCirc:circumscription->municipalities){
         totalDistance += computeManhattanDist(municipality->coordinates, munInTargetCirc->coordinates);
@@ -52,8 +52,8 @@ int SingleSolution::computeTotalDistanceToCirc(shared_ptr<Municipality> municipa
 
 }
 
-vector<shared_ptr<Municipality>> SingleSolution::getTooFarMunsInCirc(shared_ptr<Municipality> referenceMunicipality, SharedCirc circumscription){
-    vector<shared_ptr<Municipality>> tooFarMuns;
+vector<SharedMun> SingleSolution::getTooFarMunsInCirc(SharedMun referenceMunicipality, SharedCirc circumscription){
+    vector<SharedMun> tooFarMuns;
     for(auto&& municipalityInCirc : circumscription->municipalities){
         if(computeManhattanDist(referenceMunicipality->coordinates, municipalityInCirc->coordinates) > this->_maxDist){
             tooFarMuns.push_back(municipalityInCirc);
@@ -89,17 +89,19 @@ map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
 }
 
 
-void SingleSolution::removeMunicipalityFromCirc(shared_ptr<Municipality> municipalityToRemove, SharedCirc circumscription){
+void SingleSolution::removeMunicipalityFromCirc(SharedMun municipalityToRemove, SharedCirc circumscription){
+    if(!circumscription || !municipalityToRemove) return;
     //TODO : there are more efficient SingleSolutionrithms to remove an element from a vector
-   int position =0;
-    for(auto&& possibleMunicipality : circumscription->municipalities){
-        if(possibleMunicipality->coordinates.row == municipalityToRemove->coordinates.row && possibleMunicipality->coordinates.column == municipalityToRemove->coordinates.column){
-            circumscription->municipalities.erase(circumscription->municipalities.begin()+ position);
+    int position =0;
+    
+    for(auto&& possibleMunicipality : circumscription->municipalities){        
+        if(possibleMunicipality->coordinates.row == municipalityToRemove->coordinates.row && possibleMunicipality->coordinates.column == municipalityToRemove->coordinates.column){            
+            circumscription->municipalities.erase(circumscription->municipalities.begin()+ position);            
             break;
         }
         position++;
     }
-
+    
     circumscription->totalVotes-= municipalityToRemove->nbVotes;
     // TODO : UPDATE SOLUTION nbWon...  AND CIRCUMSCRIPTION->isWon
 
@@ -108,9 +110,9 @@ void SingleSolution::removeMunicipalityFromCirc(shared_ptr<Municipality> municip
 }
 
 // Choses a municipality to remove from a circ based on its total distance to an incomplete circ passed in parameter
-shared_ptr<Municipality> SingleSolution::choseMunicipalityToRemoveFromCirc( SharedCirc circumscriptionToRemoveIn, SharedCirc incompleteCirc){
+SharedMun SingleSolution::choseMunicipalityToRemoveFromCirc( SharedCirc circumscriptionToRemoveIn, SharedCirc incompleteCirc){
     int smallestDistToIncompleteCirc = this->_maxCirc.circSize*this->_nbMunicipalities; // INFINITY
-    shared_ptr<Municipality> municipalityToRemove;
+    SharedMun municipalityToRemove;
 
     for(auto&& possibleMunicipalityToRemove :  circumscriptionToRemoveIn->municipalities){
         int totalDistToIncompleteCirc = 0;
@@ -128,7 +130,7 @@ shared_ptr<Municipality> SingleSolution::choseMunicipalityToRemoveFromCirc( Shar
 
 
 vector<SharedCirc> SingleSolution::findPossibleCircumscriptionsToContainMun(
-    shared_ptr<Municipality> municipalityToInclude, vector<SharedCirc> circumscriptionsConsidered){
+    SharedMun municipalityToInclude, vector<SharedCirc> circumscriptionsConsidered){
 
     vector<SharedCirc> possibleCircumscriptions;
     // int i = 0 ; //TODO : remove
@@ -156,7 +158,8 @@ map<int, SharedCirc> SingleSolution::findIncompleteCircs(vector<SharedCirc> circ
     }
     return incompleteCircs;
 }
-bool SingleSolution::validateMunFitsInCirc(SharedCirc circumscription, shared_ptr<Municipality> municipalityToValidate){
+
+bool SingleSolution::validateMunFitsInCirc(SharedCirc circumscription, SharedMun municipalityToValidate){
     if((int) circumscription->municipalities.size() >= this->_currentBound.circSize) return false;
     for(auto&& municipality : circumscription->municipalities){
         if(computeManhattanDist(municipalityToValidate->coordinates, municipality->coordinates) > this->_maxDist ){
@@ -166,7 +169,16 @@ bool SingleSolution::validateMunFitsInCirc(SharedCirc circumscription, shared_pt
     return true;
 }
 
-bool SingleSolution::isMunInVector(shared_ptr<Municipality> municipality, const vector<Coord>& munCoordList){
+bool SingleSolution::validateMunFits(SharedCirc circumscription, SharedMun municipalityToValidate){
+    for(auto&& municipality : circumscription->municipalities){
+        if(computeManhattanDist(municipalityToValidate->coordinates, municipality->coordinates) > this->_maxDist ){
+            return false;
+        } 
+    }
+    return true;
+}
+
+bool SingleSolution::isMunInVector(SharedMun municipality, const vector<Coord>& munCoordList){
     for(Coord coord : munCoordList){
         if(municipality->coordinates.row == coord.row && municipality->coordinates.column == coord.column ){
             return true;
@@ -175,7 +187,8 @@ bool SingleSolution::isMunInVector(shared_ptr<Municipality> municipality, const 
     return false;
 }
 
-void SingleSolution::addMunicipalityToCirc(SharedCirc circumscription, shared_ptr<Municipality> municipality ){
+void SingleSolution::addMunicipalityToCirc(SharedCirc circumscription, SharedMun municipality ){
+    if(!circumscription || !municipality) return;
     circumscription->addMun(municipality);
     circumscription->totalVotes+=municipality->nbVotes;
     if(circumscription->totalVotes >= this->_votesToWin){
@@ -228,7 +241,7 @@ void SingleSolution::computeRepartition(){
 }
 //Generates a matrix that tells if a municipality is assigned to a 
 // Necessary, because there will be multiple solutions sharing the same municipalities
-vector<vector<bool>> SingleSolution::createAssignedMun(vector<vector<shared_ptr<Municipality>>> municipalities){
+vector<vector<bool>> SingleSolution::createAssignedMun(vector<vector<SharedMun>> municipalities){
     vector<vector<bool>> assignedMunicipalities(municipalities.size());
 
     for(long unsigned int i = 0 ; i < municipalities.size(); i++){
@@ -246,7 +259,7 @@ Solution SingleSolution::initializeSolution(int nbCircumscription){
     Solution initialSolution;
     initialSolution.circumscriptions = vector<SharedCirc>(nbCircumscription);
         for(int i = 0 ; i < nbCircumscription ; i++ ){
-            vector<shared_ptr<Municipality>> emptyMunicipality;
+            vector<SharedMun> emptyMunicipality;
             initialSolution.nbCircWon = 0;
             initialSolution.circumscriptions[i] = make_shared<Circumscription>(i+1, false,  0, emptyMunicipality);
        }

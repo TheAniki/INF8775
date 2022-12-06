@@ -26,6 +26,8 @@ class SingleSolution
         SharedMun choseMunicipalityToRemoveFromCirc( SharedCirc circumscriptionToRemoveIn, SharedCirc incompleteCirc);
         int computeTotalDistanceToCirc(SharedMun municipality, SharedCirc circumscription);
         vector<SharedMun> getTooFarMunsInCirc(SharedMun referenceMunicipality, SharedCirc circumscription);
+
+        bool validateMunFits(SharedCirc circumscription, SharedMun municipalityToValidate);
         // Getters
         Solution getSolution();
 

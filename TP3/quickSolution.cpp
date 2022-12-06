@@ -23,20 +23,21 @@ Solution QuickSolution::getSolution(){
 
 // Create the initial solution.
 bool QuickSolution::create(){      
-    cout << "MAX DISTS : " << this->_maxDist<< endl;
-    cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
+    // cout << "MAX DISTS : " << this->_maxDist<< endl;
+    // cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
  
-    cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
+    // cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
 
-    cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
-    // Loops over all the municipalities to assign them to a circumscription  
-
+    // cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
+    // Loops over all the municipalities to assign them to a circumscription    
     for(long unsigned int i = 0 ; i < this->_municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
             //displaySolution(this->_solution);
 
             // TODO : Replace with this
+            
             bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
+            
             // bool added = false;
             // // TODO: OLD FUNCTION -> adds in order.        
             // for(auto&& circumscription : this->_solution.circumscriptions){
@@ -59,7 +60,9 @@ bool QuickSolution::create(){
 
             if(!added){
                 vector<Coord> emptyHistory;
+                
                 bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], emptyHistory);
+                 
                 //cout << "IS FORCEABLE ? " << isForceable << endl;
                 if(!isForceable) return false;
             }
@@ -70,7 +73,7 @@ bool QuickSolution::create(){
     return true;
 }
 
-bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityToForce, vector<Coord> historyOfForcedMun){
+bool QuickSolution::forceAddMunicipality(SharedMun municipalityToForce, vector<Coord> historyOfForcedMun){
     historyOfForcedMun.push_back(municipalityToForce->coordinates);
     if(historyOfForcedMun.size() > 5) return false;
 
@@ -80,10 +83,11 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
     // Finds the less problematic circ to force solution in
     map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates);
     shared_ptr<Circumscription> bestCircumscriptionToBreak;
-    shared_ptr<Municipality> bestMunicipalityToRemove;
+    SharedMun bestMunicipalityToRemove;
     int totalDistanceToIncompleteCircOfBestMunToRemove = 100000;
     
-   for(auto&& neighborCirc : neighborCircs){
+
+    for(auto&& neighborCirc : neighborCircs){
         //If neighborCirc is an incomplete circ -> if possible, municipalityToForce is added here
         if((int) neighborCirc.second->municipalities.size() < this->_maxCirc.circSize){ 
             //If possible to add in this incomplete circ
@@ -92,7 +96,7 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
                 return true;
             }
             //No fit => at least one municipality too far from municipalityToForce
-            vector<shared_ptr<Municipality>> tooFarMuns;
+            vector<SharedMun> tooFarMuns;
             for(auto&& municipality : neighborCirc.second->municipalities){
                 if(computeManhattanDist(municipality->coordinates, municipalityToForce->coordinates) > this->_maxDist){
                     tooFarMuns.push_back(municipality);
@@ -158,8 +162,13 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
         }
 
     }
+   
+    
     removeMunicipalityFromCirc(bestMunicipalityToRemove, bestCircumscriptionToBreak);
-    addMunicipalityToCirc( bestCircumscriptionToBreak, municipalityToForce);
+    
+    
+    addMunicipalityToCirc( bestCircumscriptionToBreak, municipalityToForce);  
+    
     return forceAddMunicipality(bestMunicipalityToRemove, historyOfForcedMun);
         
     return false;
@@ -173,16 +182,19 @@ bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
     
     vector<pair<SharedCirc, double>> circsInRange = findCircsInRange(i,j);
     
+    
     if(circsInRange.size() == 0){
         for(auto&& circumscription : this->_solution.circumscriptions){
+            
             if(circumscription->municipalities.size()==0){
                 addMunicipalityToCirc(circumscription, this->_municipalities[i][j]);
                 return true;
             }
+            
         } 
         return false;       
     }  
-    
+
     if(circsInRange.size() == 1){// if it can only fit in one:
         // can be added at random to a new circ or to the circ in range. 
         double randomNumber = double(rand() & 10000)/10000;
@@ -192,7 +204,7 @@ bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
         else{
             for(auto&& circumscription : this->_solution.circumscriptions){
                 if(circumscription->municipalities.size()==0){
-                    addMunicipalityToCirc(circumscription, this->_municipalities[i][j]);
+                    addMunicipalityToCirc(circumscription, this->_municipalities[i][j]);                    
                     return true;
                 }
             }
@@ -225,13 +237,14 @@ bool QuickSolution::addMunicipalityToChosenCirc(SharedCirc circChosen,int i,int 
 vector<pair<SharedCirc, double>> QuickSolution::findCircsInRange(int i, int j){
     vector<pair<SharedCirc, double>> circsInRange;
     double nbEmpty = 0.0;
+    
     for(auto&& circumscription : this->_solution.circumscriptions){
         if(circumscription->municipalities.size()==0) nbEmpty++;
         if(circumscription->municipalities.size()>0 && validateMunFitsInCirc(circumscription, this->_municipalities[i][j])){
             circsInRange.push_back(make_pair(circumscription,0.0));
         }
     }
-
+    
     return circsInRange;
 }
 

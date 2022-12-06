@@ -60,23 +60,27 @@ int main(int argc, const char*argv[]){
     // displaySolution(algo.getSolution());
 
     
-    SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
-    QuickSolution quickSolution = QuickSolution(singleSolution);
-    LocalSearch localSearch = LocalSearch(singleSolution);
-    bool worked = false;
     
+    bool worked = false;
+    int it = 0;
     while(!worked){
-        try{
-        worked = quickSolution.create();    
-        }catch(std::exception& e){
-            worked = false;
+        SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
+        QuickSolution quickSolution = QuickSolution(singleSolution);
+        LocalSearch localSearch = LocalSearch(singleSolution);
+        worked = quickSolution.create();  
+        it++;
+        // cout<<" ====================================== "<<endl;  
+        // displaySolution(quickSolution.getSolution());
+        // cout << "MARCHÉ ? .... " << worked << endl;
+        // cout<<" ====================================== "<<endl;  
+        if(worked){
+            cout<<"en "<<it<<" iterations"<<endl;    
+        displaySolution(quickSolution.getSolution());
+        cout<<"in local: "<<endl;
+        localSearch.upgradeSolution(1);
+        displaySolution(localSearch.getSolution());
         }
-        cout << "MARCHÉ ? .... " << worked << endl;
     }
-        
-    displaySolution(quickSolution.getSolution());
-    // cout<<"in local: "<<endl;
-    // localSearch.upgradeSolution(1);
-    // displaySolution(localSearch.getSolution());
+    
     return 0;
 }
