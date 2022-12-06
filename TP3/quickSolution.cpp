@@ -55,7 +55,12 @@ bool QuickSolution::create(){
                 bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], emptyHistory);
                 cout << "IS FORCEABLE ? " << isForceable << endl;
                 if(!isForceable) {
+                        cout << "MAX DISTS : " << this->_maxDist<< endl;
+    cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
+    cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
+    cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
                     return false;
+    
                 }
             }
         // displaySolution(this->_solution);
@@ -212,7 +217,7 @@ bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
         cout << "NO CIRC IN RANGE" << endl;
 
         // double randomNumber = double(rand() & 10000)/10000;
-        // double threshold = 0.0;
+        // double threshold = 0.9;
         // if(randomNumber > threshold){
         // cout << "......DECIDING TO FORCE" << endl;
         //     vector<Coord> emptyHistory;
@@ -250,7 +255,6 @@ bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
         // cout<< "Random number is " << randomNumber << endl;
         // double tresh = double(computeTotalDistanceToCirc(this->_municipalities[i][j], circsInRange[0].first)) /circsInRange[0].first->municipalities.size();
         Coord maxCoords = findFurthestMunicipalityInCirc(this->_municipalities[i][j], circsInRange[0].first);
-    
         double columnMax = ceil(double(this->_maxDist)/2);
         double rowMax = floor(double(this->_maxDist)/2);
         if(abs(maxCoords.column - j)<=columnMax && abs(maxCoords.row-i) <=rowMax && validateMunFitsInCirc(circsInRange[0].first,this->_municipalities[i][j] )){
@@ -292,7 +296,7 @@ bool QuickSolution::addMunicipalityToChosenCirc(SharedCirc circChosen,int i,int 
 // Find all circs in manhattan range of i,j and that can be fitted 
 vector<pair<SharedCirc, double>> QuickSolution::findCircsInRange(int i, int j){
 
-
+    
     vector<pair<SharedCirc, double>> circsInRange;
     for(auto&& circumscription : this->_solution.circumscriptions){
         if(circumscription->municipalities.size()>0 && validateMunFitsInCirc(circumscription, this->_municipalities[i][j])){
@@ -301,7 +305,7 @@ vector<pair<SharedCirc, double>> QuickSolution::findCircsInRange(int i, int j){
             int totalDistance = computeTotalDistanceToCirc(this->_municipalities[i][j], circumscription);
             double heur = double(totalDistance)/circumscription->municipalities.size();
             // double heur = double(circumscription->municipalities.size());
-            heur = heur*nFits;
+            heur = pow(heur, 1)*(pow(nFits,1));
             // double heur = nFits;
             circsInRange.push_back(make_pair(circumscription,heur));
         }
@@ -313,32 +317,35 @@ vector<pair<SharedCirc, double>> QuickSolution::findCircsInRange(int i, int j){
 
     });
     for(auto&& circPair : circsInRange){
-        cout << ".... circ in range  : " << circPair.first->circumscriptionNumber << "    average distance : " << circPair.second <<endl;
+        cout << ".... circ in range  : " << circPair.first->circumscriptionNumber << "    heur : " << circPair.second <<endl;
     }
-
+    if(circsInRange.size()>1){
+        // throw std::exception();
+    }
     return circsInRange;
 }
 
 int QuickSolution::howManyRemainingMunFitInCirc(shared_ptr<Circumscription> circToComplete, int i, int j){
-    // cout << "howManyRemainingMunFitInCirc " <<endl;
+    cout << "howManyRemainingMunFitInCirc " << circToComplete->circumscriptionNumber<<endl;
     int counter =0;
+    int col = j;
 
-    for(int row = i ; i < this->_municipalities.size() ; i++){
+    for(int row = i ; row < this->_municipalities.size() ; row++){
         while(true){
-            // cout<< i << ",";
-            // cout << j << " ";
-            bool jFits = validateMunFitsInCirc(circToComplete, this->_municipalities[i][j]);
-            j++;
+            cout<< row << ",";
+            cout << col << " ";
+            bool jFits = validateMunFitsInCirc(circToComplete, this->_municipalities[row][col]);
+            col++;
             if(jFits)counter++;
-            if(j >= this->_municipalities[0].size()){
+            if(col >= this->_municipalities[0].size() || col-j > this->_maxDist){
                 cout << endl;
-                j=0;
+                col=0;
                 break;
             }
         }
         if(abs(row-i) > this->_maxDist) break;
     }
-    // cout << "COUNTER IS : " << counter << endl;
+    cout << "COUNTER IS : " << counter << endl;
     return counter;
 
     // while(true){
