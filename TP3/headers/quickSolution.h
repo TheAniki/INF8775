@@ -11,10 +11,10 @@ class QuickSolution : protected virtual SingleSolution
         ~QuickSolution();
         
         // create solution
-        bool create();
+        bool create(int ratio );
 
         // methods
-        bool addMunicipalityWithProbaHeur(int i, int j);
+        bool addMunicipalityWithProbaHeur(int ratio, int i, int j);
         vector<pair<SharedCirc, double>> findCircsInRange(int i, int j);
         SharedCirc choseCircumscriptionFrom(vector<pair<SharedCirc, double>> circsInRange, int,int);
         vector<int> calculateDistance(vector<pair<SharedCirc, double>> circsInRange,int i, int j);

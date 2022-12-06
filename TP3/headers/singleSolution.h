@@ -15,7 +15,7 @@ class SingleSolution
         void computeRepartition();
         bool validateMunFitsInCirc(SharedCirc circumscription, shared_ptr<Municipality> municipalityToValidate);
         void addMunicipalityToCirc(SharedCirc circumscription, shared_ptr<Municipality> municipality);
-        map<int, SharedCirc> findIncompleteCircs(vector<SharedCirc> circumscriptions);
+        map<int, SharedCirc> findIncompleteCircs();
         vector<SharedCirc> findPossibleCircumscriptionsToContainMun(
         shared_ptr<Municipality> municipalityToInclude, vector<SharedCirc> circumscriptionsConsidered);
         //SharedCirc findClosestCircumscription();
