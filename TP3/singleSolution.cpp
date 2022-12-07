@@ -184,7 +184,6 @@ bool SingleSolution::validateMunFitsInCirc(SharedCirc circumscription, SharedMun
     if((int) circumscription->municipalities.size() >= this->_currentBound.circSize) return false;
     for(auto&& municipality : circumscription->municipalities){
         if(computeManhattanDist(municipalityToValidate->coordinates, municipality->coordinates) > this->_maxDist ){
- 
             return false;
         } 
     }
@@ -224,10 +223,7 @@ void SingleSolution::addMunicipalityToCirc(SharedCirc circumscription, shared_pt
             circumscription->isWon = true;
             this->_solution.nbCircWon++;
     }    
-    if((int) circumscription->municipalities.size() >= this->_currentBound.circSize)
-        this->_currentBound.maxAmount--;
-    if(this->_currentBound.maxAmount <= 0)
-        this->_currentBound = this->_minCirc;
+
 }
 
 void SingleSolution::computeCircBounds(){
