@@ -23,7 +23,7 @@ class QuickSolution : protected virtual SingleSolution
         int findSmallestTotalDistanceToAnIncomplete(shared_ptr<Municipality> municipalityToCheck , map<int, shared_ptr<Circumscription>> incompleteCircs);
 
 
-    int howManyRemainingMunFitInCirc(shared_ptr<Circumscription> circToComplete, int i, int j);
+        int howManyRemainingMunFitInCirc(shared_ptr<Circumscription> circToComplete, int i, int j);
 
 
 

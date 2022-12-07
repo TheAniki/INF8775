@@ -96,28 +96,27 @@ int main(int argc, const char*argv[]){
     int amountWon = 0; 
     for(auto&& circ : quickSolution.getSolution().circumscriptions){
     if(circ->totalVotes >= votesToWin)
-        amountWon;
+        amountWon++;
     }
 
     cout << "WON : " << amountWon << endl;
-
     int lastBest = amountWon;
     bool solutionChanged = true;
 
-    while(solutionChanged){
-        solutionChanged = localSearch.upgradeSolution();
+    solutionChanged = localSearch.upgradeSolution();
+    // while(solutionChanged){
         
-        int currentAmountWon = 0;
-        for(auto&& circ : localSearch.getSolution().circumscriptions){
-            if(circ->totalVotes >= votesToWin)
-                currentAmountWon++;
-        }
-        if(currentAmountWon>lastBest){
-            lastBest  = currentAmountWon;  
-            cout<<"Number of circs won "<<currentAmountWon<<" of "<<nbCircumscription<<endl;
-            displaySolution(localSearch.getSolution());
-        }        
-    }    
+    //     int currentAmountWon = 0;
+    //     for(auto&& circ : localSearch.getSolution().circumscriptions){
+    //         if(circ->totalVotes >= votesToWin)
+    //             currentAmountWon++;
+    //     }
+    //     if(currentAmountWon>lastBest){
+    //         lastBest  = currentAmountWon;  
+    //         cout<<"Number of circs won "<<currentAmountWon<<" of "<<nbCircumscription<<endl;
+    //         displaySolution(localSearch.getSolution());
+    //     }        
+    // }    
 
 
 

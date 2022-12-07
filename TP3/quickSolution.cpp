@@ -18,7 +18,7 @@ QuickSolution::~QuickSolution()
 
 Solution QuickSolution::getSolution(){
     displaySolution(this->_solution);
-    cout << "HOW MANY INCOMPLETE      : " << findIncompleteCircs().size() <<endl;
+    cout << "WON (solution)      : " << this->_solution.nbCircWon <<endl;
     return this->_solution;
 }
 

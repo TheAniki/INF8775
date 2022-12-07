@@ -77,6 +77,9 @@ vector<SharedMun> SingleSolution::getTooFarMunsInCirc(SharedMun referenceMunicip
     return tooFarMuns;
 }
 
+
+
+
 map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
     map<int, SharedCirc> neighbourCircs;
     int surroundCoords[3] = {-1, 0, 1};
@@ -84,25 +87,21 @@ map<int, SharedCirc> SingleSolution::findNeighbourCircumscriptions(Coord coord){
         for(int j : surroundCoords){
             if( i == 0 && j == 0) continue;
             if( i+coord.row < 0 || j +coord.column < 0) continue;
-            // if( i+coord.row >=(int) this->_municipalities[0].size()  
-            //     || j +coord.column >= (int) this->_municipalities.size()) continue; //TODO : demander Ouassim ce qu'il voulait faire ici
             for(auto&& circ : this->_solution.circumscriptions){
                 for(auto&& mun : circ->municipalities){
                     if(mun->coordinates.row ==i+coord.row && mun->coordinates.column == j + coord.column
                          &&  neighbourCircs.count(circ->circumscriptionNumber)==0  ){
                         neighbourCircs.emplace(circ->circumscriptionNumber, circ);
-                        // cout << "NEIGHBOUR : " <<  circ->circumscriptionNumber << endl;
+                    
                     }
                 }
             }
-            
-            
-                          
+                
         }
         
     }
 
-    return neighbourCircs; // TODO: Remove.
+    return neighbourCircs; 
 }
 
 
@@ -110,7 +109,6 @@ void SingleSolution::removeMunicipalityFromCirc(shared_ptr<Municipality> municip
     // cout<<"removing "<< municipalityToRemove->nbVotes 
     // << " ("<<municipalityToRemove->coordinates.row <<" , "<< municipalityToRemove->coordinates.column<<") from "<<circumscription->circumscriptionNumber<<endl;
     if(!circumscription || !municipalityToRemove) { //if parameter undefined
-        
         return;
     } 
  
@@ -118,14 +116,17 @@ void SingleSolution::removeMunicipalityFromCirc(shared_ptr<Municipality> municip
     for(auto&& possibleMunicipality : circumscription->municipalities){
         if(possibleMunicipality->coordinates.row == municipalityToRemove->coordinates.row && possibleMunicipality->coordinates.column == municipalityToRemove->coordinates.column){
             circumscription->municipalities.erase(circumscription->municipalities.begin()+ position);
+            circumscription->totalVotes -= municipalityToRemove->nbVotes;
+            if(circumscription->totalVotes < this->_votesToWin && circumscription->isWon){
+                circumscription->isWon = false;
+                this->_solution.nbCircWon--;
+            }   
+            
             break;
         }
         position++;
     }
     
-
-
-    circumscription->totalVotes-= municipalityToRemove->nbVotes;
     // TODO : UPDATE SOLUTION nbWon...  AND CIRCUMSCRIPTION->isWon
 
 
@@ -156,15 +157,11 @@ vector<SharedCirc> SingleSolution::findPossibleCircumscriptionsToContainMun(
     SharedMun municipalityToInclude, vector<SharedCirc> circumscriptionsConsidered){
 
     vector<SharedCirc> possibleCircumscriptions;
-    // int i = 0 ; //TODO : remove
-    // find possible solutions
     for(auto&& circ : circumscriptionsConsidered){        
             
         if(validateMunFitsInCirc(circ, municipalityToInclude)){
             possibleCircumscriptions.push_back(circ);
-            // cout<<"POSSIBLE CIRC FOR MUNICIPALITY : " << i << endl;
         }
-        // i++;
     }
 
     return possibleCircumscriptions;
@@ -187,9 +184,12 @@ bool SingleSolution::validateMunFitsInCirc(SharedCirc circumscription, SharedMun
     if((int) circumscription->municipalities.size() >= this->_currentBound.circSize) return false;
     for(auto&& municipality : circumscription->municipalities){
         if(computeManhattanDist(municipalityToValidate->coordinates, municipality->coordinates) > this->_maxDist ){
+ 
             return false;
         } 
     }
+
+
     return true;
 }
 
@@ -220,7 +220,7 @@ void SingleSolution::addMunicipalityToCirc(SharedCirc circumscription, shared_pt
 
     circumscription->addMun(municipality);
     circumscription->totalVotes+=municipality->nbVotes;
-    if(circumscription->totalVotes >= this->_votesToWin){
+    if(circumscription->totalVotes >= this->_votesToWin && !circumscription->isWon){
             circumscription->isWon = true;
             this->_solution.nbCircWon++;
     }    
