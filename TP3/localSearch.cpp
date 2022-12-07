@@ -20,8 +20,9 @@ Solution LocalSearch::getSolution(){
 }
 
 // algo 2-opt
-void LocalSearch::upgradeSolution(int nbIterations){       
-    for(int i=0; i<nbIterations; i++){
+// returns true if solution changed
+bool LocalSearch::upgradeSolution(){       
+   
         // cout<<"Upgrading solution"<<endl;
 
 
@@ -40,7 +41,8 @@ void LocalSearch::upgradeSolution(int nbIterations){
         //      s_i <- s
         
         // TODO: upgrade current solution.
-    }
+        return false;
+    
     // retourner la solution
 }
 void LocalSearch::increaseVotesofAllLosing(vector<pair<SharedCirc,int>> losingCircs){
@@ -176,10 +178,7 @@ bool LocalSearch::TrySwappingMunicipalities(SharedCirc losingCirc, vector<Shared
     // << " coords: "<<"(" <<  bestMunInNeighbor->coordinates.row<<" , "<< bestMunInNeighbor->coordinates.column <<")"<<endl;
     int oldLosing = losingCirc->totalVotes;
     
-    cout<<" swapping circ " << losingCirc->circumscriptionNumber<<" mun: "
-    << " coords: "<<"(" <<  worstMunInLosing->coordinates.row<<" , "<< worstMunInLosing->coordinates.column <<") and "
-    <<"circ " << bestNeigbor->circumscriptionNumber<<" mun: "
-    << " coords: "<<"(" <<  bestMunInNeighbor->coordinates.row<<" , "<< bestMunInNeighbor->coordinates.column <<")"<<endl;
+    
 
     swapMuns(bestNeigbor->circumscriptionNumber ,bestMunInNeighbor, losingCirc->circumscriptionNumber , worstMunInLosing);
        
@@ -200,31 +199,30 @@ void LocalSearch::swapMuns(int bestCircNb , SharedMun bestMunInNeighbor , int lo
 
     // only updateSolution if best value is found
     if(newLosing < initialLosing){
-        cout<<"swap failed"<<endl;
+
         return;
     } 
     //cout<<" ========================================================================== "<<endl;
     removeMunicipalityFromCirc(bestMunInNeighbor, this->_solution.circumscriptions[bestCircNb-1]);
     removeMunicipalityFromCirc(worstMunInLosing, this->_solution.circumscriptions[losingCircNb-1]);
-    cout<<" after remove : "<<endl;
+
     // cout<<" removed elements from bestCirc " << bestCircNb <<" and losingCirc "<<losingCircNb<<endl;
     // cout<<"         removed : "<< bestMunInNeighbor->nbVotes 
     // << " coords: "<<"(" <<  bestMunInNeighbor->coordinates.row<<" , "<< bestMunInNeighbor->coordinates.column <<")"<<endl;
     // cout<<"         removed : "<< worstMunInLosing->nbVotes 
     // << " coords: "<<"(" <<  worstMunInLosing->coordinates.row<<" , "<< worstMunInLosing->coordinates.column <<")"<<endl;
-    displaySolution(this->_solution); 
+
 
    addMunicipalityToCirc(this->_solution.circumscriptions[losingCircNb-1], bestMunInNeighbor);
    addMunicipalityToCirc(this->_solution.circumscriptions[bestCircNb-1], worstMunInLosing); 
 
-   
-    cout<<" after add : "<<endl;
+
     //    cout<<" swapped elements from bestCirc " << bestCircNb <<" and losingCirc "<<losingCircNb<<endl;
     //    cout<<"         swapped : "<< bestMunInNeighbor->nbVotes 
     //     << " coords: "<<"(" <<  bestMunInNeighbor->coordinates.row<<" , "<< bestMunInNeighbor->coordinates.column <<")"<<endl;
     //     cout<<"         swapped : "<< worstMunInLosing->nbVotes 
     //     << " coords: "<<"(" <<  worstMunInLosing->coordinates.row<<" , "<< worstMunInLosing->coordinates.column <<")"<<endl;
-        displaySolution(this->_solution); 
+ 
     //cout<<" ========================================================================== "<<endl;  
     // cout<<" new losing total vote : "<< this->_solution.circumscriptions[losingCircNb-1]->totalVotes<<endl;
     // cout<<" old best total vote : "<< this->_solution.circumscriptions[bestCircNb-1]->totalVotes<<endl;

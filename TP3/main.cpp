@@ -61,34 +61,60 @@ int main(int argc, const char*argv[]){
 
     
     
-    bool worked = false;
+    // bool worked = false;
+    // SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
+    // QuickSolution quickSolution = QuickSolution(singleSolution);
+    // LocalSearch localSearch = LocalSearch(singleSolution);
+    // worked = quickSolution.create();
+    // cout<<" worked? "<<worked<<endl; 
+
+    // int i=0;
+    // for(auto&& circ : localSearch.getSolution().circumscriptions){
+    //     if(circ->totalVotes >= votesToWin)
+    //         i++;
+    // }
+    // cout<<"Number of circs won "<<i<<" of "<<nbCircumscription<<endl;
+    // displaySolution(quickSolution.getSolution());
+
+
+
+
     SingleSolution singleSolution = SingleSolution(municipalities,nbCircumscription);
     QuickSolution quickSolution = QuickSolution(singleSolution);
     LocalSearch localSearch = LocalSearch(singleSolution);
-    worked = quickSolution.create();
-    cout<<" worked? "<<worked<<endl; 
 
-    int i=0;
-    for(auto&& circ : localSearch.getSolution().circumscriptions){
-        if(circ->totalVotes >= votesToWin)
-            i++;
+    // for(double ratio = 20 ; ratio <= 30  ; ratio+=0.5){
+    //     cout <<"RATIO : " << ratio << " - ";
+    srand((unsigned) time(0)); 
+    bool foundInitialSolution=false;
+    while(!foundInitialSolution){
+        foundInitialSolution = quickSolution.create();    
+       
+    } 
+    cout << "FOUND FIRST SOLUTION " << endl;
+     
+    int amountWon = 0; 
+    for(auto&& circ : quickSolution.getSolution().circumscriptions){
+    if(circ->totalVotes >= votesToWin)
+        amountWon;
     }
-    cout<<"Number of circs won "<<i<<" of "<<nbCircumscription<<endl;
-    displaySolution(quickSolution.getSolution());
 
-    i=0;
-    int lastBest = 0;
-    while(i<13){
-        i=0;
-        localSearch.upgradeSolution(10);
+    cout << "WON : " << amountWon << endl;
+
+    int lastBest = amountWon;
+    bool solutionChanged = true;
+
+    while(solutionChanged){
+        solutionChanged = localSearch.upgradeSolution();
         
+        int currentAmountWon = 0;
         for(auto&& circ : localSearch.getSolution().circumscriptions){
             if(circ->totalVotes >= votesToWin)
-                i++;
+                currentAmountWon++;
         }
-        if(i>lastBest){
-            lastBest = i;
-            cout<<"Number of circs won "<<i<<" of "<<nbCircumscription<<endl;
+        if(currentAmountWon>lastBest){
+            lastBest  = currentAmountWon;  
+            cout<<"Number of circs won "<<currentAmountWon<<" of "<<nbCircumscription<<endl;
             displaySolution(localSearch.getSolution());
         }        
     }    

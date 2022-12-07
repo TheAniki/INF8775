@@ -24,7 +24,7 @@ Solution QuickSolution::getSolution(){
 
 
 // Create the initial solution.
-bool QuickSolution::create(int ratio){     
+bool QuickSolution::create(){     
 //   srand((unsigned) time(0)); 
 
     // Loops over all the municipalities to assign them to a circumscription     
@@ -33,7 +33,7 @@ bool QuickSolution::create(int ratio){
             // cout << "----------------------" <<endl;
             // cout << "NOW PLACING (" << i << " , " <<  j << ")"<<endl;
             // TODO : Replace with this
-            bool added = addMunicipalityWithProbaHeur(ratio, i,j); // Returns true if successfully added
+            bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
 
             // bool added = false;
             // // TODO: OLD FUNCTION -> adds in order.        
@@ -217,7 +217,7 @@ int QuickSolution::findSmallestTotalDistanceToAnIncomplete(shared_ptr<Municipali
 }
 
 // Add municipality to circumscription using proba heur.
-bool QuickSolution::addMunicipalityWithProbaHeur(int ratio, int i, int j){
+bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
     vector<pair<SharedCirc, double>> circsInRange = findCircsInRange(i,j);
     
     //If no circ in range, use an empty circumscription

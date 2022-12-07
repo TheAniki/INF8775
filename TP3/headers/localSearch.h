@@ -9,7 +9,7 @@ class LocalSearch : protected virtual SingleSolution
         LocalSearch();
         LocalSearch(SingleSolution singleSolution);
         
-        void upgradeSolution(int nbIterations);
+        bool upgradeSolution();
         
         
 
