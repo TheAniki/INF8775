@@ -31,7 +31,6 @@ bool QuickSolution::create(){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
             bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
 
-
             if(!added){
                 vector<Coord> emptyHistory;
                 
@@ -59,7 +58,7 @@ bool QuickSolution::forceAddMunicipality(shared_ptr<Municipality> municipalityTo
     
     map<int, shared_ptr<Circumscription>> incompleteCircs = findIncompleteCircs();
     // Finds the less problematic circ to force solution in
-    map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates);
+    map<int, shared_ptr<Circumscription>> neighborCircs =  findNeighbourCircumscriptions(municipalityToForce->coordinates, false);
     shared_ptr<Circumscription> bestCircumscriptionToBreak;
     shared_ptr<Municipality> bestMunicipalityToRemove;
     vector<shared_ptr<Municipality>> bestTooFarMunicipalitiesToRemove;

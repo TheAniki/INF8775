@@ -22,17 +22,19 @@ Solution LocalSearch::getSolution(){
 // algo 2-opt
 // returns true if solution changed
 bool LocalSearch::upgradeSolution(){       
-   
+    for (int i = 0; i < 10; i++)
+    {
         vector<pair<SharedCirc,int>> losingCircs = orderLosingCirc();  
 
         increaseVotesofAllLosing(losingCircs);
 
-        return false;
+        
+    }
+    return true;        
     
     // retourner la solution
 }
-void LocalSearch::increaseVotesofAllLosing(vector<pair<SharedCirc,int>> losingCircs){
-    
+void LocalSearch::increaseVotesofAllLosing(vector<pair<SharedCirc,int>> losingCircs){    
     for(auto&& circ : losingCircs){
         bool success = increaseVotesClosestToTreshold(circ.first, circ.second);
         if(success) return;
@@ -188,7 +190,7 @@ map<int, SharedCirc> LocalSearch::findNeihborCircumscriptionsOfLowest(SharedCirc
     
     SharedMun lowestValueMunicipality = findLowestMunicipality(circ);
 
-    map<int, SharedCirc> neighborCircs =  findNeighbourCircumscriptions(lowestValueMunicipality->coordinates);    
+    map<int, SharedCirc> neighborCircs =  findNeighbourCircumscriptions(lowestValueMunicipality->coordinates,true);    
 
     return neighborCircs;
 } 
