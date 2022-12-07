@@ -17,8 +17,8 @@ QuickSolution::~QuickSolution()
 }
 
 Solution QuickSolution::getSolution(){
-    displaySolution(this->_solution);
-    cout << "HOW MANY INCOMPLETE      : " << findIncompleteCircs().size() <<endl;
+    //displaySolution(this->_solution);
+    //cout << "HOW MANY INCOMPLETE      : " << findIncompleteCircs().size() <<endl;
     return this->_solution;
 }
 
@@ -26,58 +26,24 @@ Solution QuickSolution::getSolution(){
 // Create the initial solution.
 bool QuickSolution::create(){     
 //   srand((unsigned) time(0)); 
-
     // Loops over all the municipalities to assign them to a circumscription     
     for(long unsigned int i = 0 ; i < this->_municipalities.size(); i++){
         for(long unsigned int j= 0 ; j < this->_municipalities[i].size(); j++){
-            // cout << "----------------------" <<endl;
-            // cout << "NOW PLACING (" << i << " , " <<  j << ")"<<endl;
-            // TODO : Replace with this
             bool added = addMunicipalityWithProbaHeur(i,j); // Returns true if successfully added
 
-            // bool added = false;
-            // // TODO: OLD FUNCTION -> adds in order.        
-            // for(auto&& circumscription : this->_solution.circumscriptions){
-            //     if((int) circumscription->municipalities.size()>=this->_maxCirc.circSize) continue; //no more space in circumscription
-
-            //     if(validateMunFitsInCirc(circumscription, this->_municipalities[i][j]) ){
-                
-            //         addMunicipalityToCirc(circumscription, this->_municipalities[i][j]); 
-            //         if(circumscription->totalVotes >= this->_votesToWin){
-            //             circumscription->isWon = true;
-            //             this->_solution.nbCircWon++;
-            //         }
-            //         added  =  true; //successfully added 
-            //         break;
-                    
-            //     }
-            // }
 
             if(!added){
                 vector<Coord> emptyHistory;
                 
                 bool isForceable = this->forceAddMunicipality(this->_municipalities[i][j], emptyHistory);
-                // cout << "IS FORCEABLE ? " << isForceable << endl;
                 if(!isForceable) {
-                        // cout << "MAX DISTS : " << this->_maxDist<< endl;
-    // cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
-    // cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
-    // cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
-                    return false;
-    
+                    return false;    
                 }
             }
-
-
         }
-    }           
+    }
+        
 
-
-    // cout << "MAX DISTS : " << this->_maxDist<< endl;
-    // cout << "MIN CIRC : " << this->_minCirc.circSize << endl;
-    // cout << "MAX CIRC : " << this->_maxCirc.circSize << endl;
-    // cout << "NB CIRC : "<< this->_nbCircumscriptions << endl;
-    
     return true;
 }
 
@@ -226,10 +192,8 @@ bool QuickSolution::addMunicipalityWithProbaHeur(int i, int j){
         double randomNumber = double(rand() & 10000)/10000;
         double ijRatio = double(i*j)/(this->_municipalities.size() * this->_municipalities[0].size());
         double threshold = 0.95 -  ijRatio * 40 /100 ;
-        // cout << "ijRatio : " <<  ijRatio << endl;
-        // cout << "threshold : " <<  threshold << endl;
 
-        if(randomNumber > 0.9){
+        if(randomNumber > threshold){
             vector<Coord> emptyHistory;
             if(forceAddMunicipality(this->_municipalities[i][j], emptyHistory )){
                 return true;
@@ -423,7 +387,7 @@ SharedCirc QuickSolution::choseCircumscriptionFrom(vector<pair<SharedCirc, doubl
     double previousTreshold = 0.0;
     double currentTreshold = 0.0;
     
-    srand(time(NULL));
+    //srand(time(NULL));
     double randomNumber = double(rand() & 10000)/10000; // number between 0.0000 and 1.0000 
     
     // cout << "RANDOM NUMBER FOR CHOSING IS CIRC " << randomNumber << endl;

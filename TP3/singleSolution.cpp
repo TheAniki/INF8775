@@ -185,6 +185,14 @@ map<int, SharedCirc> SingleSolution::findIncompleteCircs(){
 
 bool SingleSolution::validateMunFitsInCirc(SharedCirc circumscription, SharedMun municipalityToValidate){
     if((int) circumscription->municipalities.size() >= this->_currentBound.circSize) return false;
+    
+    for(auto& mun: circumscription->municipalities){
+        if((mun->coordinates.row == municipalityToValidate->coordinates.row)
+            && (mun->coordinates.column == municipalityToValidate->coordinates.column)){
+            return false;
+        }
+    }
+
     for(auto&& municipality : circumscription->municipalities){
         if(computeManhattanDist(municipalityToValidate->coordinates, municipality->coordinates) > this->_maxDist ){
             return false;

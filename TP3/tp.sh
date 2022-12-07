@@ -8,7 +8,6 @@ helpFunction()
 }
 
 AFFICHER_SOLUTION=""
-AFFICHER_TEMPS=""
 
 while getopts "e:c:p" opt
 do
@@ -29,4 +28,4 @@ then
 fi
 
 # Begin script in case all parameters are correct
-make clean && make && ./TP3 -e $path_vers_exemplaire -c $nbCircumscriptions $AFFICHER_SOLUTION $AFFICHER_TEMPS
+make clean && make && ./TP3 -e $path_vers_exemplaire -c $nbCircumscriptions $AFFICHER_SOLUTION

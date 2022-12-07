@@ -138,7 +138,7 @@ DEPEND      = $(CC)  $(DEP_OPT)  $(MY_CFLAGS) $(CFLAGS) $(CPPFLAGS)
 DEPEND.d    = $(subst -g ,,$(DEPEND))
 COMPILE.c   = $(CC)  $(MY_CFLAGS) $(CFLAGS)   $(CPPFLAGS) -c
 COMPILE.cxx = $(CXX) $(MY_CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -c
-LINK.c      = $(CC)  $(MY_CFLAGS) $(CFLAGS)   $(CPPFLAGS) $(LDFLAGS)
+LINK.c      = $(CC)  $(MY_CFLAGS) $(CFLAGS)   $(CPPFLAGS) $(LDFLAGS) > /dev/null
 LINK.cxx    = $(CXX) $(MY_CFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 .PHONY: all objs tags ctags clean distclean help show
@@ -188,28 +188,28 @@ all: $(PROGRAM)
 objs:$(OBJS)
 
 %.o:%.c
-	$(COMPILE.c) $< -o $@
+	-@$(COMPILE.c) $< -o $@
 
 %.o:%.C
-	$(COMPILE.cxx) $< -o $@
+	-@$(COMPILE.cxx) $< -o $@
 
 %.o:%.cc
-	$(COMPILE.cxx) $< -o $@
+	-@$(COMPILE.cxx) $< -o $@ 
 
 %.o:%.cpp
-	$(COMPILE.cxx) $< -o $@
+	-@$(COMPILE.cxx) $< -o $@
 
 %.o:%.CPP
-	$(COMPILE.cxx) $< -o $@
+	-@$(COMPILE.cxx) $< -o $@
 
 %.o:%.c++
-	$(COMPILE.cxx) $< -o $@
+	-@$(COMPILE.cxx) $< -o $@
 
 %.o:%.cp
-	$(COMPILE.cxx) $< -o $@
+	-@$(COMPILE.cxx) $< -o $@ 
 
 %.o:%.cxx
-	$(COMPILE.cxx) $< -o $@
+	-@$(COMPILE.cxx) $< -o $@ 
 
 # Rules for generating the tags.
 #-------------------------------------
@@ -223,11 +223,11 @@ ctags: $(HEADERS) $(SOURCES)
 #-------------------------------------
 $(PROGRAM):$(OBJS)
 ifeq ($(SRC_CXX),)              # C program
-	$(LINK.c)   $(OBJS) $(MY_LIBS) -o $@
+	$(LINK.c)   $(OBJS) $(MY_LIBS) -o $@ 
 	@echo Type ./$@ to execute the program.
 else                            # C++ program
-	$(LINK.cxx) $(OBJS) $(MY_LIBS) -o $@
-	@echo Type ./$@ to execute the program.
+	-@$(LINK.cxx) $(OBJS) $(MY_LIBS) -o $@ 
+	-@echo Type ./$@ to execute the program. > /dev/null
 endif
 
 ifndef NODEP
@@ -237,10 +237,10 @@ endif
 endif
 
 clean:
-	$(RM) $(DEPS) $(OBJS) $(PROGRAM) $(PROGRAM).exe
+	-@$(RM) $(DEPS) $(OBJS) $(PROGRAM) $(PROGRAM).exe  > /dev/null
 
 distclean: clean
-	$(RM) $(DEPS) TAGS
+	$(RM) $(DEPS) TAGS 
 
 # Show help.
 help:
