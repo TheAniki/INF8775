@@ -325,9 +325,6 @@ vector<pair<SharedCirc, double>> QuickSolution::findCircsInRange(int i, int j){
         return a.second < b.second; //smallest first
 
     });
-    for(auto&& circPair : circsInRange){
-        // cout << ".... circ in range  : " << circPair.first->circumscriptionNumber << "    heur : " << circPair.second <<endl;
-    }
 
     return circsInRange;
 }
@@ -341,7 +338,7 @@ int QuickSolution::howManyRemainingMunFitInCirc(shared_ptr<Circumscription> circ
             bool jFits = validateMunFitsInCirc(circToComplete, this->_municipalities[row][col]);
             col++;
             if(jFits)counter++;
-            if(col >= this->_municipalities[0].size() || col-j > this->_maxDist){
+            if(col >= (int) this->_municipalities[0].size() || col-j > this->_maxDist){
                col=0;
                 break;
             }

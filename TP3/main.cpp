@@ -96,7 +96,7 @@ int main(int argc, const char*argv[]){
     int amountWon = 0; 
     for(auto&& circ : quickSolution.getSolution().circumscriptions){
     if(circ->totalVotes >= votesToWin)
-        amountWon;
+        amountWon++;
     }
 
     cout << "WON : " << amountWon << endl;
